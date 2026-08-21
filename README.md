@@ -1,57 +1,76 @@
 # Cipher School
 
-**Learn the system. Defend the future.**
+Learn cybersecurity from absolute beginner to expert level — in plain language.
 
-[Open the public app](https://cipher-school-cybersecurity.ashfaaqaf.chatgpt.site)
+**Live:** https://ashfaaqaf.github.io/cipher-school-cybersecurity/
 
-Cipher School is a mobile-first cybersecurity field guide that maps the discipline from beginner foundations to independent research. It turns a huge subject into an ordered, evidence-based study system.
+Most security roadmaps hand you a list of topics and leave you to find the explanations
+yourself. This one contains the explanations. Every lesson is written out in full, in
+words a beginner can follow, with the jargon decoded as it appears.
 
-## What is included
+## What is in it
 
-- 12 ordered learning stages
-- 96 trackable core skills
-- 700-hour honest study estimate
-- Seven specialization routes: SOC/detection, red team, AppSec, cloud, DFIR, GRC, and vulnerability research
-- Searchable and filterable curriculum
-- On-device progress tracking with no account required
-- A 90-minute study protocol and three sustainable pacing options
-- Legal-scope safeguards and primary-source links
-- Responsive iPhone layout and installable web-app metadata
+- **12 stages**, beginner through expert, in the order they should be learned
+- **96 written lessons** — not topic titles, the actual teaching
+- **369 terms decoded** in a searchable glossary, each explained without more jargon
+- **7 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research) with stage order
+- **Progress tracking** stored only in your browser — nothing is uploaded anywhere
 
-## Curriculum map
+Every lesson follows the same shape, because that shape is what makes an idea stick:
 
-1. Safe start: ethics, authorization, scope, and labcraft
-2. Computers from the metal up
-3. Network anatomy
-4. Code for operators
-5. Security engineering core
-6. Application and API security
-7. Authorized offensive security
-8. Defense and detection
-9. Incident response, forensics, and malware
-10. Cloud-native security and DevSecOps
-11. Advanced systems frontiers
-12. Research and professional practice
+| Section | What it does |
+| --- | --- |
+| The whole idea | The entire lesson in one sentence |
+| Think of it like | An everyday comparison to hold on to |
+| The explanation | Short paragraphs that survive being read out loud |
+| Jargon decoder | The terms you will meet in the wild, in human |
+| Why this matters | The real-world consequence |
+| Go and do this | Something to actually do today, safely |
+| Check yourself | A question you should be able to answer |
 
-## Run locally
+## Design notes
 
-Requirements: Node.js 22.13 or later.
+The colour scheme is chosen for learning rather than decoration. A deep blue canvas
+supports sustained focus, green always means progress and never warning, amber carries
+attention without triggering the anxiety response red does, and each of the twelve stages
+recolours the interface with its own hue — distinct colour schemes create separate memory
+traces, which makes the stages easier to keep apart.
+
+Surfaces use a Liquid Glass material — translucent, blurred, with a specular top edge and
+concentric radii — so hierarchy reads through depth rather than borders. Motion uses
+spring curves, sheets are drag-to-dismiss, and everything collapses gracefully under
+`prefers-reduced-motion`. Text passes WCAG AA contrast in both the dark and light themes.
+
+Built mobile-first for iPhone, installable to the Home Screen.
+
+## Practise legally
+
+Only test systems you own, systems you have written permission to test, or labs built for
+practice. Unauthorised access is a crime in most countries even when nothing breaks and
+no harm was intended. Every offensive technique covered here has a free, legal place to
+practise it, linked inside the relevant stage.
+
+## Sources
+
+The curriculum is grounded in published standards, not opinion: NIST CSF 2.0,
+NIST SP 800-61r3, NIST SSDF (SP 800-218), the NIST post-quantum standards (FIPS 203/204/205),
+MITRE ATT&CK v18, MITRE ATLAS, OWASP Top 10 (2025), the OWASP API and LLM Top 10s, and the
+NICE workforce framework. Practice links point at PortSwigger Web Security Academy,
+pwn.college, OverTheWire and TryHackMe.
+
+## Running it locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-Create a production build with:
+Static export for GitHub Pages, built and deployed by `.github/workflows/pages.yml` on
+every push to `main`:
 
 ```bash
-npm run build
+PAGES_BASE_PATH=cipher-school-cybersecurity npm run build
 ```
 
-## Evidence base
-
-The curriculum is anchored in sources including [NIST CSF 2.0](https://www.nist.gov/cyberframework), the [NICE Framework](https://www.nist.gov/itl/applied-cybersecurity/nice/nice-framework-resource-center), [MITRE ATT&CK](https://attack.mitre.org/), [OWASP Top 10](https://owasp.org/www-project-top-ten/), [PortSwigger Web Security Academy](https://portswigger.net/web-security), and [NIST SP 800-61r3](https://csrc.nist.gov/pubs/sp/800/61/r3/final).
-
-## Safety
-
-Only test systems you own or have explicit authorization to test. Stay inside written scope, minimize impact, protect data, and follow the system owner's vulnerability disclosure policy. This educational project is not legal advice.
+Next.js 16 static export, no backend, no database, no tracking. Progress lives in
+`localStorage` and never leaves the device.

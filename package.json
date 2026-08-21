@@ -24,5 +24,12 @@
     "eslint-config-next": "16.2.6",
     "typescript": "5.9.3"
   },
-  "type": "module"
+  "type": "module",
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Safari versions",
+    "last 2 Firefox versions",
+    "last 2 Edge versions",
+    "iOS >= 16"
+  ]
 }
