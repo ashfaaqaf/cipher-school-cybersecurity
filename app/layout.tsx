@@ -3,14 +3,14 @@ import './globals.css';
 
 const title = 'Cipher School — Master Cybersecurity';
 const description = 'A complete, mission-based path from cybersecurity beginner to independent researcher—with 96 skills, legal labs, progress tracking, and seven career tracks.';
-const siteUrl = 'https://cipher-school-cybersecurity.ashfaaqaf.chatgpt.site';
+const siteUrl = 'https://ashfaaqaf.github.io/cipher-school-cybersecurity';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description,
   applicationName: 'Cipher School',
-  manifest: '/manifest.webmanifest',
+  manifest: './manifest.webmanifest',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
