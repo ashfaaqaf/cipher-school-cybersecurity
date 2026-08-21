@@ -168,3 +168,4 @@
 .voiceRow.on { background: var(--accent-soft); border-color: var(--accent-line); }
 .voiceName { font-size: 13.5px; font-weight: 560; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .voiceLang { flex: none; font-size: 10.5px; letter-spacing: 0.06em; color: var(--ink-faint); text-transform: uppercase; }
+.studioTag { margin-left: 8px; padding: 2px 7px; border-radius: var(--r-full); background: var(--accent-soft); border: 1px solid var(--accent-line); color: var(--accent); font-size: 9.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }

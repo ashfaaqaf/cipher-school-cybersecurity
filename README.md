@@ -48,13 +48,41 @@ node srs.test.ts
 
 ## Narration
 
-Lessons can be read aloud using the speech voices already on your device, so it works
-offline and costs nothing to run. Voice selection is ranked towards a calm, measured,
-British-leaning narrator where one is installed, and the section being spoken is
-highlighted so your eye can follow along. Speed and voice are adjustable.
+Two engines, and the app prefers the better one it can actually use.
+
+**Studio** plays pre-generated ElevenLabs audio shipped as static files, with section
+marks taken from the API's character-level timings so highlighting and skipping work
+exactly as they do live. **Device** falls back to the speech voices already installed on
+the machine — free, offline, and available for every lesson whether or not studio audio
+was generated for it.
+
+The narrator is an original synthetic voice designed from a written brief. It is not a
+clone of any performer and no film audio was used to create it — cloning a real actor's
+voice is a copyright and personality-rights problem, not a technical one.
+
+### Generating the studio audio
+
+The API key never reaches the browser. This is a static site with no server to proxy
+through, so audio is generated ahead of time and served as ordinary files.
+
+```bash
+export ELEVENLABS_API_KEY=...
+npm run voice:design            # designs candidates, writes mp3s to .voice-drafts/
+node scripts/design-voice.mjs --keep 2
+export ELEVENLABS_VOICE_ID=...  # printed by the previous command
+npm run voice:cost              # dry run: character count and estimated cost
+npm run voice:build             # generate everything
+```
+
+Roughly 215,000 characters across the 96 lessons. Generation is incremental — a lesson is
+only regenerated when its text changes, so editing one lesson costs one lesson.
+
+Alternatively, run it without handling the key locally at all: add `ELEVENLABS_API_KEY`
+and `ELEVENLABS_VOICE_ID` as repository secrets, then run the **Generate narration**
+workflow from the Actions tab. Use its `limit` input to sample a few lessons first.
 
 On iPhone, Settings → Accessibility → Spoken Content → Voices downloads much better
-voices than the defaults. iOS stops narration when the screen locks.
+device voices than the defaults. iOS stops narration when the screen locks.
 
 ## Design notes
 

@@ -28,7 +28,7 @@ import {
 } from './curriculum';
 import { LessonQuiz, ReviewView } from './Review';
 import { deckStats, schedule, today, type Deck, type Grade } from './srs';
-import { lessonToChunks, useSpeaker } from './voice';
+import { useSpeaker } from './voice';
 
 const STORE = 'cipher-school-progress';
 const THEME = 'cipher-school-theme';
@@ -279,7 +279,7 @@ export default function Home() {
       else speaker.pause();
       return;
     }
-    speaker.play(lessonToChunks(current.lesson));
+    speaker.play(current.lesson);
   }, [current, speaker]);
 
   useEffect(() => {
@@ -851,7 +851,12 @@ export default function Home() {
                       </div>
                     </>
                   ) : (
-                    <div className="playLabel">Listen to this lesson</div>
+                    <div className="playLabel">
+                      Listen to this lesson
+                      {speaker.hasAudioFor(current.lesson.id) && speaker.preferStudio && (
+                        <span className="studioTag">studio voice</span>
+                      )}
+                    </div>
                   )}
                 </div>
                 {speaker.speaking && (
@@ -922,6 +927,26 @@ export default function Home() {
               </div>
             </div>
             <div className="sheetBody">
+              {speaker.hasStudio && (
+                <div className="readCard key">
+                  <div className="readLabel">Narrator</div>
+                  <div className="rateRow" style={{ gridAutoFlow: 'row' }}>
+                    <button
+                      className={speaker.preferStudio ? 'ratePill on' : 'ratePill'}
+                      onClick={() => speaker.setPreferStudio(true)}
+                    >
+                      Studio voice · {speaker.studioCount} lessons
+                    </button>
+                    <button
+                      className={!speaker.preferStudio ? 'ratePill on' : 'ratePill'}
+                      onClick={() => speaker.setPreferStudio(false)}
+                    >
+                      This device
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <div className="readCard key">
                 <div className="readLabel">Speed</div>
                 <div className="rateRow">
@@ -938,7 +963,7 @@ export default function Home() {
               </div>
 
               <div className="readCard">
-                <div className="readLabel">Voice</div>
+                <div className="readLabel">Device voice{speaker.hasStudio ? ' (used as fallback)' : ''}</div>
                 <div className="voiceList">
                   {speaker.voices.length === 0 && (
                     <div className="cardPrompt">
@@ -965,11 +990,14 @@ export default function Home() {
               <div className="readCard check">
                 <div className="readLabel">A note on the voice</div>
                 <div className="readText">
-                  This narrates with the voices already installed on your device, so it works offline and costs nothing.
-                  It is tuned towards a calm, measured, British-leaning narrator where one is available — tap any voice
-                  above to hear it. On iPhone, Settings → Accessibility → Spoken Content → Voices lets you download
-                  higher-quality voices, which make a genuine difference. Note that iOS stops narration when the screen
-                  locks.
+                  The studio narrator is an original synthetic voice designed from a written brief — a calm, precise
+                  British narrator. It is not a clone of any performer, and no film audio was used to make it. Studio
+                  audio is generated ahead of time and served as ordinary files, so no API key ever reaches your
+                  browser and it keeps working offline.
+                  {' '}
+                  Anything without studio audio falls back to the voices installed on this device. On iPhone, Settings →
+                  Accessibility → Spoken Content → Voices downloads much better ones. iOS stops narration when the
+                  screen locks.
                 </div>
               </div>
             </div>

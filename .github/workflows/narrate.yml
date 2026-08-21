@@ -1,0 +1,42 @@
+# Generates the studio narration and commits it. Run it from the Actions tab.
+# The API key lives in repository secrets and is never exposed to the site:
+# this job only produces audio files, which are then served as static assets.
+name: Generate narration
+
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: 'Stage number (e.g. 00). Leave blank for all lessons.'
+        required: false
+      limit:
+        description: 'Generate at most this many lessons, to sample the voice first.'
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  narrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - name: Generate
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
+        run: |
+          node scripts/narrate.mjs --dry
+          node scripts/narrate.mjs \
+            ${{ inputs.only && format('--only {0}', inputs.only) || '' }} \
+            ${{ inputs.limit && format('--limit {0}', inputs.limit) || '' }}
+      - name: Commit the audio
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/audio
+          git diff --staged --quiet || git commit -m "Add generated narration audio"
+          git push
