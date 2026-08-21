@@ -86,7 +86,10 @@ function RoleCard({
           <span className="roleRingPct">{pct}%</span>
         </div>
         <div className="roleMain">
-          <div className="roleTitle">{role.title}</div>
+          <div className="roleTitleRow">
+            <span className="roleTitle">{role.title}</span>
+            <span className={`roleLevel l${role.level.replace(' ', '')}`}>{role.level}</span>
+          </div>
           <div className="roleOrg">{role.org}</div>
           <div className="roleReady">
             {done} of {lessons.length} lessons covering this advert
@@ -161,7 +164,7 @@ export function RolesSection({
         <div className="kicker">Real adverts</div>
         <h2>Am I ready to apply?</h2>
         <p className="sectionNote">
-          Four real junior adverts — two from Sri Lanka — broken into their individual lines and mapped to the lessons
+          Six real adverts — four of them live in Colombo — broken into their individual lines and mapped to the lessons
           that cover each one. A requirements list stops being intimidating once you can read it as a checklist. Tap any
           lesson to open it.
         </p>

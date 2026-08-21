@@ -92,3 +92,13 @@
 .marketSource a { color: var(--ink-mute); }
 .marketList { margin: 12px 0 0; padding-left: 18px; }
 .marketList li { font-size: 13.5px; line-height: 1.58; color: var(--ink-soft); margin-bottom: 7px; }
+
+.roleTitleRow { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.roleLevel {
+  flex: none; padding: 2px 7px; border-radius: var(--r-full);
+  font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+  background: var(--glass-3); border: 1px solid var(--rim); color: var(--ink-mute);
+}
+.roleLevel.lINTERN { background: hsl(152 68% 46% / 0.14); border-color: hsl(152 68% 55% / 0.4); color: var(--grow); }
+.roleLevel.lJUNIOR { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+.roleLevel.lNEXTRUNG { background: hsl(38 92% 55% / 0.12); border-color: hsl(38 92% 55% / 0.34); color: var(--attend); }
