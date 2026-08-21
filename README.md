@@ -14,7 +14,7 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **104 written lessons** — not topic titles, the actual teaching
 - **393 terms decoded** in a searchable glossary, each explained without more jargon
 - **8 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research, fastest-to-hired) with stage order
-- **Real job adverts** broken into individual requirements, each mapped to the lessons covering it
+- **Four real job adverts**, two of them Sri Lankan, broken into individual requirements and mapped to the lessons covering each — plus sourced market context
 - **208 quiz questions**, two per lesson, with an explanation on every answer
 - **Spaced repetition** over all questions and terms, so what you read actually stays
 - **Narration** — listen to any lesson like an audiobook, with follow-along highlighting
@@ -39,7 +39,8 @@ ZAP, Nmap, VAPT workflow, security audits, control testing, risk registers. Stag
 covers exactly those, including how to write a finding somebody acts on and how to apply
 with no experience.
 
-The **Paths** tab holds two real junior adverts split into their individual lines. Each
+The **Paths** tab holds four real junior adverts split into their individual lines — a VAPT internship, a control
+assurance internship, a Colombo SOC analyst role and a financial-sector CSIRT role. Each
 line shows what it is actually asking for and links to the lessons that cover it, with a
 readiness percentage that moves as you complete them. It also maps CS50's Introduction to
 Cybersecurity week by week onto these stages, so you are not studying the same material

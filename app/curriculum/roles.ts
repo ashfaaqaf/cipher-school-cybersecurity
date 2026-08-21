@@ -22,6 +22,10 @@ export type Role = {
   org: string;
   place: string;
   hue: number;
+  /** Where the advert was published, so its wording can be checked against the source. */
+  source?: { name: string; href?: string; seen: string };
+  /** Pay, only where an advert or a sourced guide actually states it. */
+  pay?: string;
   /** An honest read of the role. */
   summary: string;
   /** What to show an employer, beyond a CV line. */
@@ -163,6 +167,184 @@ export const roles: Role[] = [
     ],
   },
 ];
+
+/* ------------------------------------------------------------------ *
+ * Sri Lanka. Both of these were published adverts with their duties and
+ * requirements quoted from the original listing.
+ * ------------------------------------------------------------------ */
+
+roles.push(
+  {
+    id: 'soc-analyst-l1',
+    title: 'Cyber Security Analyst — Level 1',
+    org: 'Marksmen Research · Colombo',
+    place: 'SOC monitoring, 24/7 shifts',
+    hue: 155,
+    source: { name: 'rooster.jobs', href: 'https://rooster.jobs/jobs/446912', seen: 'August 2026' },
+    summary:
+      'The classic way into the industry: watch the alerts, decide what is real, escalate what is not yours to fix. It explicitly says 0–2 years preferred but not required, which is as open a door as this field offers. Read the shift requirement carefully — nights and weekends are part of the job, not a footnote.',
+    evidence: [
+      'A detection lab: logs shipped into Wazuh or Elastic, with five rules you wrote and tested',
+      'A written triage walkthrough of one alert — hypothesis, evidence checked, conclusion, what you ruled out',
+      'An Atomic Red Team test you ran, with the alert it produced',
+    ],
+    duties: [
+      {
+        text: 'Actively monitor security alerts from SIEM platforms and analyse network activity',
+        means: 'Live in the SIEM, query it fluently, and know what normal network behaviour looks like.',
+        lessons: ['07-2', '07-6', '07-1'],
+      },
+      {
+        text: 'Conduct initial analysis to verify incidents and escalate complex cases',
+        means: 'Triage: is this real, how urgent, and is it mine to resolve or to hand on.',
+        lessons: ['07-8'],
+      },
+      {
+        text: 'Assist in containing, mitigating and resolving security incidents under supervision',
+        means: 'The response lifecycle, and why containing too early can make things worse.',
+        lessons: ['08-1'],
+      },
+      {
+        text: 'Perform preliminary investigations using open-source intelligence tools and threat feeds',
+        means: 'Enrich an indicator without tipping off the attacker, and judge feed quality.',
+        lessons: ['06-2', '07-7'],
+      },
+      {
+        text: 'Document incidents and generate detailed incident reports',
+        means: 'Write it so the next analyst — often you at 3am — can follow what you checked.',
+        lessons: ['12-5', '08-2', '11-4'],
+      },
+      {
+        text: 'Collaborate across shifts for continuous monitoring and incident handover',
+        means: 'A handover is a written artefact, not a conversation.',
+        lessons: ['07-8', '11-6'],
+      },
+    ],
+    requirements: [
+      {
+        text: '0–2 years SOC or cybersecurity experience preferred but not required',
+        means: 'An explicit invitation to apply without experience. Bring evidence instead.',
+        lessons: ['12-8'],
+      },
+      {
+        text: 'Basic understanding of networking fundamentals and cybersecurity concepts',
+        means: 'Layers, addressing, ports, and the five words that describe any security problem.',
+        lessons: ['02-1', '02-3', '02-4', '00-2', '00-3'],
+      },
+      {
+        text: 'Familiarity with SIEM systems, IDS/IPS, firewalls and antivirus solutions',
+        means: 'What each one sees, and just as importantly what each one is blind to.',
+        lessons: ['07-2', '07-6', '02-4', '07-5'],
+      },
+      {
+        text: 'Proficiency in Linux/Unix and Windows operating systems',
+        means: 'Drive both shells, find the logs, and read what is running.',
+        lessons: ['01-4', '01-5', '01-8'],
+      },
+      {
+        text: 'CompTIA Security+, CySA+ or equivalent certifications are advantageous',
+        means: 'Advantageous, not required. Certifications validate; they do not replace evidence.',
+        lessons: ['11-5'],
+      },
+      {
+        text: 'Availability for 24/7 shift work including nights, weekends and holidays',
+        means: 'A real cost worth weighing honestly. Shift work and alert fatigue are the two things that burn analysts out.',
+        lessons: ['11-7'],
+      },
+    ],
+  },
+  {
+    id: 'fincsirt-junior',
+    title: 'Junior Information Security Analyst',
+    org: 'LankaPay · FinCSIRT · Colombo',
+    place: 'Financial-sector incident response',
+    hue: 195,
+    source: { name: 'lankapay.net', href: 'https://lankapay.net/en/vacancy-details/junior-information-security-analyst', seen: 'listing closed January 2025' },
+    summary:
+      'A sector CSIRT: the team the banks call. Unusually broad for a junior role — incident response, vulnerability research, testing and awareness training in one job. That breadth is the appeal. This particular listing has closed, but FinCSIRT and roles shaped like it recur, and the requirement list is worth treating as a target.',
+    evidence: [
+      'A weekly threat brief you wrote for a sector, in plain language, over a month',
+      'An incident timeline reconstructed from a public breach report',
+      'A vulnerability write-up mapping a recent CVE to who it affects and what to do first',
+    ],
+    duties: [
+      {
+        text: 'Assist the team in responding to information security incidents',
+        means: 'Preserve evidence, establish scope, contain, and write it up defensibly.',
+        lessons: ['08-1', '08-2', '07-8'],
+      },
+      {
+        text: 'Conduct daily research on current vulnerabilities and new threats for the financial sector',
+        means: 'Triage the firehose by relevance, not novelty — CVSS, EPSS and the KEV list.',
+        lessons: ['04-6', '07-7', '11-7'],
+      },
+      {
+        text: 'Update the knowledge base and send alerts to members',
+        means: 'Technical writing for an audience that must act, not admire.',
+        lessons: ['11-4', '12-5'],
+      },
+      {
+        text: 'Assist the team in conducting Vulnerability Analysis and Penetration Testing',
+        means: 'The same VAPT loop: scope, scan, verify by hand, report, retest.',
+        lessons: ['12-1', '12-2', '12-4', '05-2'],
+      },
+      {
+        text: 'Testing, deployment and maintenance of information security systems',
+        means: 'Run the tooling as well as read its output — telemetry, hardening, backups.',
+        lessons: ['07-1', '01-8', '04-7'],
+      },
+      {
+        text: 'Assist in conducting security awareness training',
+        means: 'Short, specific and blame-free beats an annual video with a quiz.',
+        lessons: ['04-8', '11-8'],
+      },
+      {
+        text: 'Assist in research and development in emerging areas of information security',
+        means: 'Narrow questions, reproducible method, honest about what you did not prove.',
+        lessons: ['11-1', '10-8'],
+      },
+    ],
+    requirements: [
+      {
+        text: 'Bachelor’s degree in Information Security, Computer Science, Computer Engineering or equivalent',
+        means: 'A filter. "Or equivalent professional qualification" is doing real work in that sentence.',
+        lessons: [],
+      },
+      {
+        text: 'Information security certifications (CSX, CEH) advantageous',
+        means: 'Advantageous, not required — and worth choosing only once a role you want asks for one.',
+        lessons: ['11-5'],
+      },
+      {
+        text: 'Vendor certifications in systems and network administration (MCSE, CCNA, RHCE) advantageous',
+        means: 'They are really asking whether you can administer Linux, Windows and a network.',
+        lessons: ['01-4', '01-5', '02-4'],
+      },
+      {
+        text: 'Prior work experience in a similar environment (internship) preferred',
+        means: 'Preferred, not required. A documented home lab is the closest substitute and it counts.',
+        lessons: ['00-5', '12-8'],
+      },
+    ],
+  },
+);
+
+/**
+ * Market context for Sri Lanka, from a sourced careers guide rather than from
+ * any single advert. Useful for calibrating expectations before applying.
+ */
+export const marketNote = {
+  region: 'Sri Lanka',
+  source: { name: 'Ceylon Open Campus careers guide', href: 'https://www.coccampus.lk/cyber-security-career-guide-sri-lanka', seen: 'August 2026' },
+  points: [
+    'Banks and financial institutions are the largest employers, driven by Central Bank requirements for dedicated security functions — Commercial Bank, Sampath, HNB, Nations Trust and others.',
+    'Then telecommunications, BPO, insurers and the export IT firms — Virtusa, WSO2, IFS — plus the consultancies, Accenture, KPMG, PwC and Deloitte.',
+    'Entry-level roles are usually titled SOC Analyst Tier 1, IT security assistant or junior network administrator.',
+    'Most listings ask for a degree or HND in IT, computer science or cyber security, with CompTIA Security+ and CEH the certifications named most often.',
+    'Published entry-level bands run roughly LKR 50,000–80,000 a month, with SOC analyst roles around LKR 80,000–120,000, rising with two to three years and a certification.',
+    'Most vacancies are in Colombo, though remote-friendly roles for overseas clients are increasingly common.',
+  ],
+};
 
 /** Every lesson a role touches, deduplicated. */
 export function roleLessons(role: Role): string[] {

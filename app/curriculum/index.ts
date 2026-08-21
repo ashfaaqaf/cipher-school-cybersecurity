@@ -18,7 +18,7 @@ import { quizC } from './quiz-c';
 import { quizD } from './quiz-d';
 
 export type { Lesson, Stage, Word, Level, Question } from './types';
-export { roles, roleLessons, companions, type Role, type Requirement } from './roles';
+export { roles, roleLessons, companions, marketNote, type Role, type Requirement } from './roles';
 
 export const stages: Stage[] = [s00, s01, s02, s03, s04, s05, s06, s07, s08, s09, s10, s11, s12];
 

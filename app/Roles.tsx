@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type CSSProperties } from 'react';
-import { allLessons, companions, roleLessons, roles, type Requirement, type Role } from './curriculum';
+import { allLessons, companions, marketNote, roleLessons, roles, type Requirement, type Role } from './curriculum';
 
 /** Find a lesson by id so a requirement can link straight into the reader. */
 const byId = new Map(allLessons.map(({ lesson, stage }) => [lesson.id, { lesson, stage }]));
@@ -105,6 +105,20 @@ function RoleCard({
               {role.summary}
             </p>
 
+            {role.source && (
+              <div className="roleSource">
+                Advert:{' '}
+                {role.source.href ? (
+                  <a href={role.source.href} target="_blank" rel="noreferrer">
+                    {role.source.name} ↗
+                  </a>
+                ) : (
+                  role.source.name
+                )}{' '}
+                · {role.source.seen}
+              </div>
+            )}
+
             <div className="reqGroup">
               <div className="reqGroupLabel">What you would do</div>
               {role.duties.map((r) => (
@@ -147,8 +161,9 @@ export function RolesSection({
         <div className="kicker">Real adverts</div>
         <h2>Am I ready to apply?</h2>
         <p className="sectionNote">
-          Two actual junior adverts, broken into their individual lines and mapped to the lessons that cover each one.
-          A requirements list stops being intimidating once you can see it as a checklist. Tap any lesson to read it.
+          Four real junior adverts — two from Sri Lanka — broken into their individual lines and mapped to the lessons
+          that cover each one. A requirements list stops being intimidating once you can read it as a checklist. Tap any
+          lesson to open it.
         </p>
       </div>
 
@@ -158,7 +173,33 @@ export function RolesSection({
         ))}
       </div>
 
+      <article className="marketCard glass reveal">
+        <div className="marketTop">
+          <span className="marketFlag" aria-hidden="true">◉</span>
+          <div>
+            <div className="marketTitle">The {marketNote.region} market</div>
+            <div className="marketSource">
+              {marketNote.source.href ? (
+                <a href={marketNote.source.href} target="_blank" rel="noreferrer">
+                  {marketNote.source.name} ↗
+                </a>
+              ) : (
+                marketNote.source.name
+              )}{' '}
+              · {marketNote.source.seen}
+            </div>
+          </div>
+        </div>
+        <ul className="marketList">
+          {marketNote.points.map((p) => (
+            <li key={p}>{p}</li>
+          ))}
+        </ul>
+      </article>
+
       <div className="srsNote reveal" style={{ marginTop: 14 }}>
+        <b>Adverts expire; the shape does not.</b> These are real listings, quoted from their sources and dated. A
+        closed advert is still a reliable picture of what that kind of employer asks for.{' '}
         <b>Apply before you feel ready.</b> These lists describe an ideal candidate who does not exist. Around sixty
         percent coverage plus one piece of evidence you can link to puts you ahead of most of the queue — and stage 12
         exists specifically to close the practical gap those adverts name.
