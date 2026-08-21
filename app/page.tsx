@@ -11,12 +11,14 @@ import {
 } from 'react';
 import {
   allLessons,
+  cardsForLesson,
   filters,
   glossary,
   sources,
   stages,
   totalHours,
   totalLessons,
+  totalQuestions,
   totalReadMins,
   totalWeeks,
   totalWords,
@@ -24,14 +26,19 @@ import {
   type Lesson,
   type Stage,
 } from './curriculum';
+import { LessonQuiz, ReviewView } from './Review';
+import { deckStats, schedule, today, type Deck, type Grade } from './srs';
+import { lessonToChunks, useSpeaker } from './voice';
 
 const STORE = 'cipher-school-progress';
 const THEME = 'cipher-school-theme';
+const DECK = 'cipher-school-srs';
 
-type View = 'learn' | 'paths' | 'words' | 'sources';
+type View = 'learn' | 'review' | 'paths' | 'words' | 'sources';
 
 const views: { id: View; icon: string; label: string }[] = [
   { id: 'learn', icon: '◈', label: 'Learn' },
+  { id: 'review', icon: '↻', label: 'Review' },
   { id: 'paths', icon: '⇢', label: 'Paths' },
   { id: 'words', icon: '¶', label: 'Words' },
   { id: 'sources', icon: '❖', label: 'Sources' },
@@ -60,7 +67,10 @@ export default function Home() {
   const [progress, setProgress] = useState(0);
   const [popped, setPopped] = useState<string | null>(null);
   const [installOpen, setInstallOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
+  const [deck, setDeck] = useState<Deck>({});
   const dragFrom = useRef<number | null>(null);
+  const speaker = useSpeaker();
 
   /* ---------- persistence ---------- */
 
@@ -70,9 +80,34 @@ export default function Home() {
       if (saved) setCompleted(new Set(JSON.parse(saved)));
       const t = window.localStorage.getItem(THEME);
       if (t === 'day' || t === 'night') setTheme(t);
+      const d = window.localStorage.getItem(DECK);
+      if (d) setDeck(JSON.parse(d));
     } catch {
       /* progress simply starts clean when storage is unavailable */
     }
+  }, []);
+
+  /* ---------- spaced repetition ---------- */
+
+  /** A card is only in play once you have read the lesson it came from. */
+  const unlocked = useMemo(
+    () => [...completed].flatMap((lessonId) => cardsForLesson(lessonId).map((c) => c.id)),
+    [completed],
+  );
+
+  const srs = useMemo(() => deckStats(deck, unlocked, today()), [deck, unlocked]);
+
+  const gradeCard = useCallback((id: string, g: Grade) => {
+    setDeck((prev) => {
+      const next = { ...prev, [id]: schedule(prev[id], g) };
+      try {
+        window.localStorage.setItem(DECK, JSON.stringify(next));
+      } catch {
+        /* the session still works without persistence */
+      }
+      return next;
+    });
+    tap(g === 0 ? 18 : 8);
   }, []);
 
   useEffect(() => {
@@ -212,13 +247,14 @@ export default function Home() {
   }, []);
 
   const closeReader = useCallback(() => {
+    speaker.stop();
     setClosing(true);
     window.setTimeout(() => {
       setReader(null);
       setClosing(false);
       setDragY(0);
     }, 300);
-  }, []);
+  }, [speaker]);
 
   const step = useCallback(
     (dir: 1 | -1) => {
@@ -228,11 +264,23 @@ export default function Home() {
       const s = stages.findIndex((st) => st.lessons.some((x) => x.id === lesson.id));
       const l = stages[s].lessons.findIndex((x) => x.id === lesson.id);
       setDragY(0);
+      speaker.stop();
       setReader({ s, l });
       document.querySelector('.sheetBody')?.scrollTo({ top: 0 });
     },
-    [flatIndex],
+    [flatIndex, speaker],
   );
+
+  /** Read the open lesson aloud, from the top or from wherever narration stopped. */
+  const listen = useCallback(() => {
+    if (!current) return;
+    if (speaker.speaking) {
+      if (speaker.paused) speaker.resume();
+      else speaker.pause();
+      return;
+    }
+    speaker.play(lessonToChunks(current.lesson));
+  }, [current, speaker]);
 
   useEffect(() => {
     if (!reader) return;
@@ -312,6 +360,11 @@ export default function Home() {
               >
                 {theme === 'night' ? '☀' : '☾'}
               </button>
+              {speaker.supported && (
+                <button className="iconBtn" onClick={() => setVoiceOpen(true)} aria-label="Narration settings" title="Narration">
+                  ⌁
+                </button>
+              )}
               <button className="iconBtn" onClick={() => setInstallOpen(true)} aria-label="Add to iPhone" title="Add to iPhone">
                 ⌂
               </button>
@@ -601,6 +654,22 @@ export default function Home() {
           </section>
         )}
 
+        {/* ---------------- review ---------------- */}
+        {view === 'review' && (
+          <section id="review">
+            <div className="sectionHead reveal">
+              <div className="kicker">Spaced repetition</div>
+              <h2>Lock it in</h2>
+              <p className="sectionNote">
+                Reading a lesson once teaches you almost nothing. {totalQuestions} questions and {glossary.length} terms
+                come back at growing intervals — just before you would have forgotten them, which is exactly when
+                recalling something makes it permanent.
+              </p>
+            </div>
+            <ReviewView deck={deck} unlocked={unlocked} onGrade={gradeCard} speak={speaker.supported ? speaker.say : undefined} />
+          </section>
+        )}
+
         {/* ---------------- paths ---------------- */}
         {view === 'paths' && (
           <section id="paths">
@@ -726,6 +795,7 @@ export default function Home() {
           >
             <span className="dockIcon" aria-hidden="true">
               {v.icon}
+              {v.id === 'review' && srs.due > 0 && <b className="dockBadge">{srs.due > 99 ? '99+' : srs.due}</b>}
             </span>
             <span className="dockLabel">{v.label}</span>
           </button>
@@ -767,8 +837,45 @@ export default function Home() {
               </div>
             </div>
 
+            {speaker.supported && (
+              <div className={speaker.speaking ? 'player on' : 'player'}>
+                <button className="playBtn" onClick={listen} aria-label={speaker.speaking && !speaker.paused ? 'Pause' : 'Listen'}>
+                  {speaker.speaking && !speaker.paused ? '❙❙' : '▶'}
+                </button>
+                <div className="playInfo">
+                  {speaker.speaking ? (
+                    <>
+                      <div className="playLabel">{speaker.chunks[speaker.index]?.label ?? 'Reading'}</div>
+                      <div className="playTrack" aria-hidden="true">
+                        <i style={{ width: `${((speaker.index + 1) / Math.max(1, speaker.total)) * 100}%` }} />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="playLabel">Listen to this lesson</div>
+                  )}
+                </div>
+                {speaker.speaking && (
+                  <>
+                    <button className="playMini" onClick={() => speaker.jump(-1)} aria-label="Back">
+                      ↺
+                    </button>
+                    <button className="playMini" onClick={() => speaker.jump(1)} aria-label="Skip">
+                      ↻
+                    </button>
+                    <button className="playMini" onClick={speaker.stop} aria-label="Stop">
+                      ✕
+                    </button>
+                  </>
+                )}
+                <button className="playMini" onClick={() => setVoiceOpen(true)} aria-label="Voice settings">
+                  ⚙
+                </button>
+              </div>
+            )}
+
             <div className="sheetBody">
-              <LessonBody lesson={current.lesson} />
+              <LessonBody lesson={current.lesson} activeLabel={speaker.speaking ? speaker.chunks[speaker.index]?.label : undefined} />
+              <LessonQuiz lessonId={current.lesson.id} onGrade={gradeCard} />
             </div>
 
             <div className="sheetFoot">
@@ -793,6 +900,82 @@ export default function Home() {
                 aria-label="Next lesson"
               >
                 ›
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ---------------- narration settings ---------------- */}
+      {voiceOpen && (
+        <>
+          <div className="scrim" onClick={() => setVoiceOpen(false)} aria-hidden="true" />
+          <div className="sheet" role="dialog" aria-modal="true" aria-label="Narration settings">
+            <div className="grabber" onPointerDown={() => setVoiceOpen(false)}>
+              <i />
+            </div>
+            <div className="sheetHead">
+              <div className="sheetCrumb">Listen instead of reading</div>
+              <h3 className="sheetTitle">Narration</h3>
+              <div className="sheetMeta">
+                {speaker.voices.length} voice{speaker.voices.length === 1 ? '' : 's'} available on this device
+              </div>
+            </div>
+            <div className="sheetBody">
+              <div className="readCard key">
+                <div className="readLabel">Speed</div>
+                <div className="rateRow">
+                  {[0.8, 1, 1.2, 1.5, 1.8].map((r) => (
+                    <button
+                      key={r}
+                      className={Math.abs(speaker.rate - r) < 0.01 ? 'ratePill on' : 'ratePill'}
+                      onClick={() => speaker.setRate(r)}
+                    >
+                      {r}×
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="readCard">
+                <div className="readLabel">Voice</div>
+                <div className="voiceList">
+                  {speaker.voices.length === 0 && (
+                    <div className="cardPrompt">
+                      No voices reported yet. On some browsers they appear only after the first playback — press Listen
+                      once and come back.
+                    </div>
+                  )}
+                  {speaker.voices.map((v) => (
+                    <button
+                      key={v.voiceURI}
+                      className={speaker.voiceURI === v.voiceURI ? 'voiceRow on' : 'voiceRow'}
+                      onClick={() => {
+                        speaker.setVoiceURI(v.voiceURI);
+                        speaker.say('Narration set. Ready when you are.');
+                      }}
+                    >
+                      <span className="voiceName">{v.name}</span>
+                      <span className="voiceLang">{v.lang}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="readCard check">
+                <div className="readLabel">A note on the voice</div>
+                <div className="readText">
+                  This narrates with the voices already installed on your device, so it works offline and costs nothing.
+                  It is tuned towards a calm, measured, British-leaning narrator where one is available — tap any voice
+                  above to hear it. On iPhone, Settings → Accessibility → Spoken Content → Voices lets you download
+                  higher-quality voices, which make a genuine difference. Note that iOS stops narration when the screen
+                  locks.
+                </div>
+              </div>
+            </div>
+            <div className="sheetFoot">
+              <button className="btn primary" onClick={() => setVoiceOpen(false)}>
+                Done
               </button>
             </div>
           </div>
@@ -844,26 +1027,31 @@ export default function Home() {
 }
 
 /** The reading view for one lesson. Order matters: idea, comparison, detail, jargon, why, do, check. */
-function LessonBody({ lesson }: { lesson: Lesson }) {
+function LessonBody({ lesson, activeLabel }: { lesson: Lesson; activeLabel?: string }) {
+  /* While narration runs, the section being spoken is marked so the eye can follow it. */
+  const lit = (label: string) => (activeLabel === label ? ' reading' : '');
+
   return (
     <>
-      <div className="readCard key">
+      <div className={`readCard key${lit('The whole idea')}`}>
         <div className="readLabel">The whole idea</div>
         <div className="readText">{lesson.oneLine}</div>
       </div>
 
-      <div className="readCard like">
+      <div className={`readCard like${lit('Think of it like')}`}>
         <div className="readLabel">Think of it like</div>
         <div className="readText">{lesson.like}</div>
       </div>
 
       <div className="prose">
         {lesson.body.map((p, i) => (
-          <p key={i}>{p}</p>
+          <p key={i} className={activeLabel === `Explanation ${i + 1}` ? 'reading' : undefined}>
+            {p}
+          </p>
         ))}
       </div>
 
-      <div className="readCard" style={{ marginTop: 18 }}>
+      <div className={`readCard${lit('Jargon decoder')}`} style={{ marginTop: 18 }}>
         <div className="readLabel">Jargon decoder</div>
         <div className="wordList" style={{ marginTop: 8 }}>
           {lesson.words.map((w) => (
@@ -875,17 +1063,17 @@ function LessonBody({ lesson }: { lesson: Lesson }) {
         </div>
       </div>
 
-      <div className="readCard why">
+      <div className={`readCard why${lit('Why this matters')}`}>
         <div className="readLabel">Why this matters</div>
         <div className="readText">{lesson.why}</div>
       </div>
 
-      <div className="readCard do">
+      <div className={`readCard do${lit('Go and do this')}`}>
         <div className="readLabel">Go and do this</div>
         <div className="readText">{lesson.doThis}</div>
       </div>
 
-      <div className="readCard check">
+      <div className={`readCard check${lit('Check yourself')}`}>
         <div className="readLabel">Check yourself</div>
         <div className="readText">{lesson.check}</div>
       </div>

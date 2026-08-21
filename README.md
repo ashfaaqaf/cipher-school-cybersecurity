@@ -14,6 +14,9 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **96 written lessons** — not topic titles, the actual teaching
 - **369 terms decoded** in a searchable glossary, each explained without more jargon
 - **7 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research) with stage order
+- **192 quiz questions**, two per lesson, with an explanation on every answer
+- **Spaced repetition** over all questions and terms, so what you read actually stays
+- **Narration** — listen to any lesson like an audiobook, with follow-along highlighting
 - **Progress tracking** stored only in your browser — nothing is uploaded anywhere
 
 Every lesson follows the same shape, because that shape is what makes an idea stick:
@@ -27,6 +30,31 @@ Every lesson follows the same shape, because that shape is what makes an idea st
 | Why this matters | The real-world consequence |
 | Go and do this | Something to actually do today, safely |
 | Check yourself | A question you should be able to answer |
+
+## How the review system works
+
+Cards unlock as you finish lessons. Each card comes back just before you would have
+forgotten it: get it right and the gap grows — a day, six days, then weeks; get it wrong
+and it resets and returns in the same session. The scheduler is SM-2 with the two
+adjustments most implementations end up making — *hard* shrinks the interval rather than
+merely slowing its growth, and *easy* earns a bonus multiplier. Intervals are whole days
+and capped at a year.
+
+The logic lives in `app/srs.ts` and has a self-check with no test framework to install:
+
+```bash
+node srs.test.ts
+```
+
+## Narration
+
+Lessons can be read aloud using the speech voices already on your device, so it works
+offline and costs nothing to run. Voice selection is ranked towards a calm, measured,
+British-leaning narrator where one is installed, and the section being spoken is
+highlighted so your eye can follow along. Speed and voice are adjustable.
+
+On iPhone, Settings → Accessibility → Spoken Content → Voices downloads much better
+voices than the defaults. iOS stops narration when the screen locks.
 
 ## Design notes
 

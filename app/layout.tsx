@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import './study.css';
 
 const title = 'Cipher School — Master Cybersecurity';
 const description = 'Learn cybersecurity from absolute beginner to expert. 96 written lessons in plain language, a 369-word jargon decoder, seven career paths, legal labs and on-device progress.';

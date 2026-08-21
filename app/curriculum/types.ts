@@ -53,3 +53,15 @@ export type Stage = {
   lessons: Lesson[];
   resources: { label: string; href: string }[];
 };
+
+export type Question = {
+  id: string;
+  /** The lesson this question belongs to, so it unlocks with that lesson. */
+  lesson: string;
+  ask: string;
+  options: string[];
+  /** Index into options. */
+  answer: number;
+  /** Shown after answering, right or wrong. Getting it wrong is the useful moment. */
+  why: string;
+};

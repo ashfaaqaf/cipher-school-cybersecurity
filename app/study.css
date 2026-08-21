@@ -1,0 +1,170 @@
+/* Review, quizzes and narration. Kept separate from the base design system
+   because these are the study mechanics rather than the page furniture. */
+
+/* ---------- spaced repetition ---------- */
+
+.srsGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+.srsTile { padding: 13px 10px; border-radius: var(--r-md); text-align: center; }
+.srsNum { font-size: 22px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.1; }
+.srsNum.due { color: var(--accent); }
+.srsNum.known { color: var(--grow); }
+.srsLabel { margin-top: 3px; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.06em; text-transform: uppercase; }
+
+.btn.wide { width: 100%; }
+.btn.big { min-height: 54px; font-size: 16px; }
+
+.restCard { padding: 16px; border-radius: var(--r-lg); }
+.restTitle { font-size: 15px; font-weight: 650; letter-spacing: -0.02em; }
+.restText { margin: 7px 0 13px; font-size: 13.5px; line-height: 1.58; color: var(--ink-soft); }
+
+.srsNote { margin-top: 16px; padding: 14px 16px; border-radius: var(--r-md); background: var(--glass); border: 1px solid var(--rim); font-size: 13px; line-height: 1.6; color: var(--ink-mute); }
+.srsNote b { color: var(--ink-soft); font-weight: 640; }
+
+.sessionBar { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
+.sessionCount { font-size: 12px; color: var(--ink-mute); font-variant-numeric: tabular-nums; flex: none; }
+.sessionTrack { flex: 1; height: 5px; border-radius: var(--r-full); background: var(--glass-3); overflow: hidden; }
+.sessionTrack i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--grow)); transition: width var(--base) var(--sheet); }
+.sessionQuit { flex: none; min-height: 32px; padding: 0 12px; border-radius: var(--r-full); background: var(--glass-2); border: 1px solid var(--rim); color: var(--ink-mute); font-size: 12px; font-family: inherit; cursor: pointer; }
+
+/* ---------- cards ---------- */
+
+.card { padding: 18px; border-radius: var(--r-lg); animation: cardIn var(--base) var(--spring); }
+.card.inline { background: var(--glass); border: 1px solid var(--rim); margin-top: 10px; padding: 15px; border-radius: var(--r-md); animation: none; }
+@keyframes cardIn { from { opacity: 0; transform: translateY(14px) scale(0.985); } }
+
+.cardKind { font-size: 10px; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: var(--accent); }
+.cardAsk { margin-top: 8px; font-size: 17px; line-height: 1.45; font-weight: 560; letter-spacing: -0.022em; }
+.cardTerm { margin-top: 10px; font-size: 26px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.2; }
+.cardPrompt { margin-top: 8px; margin-bottom: 14px; font-size: 13.5px; color: var(--ink-mute); line-height: 1.5; }
+.cardWhy { margin-top: 12px; padding: 11px 13px; border-radius: var(--r-sm); background: var(--glass-2); border: 1px solid var(--rim); font-size: 13.5px; line-height: 1.6; color: var(--ink-soft); }
+.cardWhy.big { font-size: 15.5px; margin-bottom: 14px; }
+
+.options { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+.option {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 13px; border-radius: var(--r-md);
+  background: var(--glass); border: 1px solid var(--rim); color: var(--ink);
+  font-size: 14.5px; line-height: 1.45; font-family: inherit; text-align: left;
+  cursor: pointer;
+  transition: transform var(--fast) var(--spring), background var(--fast) var(--ease), border-color var(--fast) var(--ease), opacity var(--fast) var(--ease);
+}
+.option:not(:disabled):active { transform: scale(0.985); }
+.option:not(:disabled):hover { background: var(--glass-2); border-color: var(--accent-line); }
+.option:disabled { cursor: default; }
+.option.right { background: hsl(152 68% 46% / 0.14); border-color: hsl(152 68% 55% / 0.42); }
+.option.wrong { background: hsl(8 88% 60% / 0.12); border-color: hsl(8 88% 60% / 0.4); }
+.option.dim { opacity: 0.45; }
+
+.optionMark {
+  flex: none; width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 11px; font-weight: 700;
+  background: var(--glass-3); border: 1px solid var(--rim); color: var(--ink-mute);
+}
+.option.right .optionMark { background: var(--grow); border-color: var(--grow); color: #04160e; }
+.option.wrong .optionMark { background: var(--alert); border-color: var(--alert); color: #1a0603; }
+
+.verdict { margin-top: 14px; font-size: 13.5px; font-weight: 640; letter-spacing: -0.015em; }
+.verdict.ok { color: var(--grow); }
+.verdict.no { color: var(--attend); }
+
+.grades { display: grid; grid-auto-flow: column; gap: 7px; margin-top: 15px; }
+.grade {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-height: 50px; padding: 8px 6px; border-radius: var(--r-md);
+  background: var(--glass-2); border: 1px solid var(--rim); color: var(--ink);
+  font-size: 13px; font-weight: 620; font-family: inherit; cursor: pointer;
+  transition: transform var(--fast) var(--spring), background var(--fast) var(--ease);
+}
+.grade:active { transform: scale(0.94); }
+.grade em { font-style: normal; font-size: 10.5px; font-weight: 560; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.grade.again { border-color: hsl(8 88% 60% / 0.4); color: var(--alert); }
+.grade.hard { border-color: hsl(38 92% 55% / 0.36); color: var(--attend); }
+.grade.good { border-color: var(--accent-line); color: var(--accent); }
+.grade.easy { border-color: hsl(152 68% 55% / 0.4); color: var(--grow); }
+
+.doneCard { padding: 30px 20px; border-radius: var(--r-lg); text-align: center; }
+.doneBig { font-size: 40px; color: var(--grow); line-height: 1; }
+.doneTitle { margin-top: 12px; font-size: 19px; font-weight: 680; letter-spacing: -0.03em; }
+.doneText { margin: 8px 0 18px; font-size: 13.5px; line-height: 1.58; color: var(--ink-soft); }
+
+.quizBlock { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--rim); }
+.quizHead { display: flex; align-items: center; justify-content: space-between; }
+.quizScore { font-size: 13px; font-weight: 700; color: var(--grow); font-variant-numeric: tabular-nums; }
+
+.dockIcon { position: relative; }
+.dockBtn { min-width: 58px; padding: 7px 7px 6px; }
+.dockBadge {
+  position: absolute; top: -5px; right: -10px;
+  min-width: 16px; height: 16px; padding: 0 4px;
+  border-radius: var(--r-full);
+  background: var(--accent); color: #04070d;
+  font-size: 9.5px; font-weight: 700; line-height: 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- narration ---------- */
+
+.player {
+  flex: none; display: flex; align-items: center; gap: 10px;
+  padding: 9px 16px;
+  border-bottom: 1px solid var(--rim);
+  background: var(--glass);
+}
+.player.on { background: var(--accent-soft); }
+
+.playBtn {
+  width: 38px; height: 38px; flex: none; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 13px; color: #04070d; cursor: pointer; border: 0;
+  background: linear-gradient(140deg, var(--accent), hsl(calc(var(--hue) + 34) 88% 64%));
+  box-shadow: 0 4px 14px hsl(var(--hue) 88% 50% / 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transition: transform var(--fast) var(--spring);
+}
+.playBtn:active { transform: scale(0.9); }
+
+.playInfo { flex: 1; min-width: 0; }
+.playLabel { font-size: 12px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.playTrack { margin-top: 5px; height: 3px; border-radius: var(--r-full); background: var(--glass-3); overflow: hidden; }
+.playTrack i { display: block; height: 100%; border-radius: inherit; background: var(--accent); transition: width var(--base) var(--ease); }
+
+.playMini {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--glass-2); border: 1px solid var(--rim); color: var(--ink-mute);
+  font-size: 12px; cursor: pointer;
+  transition: transform var(--fast) var(--spring), color var(--fast) var(--ease);
+}
+.playMini:active { transform: scale(0.88); }
+.playMini:hover { color: var(--ink); }
+
+/* the section currently being spoken */
+.readCard.reading,
+.prose p.reading {
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 0 var(--accent);
+  border-radius: var(--r-sm);
+}
+.prose p.reading { padding: 10px 12px; margin-left: -12px; margin-right: -12px; color: var(--ink); }
+
+.rateRow { display: grid; grid-auto-flow: column; gap: 6px; margin-top: 10px; }
+.ratePill {
+  min-height: 40px; border-radius: var(--r-md);
+  background: var(--glass-2); border: 1px solid var(--rim); color: var(--ink-soft);
+  font-size: 13px; font-weight: 620; font-family: inherit; cursor: pointer;
+  transition: transform var(--fast) var(--spring), background var(--fast) var(--ease);
+}
+.ratePill:active { transform: scale(0.93); }
+.ratePill.on { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
+
+.voiceList { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; max-height: 260px; overflow-y: auto; }
+.voiceRow {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  min-height: 44px; padding: 9px 12px; border-radius: var(--r-sm);
+  background: var(--glass-2); border: 1px solid var(--rim); color: var(--ink);
+  font-family: inherit; text-align: left; cursor: pointer;
+  transition: background var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+.voiceRow.on { background: var(--accent-soft); border-color: var(--accent-line); }
+.voiceName { font-size: 13.5px; font-weight: 560; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.voiceLang { flex: none; font-size: 10.5px; letter-spacing: 0.06em; color: var(--ink-faint); text-transform: uppercase; }
