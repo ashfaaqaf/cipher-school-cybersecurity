@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from 'react';
 
 type Stage = {
   number: string;
@@ -187,6 +187,11 @@ export default function Home() {
   const [filter, setFilter] = useState('ALL');
   const [query, setQuery] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [installOpen, setInstallOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('roadmap');
+  const [celebrateId, setCelebrateId] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -195,7 +200,60 @@ export default function Home() {
     } catch { /* Progress simply starts clean if storage is unavailable. */ }
   }, []);
 
+  useEffect(() => {
+    const updateScroll = () => {
+      const available = document.documentElement.scrollHeight - window.innerHeight;
+      setScrolled(window.scrollY > 24);
+      setScrollProgress(available > 0 ? Math.min(100, (window.scrollY / available) * 100) : 0);
+    };
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('isVisible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    const sectionObserver = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible?.target.id) setActiveSection(visible.target.id);
+    }, { threshold: [0.16, 0.35, 0.6], rootMargin: '-18% 0px -55% 0px' });
+
+    document.documentElement.classList.add('motionReady');
+    document.querySelectorAll('[data-reveal]').forEach((element) => revealObserver.observe(element));
+    ['roadmap', 'tracks', 'protocol', 'sources'].forEach((id) => {
+      const element = document.getElementById(id);
+      if (element) sectionObserver.observe(element);
+    });
+    updateScroll();
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    return () => {
+      document.documentElement.classList.remove('motionReady');
+      window.removeEventListener('scroll', updateScroll);
+      revealObserver.disconnect();
+      sectionObserver.disconnect();
+    };
+  }, [filter, query]);
+
+  useEffect(() => {
+    if (!installOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setInstallOpen(false);
+    };
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
+  }, [installOpen]);
+
   const toggleLesson = (id: string) => {
+    if (!completed.has(id)) {
+      setCelebrateId(id);
+      window.setTimeout(() => setCelebrateId((current) => current === id ? null : current), 720);
+    }
     setCompleted((current) => {
       const next = new Set(current);
       if (next.has(id)) next.delete(id); else next.add(id);
@@ -231,9 +289,16 @@ export default function Home() {
     }
   };
 
+  const steerHero = (event: ReactPointerEvent<HTMLElement>) => {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    event.currentTarget.style.setProperty('--pointer-x', `${event.clientX - bounds.left}px`);
+    event.currentTarget.style.setProperty('--pointer-y', `${event.clientY - bounds.top}px`);
+  };
+
   return (
     <main className="appShell" id="top">
-      <nav className="topbar" aria-label="Primary navigation">
+      <div className="scrollProgress" style={{ '--scroll': `${scrollProgress}%` } as CSSProperties} aria-hidden="true" />
+      <nav className={`topbar ${scrolled ? 'topbarCompact' : ''}`} aria-label="Primary navigation">
         <a className="brand" href="#top" aria-label="Cipher School home">
           <span className="brandMark">C/</span><span>CIPHER SCHOOL</span>
         </a>
@@ -247,14 +312,19 @@ export default function Home() {
         <button className="menuButton" type="button" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label="Toggle navigation">{menuOpen ? '×' : '≡'}</button>
       </nav>
 
-      <header className="hero">
+      <header className="hero" onPointerMove={steerHero}>
+        <div className="ambientOrb orbOne" aria-hidden="true" /><div className="ambientOrb orbTwo" aria-hidden="true" />
         <div className="heroRail" aria-hidden="true"><span>CS//FIELD_MANUAL</span><span>SCROLL TO EXPLORE ↓</span></div>
         <div className="heroCopy">
+          <div className="dynamicIsland" aria-label="Field mode ready">
+            <span className="islandPulse" /><span><b>FIELD MODE</b><small>{progress}% SYNCED · {totalLessons - completed.size} SKILLS LEFT</small></span><i>⌁</i>
+          </div>
           <div className="eyebrow"><span>THE COMPLETE CYBERSECURITY FIELD GUIDE</span><span>2026 EDITION · v1.0</span></div>
           <h1>Learn the system.<br /><em>Defend the future.</em></h1>
           <p className="lede">A rigorous, zero-to-researcher map of the field. Build foundations, practice legally, choose a specialty, and prove what you know.</p>
           <div className="heroActions">
             <button className="primaryButton" type="button" onClick={jumpToMission}>START TODAY&apos;S MISSION <span>↗</span></button>
+            <button className="installButton" type="button" onClick={() => setInstallOpen(true)}><span>＋</span> ADD TO IPHONE</button>
             <a className="textLink" href="#protocol">HOW TO USE THIS GUIDE <span>↓</span></a>
           </div>
         </div>
@@ -266,7 +336,7 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="controlDeck" aria-labelledby="control-title">
+      <section className="controlDeck" aria-labelledby="control-title" data-reveal>
         <div className="sectionLabel"><span>01</span><span>MISSION CONTROL</span></div>
         <div className="controlGrid">
           <div className="progressPanel">
@@ -298,11 +368,11 @@ export default function Home() {
 
       <section className="roadmapSection" id="roadmap" aria-labelledby="roadmap-title">
         <div className="sectionLabel light"><span>02</span><span>THE FIELD MAP</span></div>
-        <div className="sectionIntro">
+        <div className="sectionIntro" data-reveal>
           <div><span className="tinyLabel">ZERO → INDEPENDENT RESEARCH</span><h2 id="roadmap-title">The whole field.<br /><em>In the right order.</em></h2></div>
           <p>Cybersecurity is not one ladder. It is a city. These stages build the shared roads first, then let you choose where to live.</p>
         </div>
-        <div className="roadmapTools">
+        <div className="roadmapTools" data-reveal>
           <label className="searchBox"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search 96 skills…" aria-label="Search curriculum" /></label>
           <div className="filterRow" aria-label="Filter roadmap">
             {filters.map((item) => <button key={item} className={filter === item ? 'active' : ''} type="button" onClick={() => setFilter(item)}>{item}</button>)}
@@ -314,7 +384,7 @@ export default function Home() {
             const stageDone = stage.lessons.filter((_, index) => completed.has(`s${stageIndex}-${index}`)).length;
             const isOpen = expanded === stageIndex;
             const lessonMatches = (lesson: string) => !query.trim() || lesson.toLowerCase().includes(query.trim().toLowerCase());
-            return <article className={`stageCard ${isOpen ? 'stageOpen' : ''}`} key={stage.number}>
+            return <article className={`stageCard ${isOpen ? 'stageOpen' : ''}`} key={stage.number} data-reveal>
               <button className="stageSummary" type="button" onClick={() => setExpanded(isOpen ? null : stageIndex)} aria-expanded={isOpen}>
                 <span className="stageNumber">{stage.number}</span>
                 <span className="stageTitle"><small>{stage.subtitle}</small><strong>{stage.title}</strong></span>
@@ -331,10 +401,12 @@ export default function Home() {
                   <div className="resourceLinks">{stage.resources.map((resource) => <a key={resource.href} href={resource.href} target="_blank" rel="noreferrer">{resource.label} ↗</a>)}</div>
                 </div>
                 <div className="lessonGrid">
-                  {stage.lessons.map((lesson, lessonIndex) => lessonMatches(lesson) && <label className={completed.has(`s${stageIndex}-${lessonIndex}`) ? 'lessonDone' : ''} key={lesson}>
+                  {stage.lessons.map((lesson, lessonIndex) => {
+                    const lessonId = `s${stageIndex}-${lessonIndex}`;
+                    return lessonMatches(lesson) && <label className={`${completed.has(lessonId) ? 'lessonDone' : ''} ${celebrateId === lessonId ? 'lessonCelebrate' : ''}`} key={lesson}>
                     <input type="checkbox" checked={completed.has(`s${stageIndex}-${lessonIndex}`)} onChange={() => toggleLesson(`s${stageIndex}-${lessonIndex}`)} />
                     <span className="customCheck">✓</span><b>{String(lessonIndex + 1).padStart(2, '0')}</b><span>{lesson}</span>
-                  </label>)}
+                  </label>;})}
                 </div>
               </div>}
             </article>;
@@ -345,12 +417,12 @@ export default function Home() {
 
       <section className="tracksSection" id="tracks" aria-labelledby="tracks-title">
         <div className="sectionLabel"><span>03</span><span>CHOOSE DEPTH</span></div>
-        <div className="sectionIntro darkIntro">
+        <div className="sectionIntro darkIntro" data-reveal>
           <div><span className="tinyLabel">SPECIALIZE AFTER THE CORE</span><h2 id="tracks-title">Pick a direction.<br /><em>Keep the map.</em></h2></div>
           <p>Complete stages 00–04, then follow the route closest to the problems you enjoy. Switching later is normal; the shared foundation travels with you.</p>
         </div>
         <div className="trackGrid">
-          {tracks.map((track, index) => <article className="trackCard" key={track.code}>
+          {tracks.map((track, index) => <article className="trackCard" key={track.code} data-reveal>
             <div><span className="trackCode">{track.code}</span><span className="trackIndex">0{index + 1}</span></div>
             <h3>{track.title}</h3><p>{track.note}</p><code>{track.path}</code>
           </article>)}
@@ -359,30 +431,30 @@ export default function Home() {
 
       <section className="protocolSection" id="protocol" aria-labelledby="protocol-title">
         <div className="sectionLabel light"><span>04</span><span>THE STUDY PROTOCOL</span></div>
-        <div className="protocolHeader">
+        <div className="protocolHeader" data-reveal>
           <div><span className="tinyLabel">THE 90-MINUTE FIELD SESSION</span><h2 id="protocol-title">Learn. Build.<br /><em>Recall. Explain.</em></h2></div>
           <div className="protocolNote"><b>ELI5 RULE</b><p>If you cannot explain it in plain language to a curious five-year-old, your model is still fuzzy. Go back to the evidence.</p></div>
         </div>
-        <div className="sessionTimeline">
+        <div className="sessionTimeline" data-reveal>
           <div><b>10</b><span>MIN</span><strong>RECALL</strong><p>Without notes, write what you remember and one question.</p></div>
           <div><b>25</b><span>MIN</span><strong>LEARN</strong><p>Use one primary source. Chase the question, not every link.</p></div>
           <div><b>45</b><span>MIN</span><strong>BUILD</strong><p>Lab, code, capture traffic, draw the system, or test a defense.</p></div>
           <div><b>10</b><span>MIN</span><strong>TEACH</strong><p>Record evidence and explain the lesson in five plain sentences.</p></div>
         </div>
-        <div className="paceGrid">
+        <div className="paceGrid" data-reveal>
           <div><span>STEADY</span><strong>5 h/week</strong><b>≈ 32 months</b><p>Best alongside school or a demanding job.</p></div>
           <div className="recommended"><span>FOCUSED</span><strong>10 h/week</strong><b>≈ 16 months</b><p>The sustainable recommendation for most learners.</p></div>
           <div><span>INTENSIVE</span><strong>15 h/week</strong><b>≈ 11 months</b><p>Only if sleep, health, and reflection remain protected.</p></div>
         </div>
       </section>
 
-      <section className="truthSection">
+      <section className="truthSection" data-reveal>
         <div className="truthMark">!</div>
         <div><span className="tinyLabel">THE OPPOSING VIEW</span><h2>You will not master<br /><em>all of cybersecurity.</em></h2></div>
         <div><p>No one does. The field changes faster than any person can absorb it. “Everything” is a useful map, but a terrible daily goal.</p><p><strong>Your real target:</strong> deep fundamentals, one valuable specialty, sound judgment, and the ability to learn unfamiliar systems safely.</p></div>
       </section>
 
-      <section className="safetySection" aria-labelledby="safety-title">
+      <section className="safetySection" aria-labelledby="safety-title" data-reveal>
         <div className="safetyCode">ROE//01</div>
         <div><span className="tinyLabel">NON-NEGOTIABLE</span><h2 id="safety-title">Permission<br />before packets.</h2></div>
         <div><p>Only test systems you own or have explicit authorization to test. Stay inside the written scope, minimize impact, protect data, stop when uncertain, and disclose through the owner&apos;s policy.</p><p className="legalNote">Law varies by country; this guide is education, not legal advice.</p><a href="https://www.cisa.gov/news-events/news/cisa-issues-final-vulnerability-disclosure-policy-directive-federal-agencies" target="_blank" rel="noreferrer">READ CISA VDP GUIDANCE ↗</a></div>
@@ -390,9 +462,9 @@ export default function Home() {
 
       <section className="sourcesSection" id="sources" aria-labelledby="sources-title">
         <div className="sectionLabel"><span>05</span><span>PRIMARY SOURCE STACK</span></div>
-        <div className="sourcesHeader"><div><span className="tinyLabel">CURRICULUM EVIDENCE</span><h2 id="sources-title">Standards over<br /><em>hot takes.</em></h2></div><p>The map is anchored in public standards, living knowledge bases, official documentation, and legal practice environments. Re-check living sources as they change.</p></div>
+        <div className="sourcesHeader" data-reveal><div><span className="tinyLabel">CURRICULUM EVIDENCE</span><h2 id="sources-title">Standards over<br /><em>hot takes.</em></h2></div><p>The map is anchored in public standards, living knowledge bases, official documentation, and legal practice environments. Re-check living sources as they change.</p></div>
         <div className="sourceGrid">
-          {sources.map((source, index) => <a href={source.href} target="_blank" rel="noreferrer" className="sourceCard" key={source.name}>
+          {sources.map((source, index) => <a href={source.href} target="_blank" rel="noreferrer" className="sourceCard" key={source.name} data-reveal>
             <div><span>{String(index + 1).padStart(2, '0')}</span><i>{source.kind}</i></div><h3>{source.name}</h3><p>{source.why}</p><b>OPEN SOURCE ↗</b>
           </a>)}
         </div>
@@ -405,8 +477,23 @@ export default function Home() {
       </footer>
 
       <nav className="mobileDock" aria-label="Mobile navigation">
-        <a href="#roadmap"><span>⌘</span>MAP</a><a href="#tracks"><span>◇</span>TRACKS</a><button type="button" onClick={jumpToMission}><span>↗</span>MISSION</button><a href="#protocol"><span>◷</span>STUDY</a>
+        <a className={activeSection === 'roadmap' ? 'dockActive' : ''} href="#roadmap"><span>⌘</span>MAP</a><a className={activeSection === 'tracks' ? 'dockActive' : ''} href="#tracks"><span>◇</span>TRACKS</a><button type="button" onClick={jumpToMission}><span>↗</span>MISSION</button><a className={activeSection === 'protocol' || activeSection === 'sources' ? 'dockActive' : ''} href="#protocol"><span>◷</span>STUDY</a>
       </nav>
+
+      {installOpen && <div className="sheetBackdrop" role="presentation" onPointerDown={() => setInstallOpen(false)}>
+        <section className="installSheet" role="dialog" aria-modal="true" aria-labelledby="install-title" onPointerDown={(event) => event.stopPropagation()}>
+          <div className="sheetHandle" aria-hidden="true" />
+          <div className="installHeading"><span className="installIcon">C/</span><div><small>IPHONE FIELD KIT</small><h2 id="install-title">Carry Cipher School.</h2></div></div>
+          <p className="installLead">Turn this site into a full-screen web app. Your checked lessons remain stored on this iPhone.</p>
+          <ol className="installSteps">
+            <li><span>1</span><div><b>Open in Safari</b><small>Use Apple&apos;s browser on your iPhone.</small></div></li>
+            <li><span>2</span><div><b>Tap Share</b><small>Find the Share button in Safari.</small></div></li>
+            <li><span>3</span><div><b>Add to Home Screen</b><small>Enable “Open as Web App,” then tap Add.</small></div></li>
+          </ol>
+          <a className="appleGuide" href="https://support.apple.com/guide/iphone/iphea86e5236/ios" target="_blank" rel="noreferrer">OFFICIAL APPLE INSTRUCTIONS ↗</a>
+          <button className="sheetDone" type="button" onClick={() => setInstallOpen(false)}>GOT IT</button>
+        </section>
+      </div>}
     </main>
   );
 }
