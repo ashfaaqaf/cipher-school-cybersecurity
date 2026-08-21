@@ -1,0 +1,46 @@
+import type { Metadata, Viewport } from 'next';
+import './globals.css';
+
+const title = 'Cipher School — Master Cybersecurity';
+const description = 'A complete, mission-based path from cybersecurity beginner to independent researcher—with 96 skills, legal labs, progress tracking, and seven career tracks.';
+const siteUrl = 'https://cipher-school-cybersecurity.ashfaaqaf.chatgpt.site';
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title,
+  description,
+  applicationName: 'Cipher School',
+  manifest: '/manifest.webmanifest',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Cipher School',
+  },
+  formatDetection: { telephone: false },
+  alternates: { canonical: siteUrl },
+  openGraph: {
+    type: 'website',
+    url: siteUrl,
+    title,
+    description,
+    images: [{ url: `${siteUrl}/og.png`, width: 1200, height: 630, alt: 'Cipher School — Learn the system. Defend the future.' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title,
+    description,
+    images: [`${siteUrl}/og.png`],
+  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#070b12',
+  colorScheme: 'dark',
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="en"><body>{children}</body></html>;
+}
