@@ -102,3 +102,6 @@
 .roleLevel.lINTERN { background: hsl(152 68% 46% / 0.14); border-color: hsl(152 68% 55% / 0.4); color: var(--grow); }
 .roleLevel.lJUNIOR { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
 .roleLevel.lNEXTRUNG { background: hsl(38 92% 55% / 0.12); border-color: hsl(38 92% 55% / 0.34); color: var(--attend); }
+/* Deliberately understated: this rung is years away, so it should not compete
+   with the reachable ones for attention. */
+.roleLevel.lSENIOR { background: var(--glass-2); border-color: var(--rim); color: var(--ink-mute); }

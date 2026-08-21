@@ -164,7 +164,7 @@ export function RolesSection({
         <div className="kicker">Real adverts</div>
         <h2>Am I ready to apply?</h2>
         <p className="sectionNote">
-          Six real adverts — four of them live in Colombo — broken into their individual lines and mapped to the lessons
+          Nine real adverts, all but one from Sri Lanka, broken into their individual lines and mapped to the lessons
           that cover each one. A requirements list stops being intimidating once you can read it as a checklist. Tap any
           lesson to open it.
         </p>
@@ -205,7 +205,8 @@ export function RolesSection({
         closed advert is still a reliable picture of what that kind of employer asks for.{' '}
         <b>Apply before you feel ready.</b> These lists describe an ideal candidate who does not exist. Around sixty
         percent coverage plus one piece of evidence you can link to puts you ahead of most of the queue — and stage 12
-        exists specifically to close the practical gap those adverts name.
+        exists specifically to close the practical gap those adverts name. The roles further down are years away on purpose —
+        they show where each path leads, and how much of what a senior advert asks for is still stages 01, 02 and 04.
       </div>
     </>
   );

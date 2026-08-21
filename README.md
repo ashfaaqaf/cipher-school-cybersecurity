@@ -14,7 +14,7 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **104 written lessons** — not topic titles, the actual teaching
 - **393 terms decoded** in a searchable glossary, each explained without more jargon
 - **8 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research, fastest-to-hired) with stage order
-- **Six real job adverts**, four of them live in Colombo, broken into individual requirements and mapped to the lessons covering each — plus sourced market context
+- **Nine real job adverts**, all but one Sri Lankan, broken into individual requirements and mapped to the lessons covering each — plus sourced market context
 - **208 quiz questions**, two per lesson, with an explanation on every answer
 - **Spaced repetition** over all questions and terms, so what you read actually stays
 - **Narration** — listen to any lesson like an audiobook, with follow-along highlighting
@@ -39,9 +39,11 @@ ZAP, Nmap, VAPT workflow, security audits, control testing, risk registers. Stag
 covers exactly those, including how to write a finding somebody acts on and how to apply
 with no experience.
 
-The **Paths** tab holds six real adverts split into their individual lines, sorted by how reachable they are: three
-internships, two junior roles and one "next rung" role to show where a path leads. Every one carries its source and
-the date it was seen, because listings expire and the wording should be checkable against the original. Each
+The **Paths** tab holds nine real adverts split into their individual lines, sorted by how reachable they are: three
+internships, two junior roles, three a few years out and one senior role. The distant ones are there deliberately —
+they show where each path leads, and how much of what an eight-year advert asks for is still stages 01, 02 and 04.
+Every advert carries its source and the date it was seen, because listings expire and the wording should be
+checkable against the original. Each
 line shows what it is actually asking for and links to the lessons that cover it, with a
 readiness percentage that moves as you complete them. It also maps CS50's Introduction to
 Cybersecurity week by week onto these stages, so you are not studying the same material

@@ -27,7 +27,7 @@ export type Role = {
   /** Pay, only where an advert or a sourced guide actually states it. */
   pay?: string;
   /** How far off this role is right now — the honest sort order. */
-  level: 'INTERN' | 'JUNIOR' | 'NEXT RUNG';
+  level: 'INTERN' | 'JUNIOR' | 'NEXT RUNG' | 'SENIOR';
   /** An honest read of the role. */
   summary: string;
   /** What to show an employer, beyond a CV line. */
@@ -497,8 +497,226 @@ export const marketNote = {
   ],
 };
 
+/*
+ * The rest of what ITPro.lk currently lists under security. All are years away,
+ * and they are here for one reason: to show where each path actually leads, and
+ * what the ladder above an internship is made of.
+ */
+roles.push(
+  {
+    id: 'jit-network-security',
+    title: 'Network & IT Security Professional',
+    org: 'JIT Resourcing & Consultancy · Colombo',
+    place: 'Infrastructure and network security · 3+ years · fully onsite',
+    hue: 185,
+    level: 'NEXT RUNG',
+    source: { name: 'itpro.lk', href: 'https://itpro.lk/job/14689/network-it-security-professional-at-jit-resourcing-consultancy-services/', seen: 'August 2026' },
+    summary:
+      'The infrastructure route, and it looks nothing like the others — no Burp, no SIEM, no OWASP. It is routers, firewalls, VPNs, Active Directory and keeping things running when they break. Banking experience is preferred, which tells you who hires for this. If stage 02 was the part you enjoyed most, this is the shape of that career.',
+    evidence: [
+      'A segmented home network with VLANs, documented, and a note on what each rule permits and why',
+      'A VPN you configured yourself between two lab machines, with the handshake captured',
+      'A written disaster recovery plan for your own lab, including a tested restore',
+    ],
+    duties: [
+      {
+        text: 'Strong knowledge of IPSec, VPNs, internet connectivity and network security',
+        means: 'Encrypted tunnels, what they do and do not protect, and how traffic actually routes.',
+        lessons: ['02-8', '02-4', '04-3'],
+      },
+      {
+        text: 'Experience managing routers, switches, firewalls, Active Directory and NAS',
+        means: 'The devices themselves — plus AD, which is the crown jewel of any corporate network.',
+        lessons: ['02-2', '02-4', '01-5', '06-6'],
+      },
+      {
+        text: 'Experience in disaster recovery and business continuity planning',
+        means: 'RPO, RTO, and backups that have actually been restored rather than assumed.',
+        lessons: ['04-7', '08-8'],
+      },
+      {
+        text: 'Vendor management and technical documentation experience',
+        means: 'Writing it down, and judging what a supplier is really responsible for.',
+        lessons: ['11-4', '05-7'],
+      },
+    ],
+    requirements: [
+      {
+        text: '3+ years of experience in network and infrastructure administration',
+        means: 'The gap. Note it asks for administration experience, not security experience.',
+        lessons: [],
+      },
+      {
+        text: 'Exposure to load balancers and high availability infrastructure',
+        means: 'Availability is one of the three promises, and this is how it is actually built.',
+        lessons: ['04-7', '00-2'],
+      },
+      {
+        text: 'Infrastructure troubleshooting and firmware upgrades',
+        means: 'Layered thinking to isolate a fault, and why firmware is its own security problem.',
+        lessons: ['02-1', '10-4'],
+      },
+      {
+        text: 'Banking or financial services experience highly preferred',
+        means: 'Sri Lankan security hiring is concentrated in banking. Worth knowing before you specialise.',
+        lessons: [],
+      },
+    ],
+  },
+  {
+    id: 'cms-infosec-engineer',
+    title: 'Information Security Engineer',
+    org: 'CMS (Pvt) Ltd · remote',
+    place: 'Cloud security operations · 5+ years',
+    hue: 200,
+    level: 'NEXT RUNG',
+    source: { name: 'itpro.lk', href: 'https://itpro.lk/job/14800/information-security-engineer-at-cms-pvt-ltd/', seen: 'August 2026' },
+    summary:
+      'Where the cloud and detection paths converge, and a useful warning about tool names. It lists Rapid7, Wiz, Orca, Sophos, Bitdefender and Defender — but underneath, every one is vulnerability management, cloud posture or endpoint telemetry. Learn the category and the product becomes a week of onboarding. Chase the product names and you will always be behind.',
+    evidence: [
+      'A cloud account with posture checking enabled and a written note on each finding it raised',
+      'A detection rule you wrote, tested with Atomic Red Team, and tuned',
+      'A Python or PowerShell script that pulls from a security API and produces a report',
+    ],
+    duties: [
+      {
+        text: 'Monitor and investigate security alerts and incidents using SIEM/MDR platforms',
+        means: 'Query fluently, triage honestly, and know what the platform cannot see.',
+        lessons: ['07-2', '07-8'],
+      },
+      {
+        text: 'Manage vulnerability scanning, risk prioritisation and remediation',
+        means: 'Rank by exposure and exploitation, not by the severity number alone.',
+        lessons: ['04-6', '12-1'],
+      },
+      {
+        text: 'Monitor security across AWS multi-account environments using IAM, CloudTrail and posture tools',
+        means: 'The control plane is the crime scene, and least privilege is the whole game.',
+        lessons: ['09-1', '09-2', '09-4'],
+      },
+      {
+        text: 'Monitor Microsoft 365 and Entra ID security, including privileged access, authentication and MFA events',
+        means: 'Identity telemetry — where business email compromise is visible and nothing else is.',
+        lessons: ['04-2', '07-5', '08-5'],
+      },
+      {
+        text: 'Develop and maintain security detection rules, alerts, integrations and automation',
+        means: 'Detection as code: behaviour over indicators, tested rather than assumed.',
+        lessons: ['07-4', '07-3'],
+      },
+      {
+        text: 'Support cloud, Kubernetes, CI/CD and application security initiatives',
+        means: 'Container and cluster defaults, pipeline hardening, and secure design.',
+        lessons: ['09-5', '09-6', '09-7', '05-8'],
+      },
+      {
+        text: 'Automate security operations and reporting using PowerShell, Python, REST APIs and AWS CLI',
+        means: 'The automation stage, applied. This is why stage 03 exists.',
+        lessons: ['03-1', '03-3', '03-8'],
+      },
+      {
+        text: 'Support SOX audits, security documentation, evidence collection and incident response',
+        means: 'Even deeply technical roles come back to evidence and writing.',
+        lessons: ['12-6', '08-1', '12-5'],
+      },
+    ],
+    requirements: [
+      {
+        text: '5+ years in information security, security operations or systems administration',
+        means: 'The gap. Note that systems administration counts — the route in is not only through security roles.',
+        lessons: [],
+      },
+      {
+        text: 'Hands-on experience with SIEM/MDR, vulnerability management, endpoint security and incident response',
+        means: 'Four categories, not four products.',
+        lessons: ['07-2', '04-6', '07-5', '08-1'],
+      },
+      {
+        text: 'Proficiency with Windows, Linux, networking, firewalls and identity management',
+        means: 'The foundations, still being asked for at five years in.',
+        lessons: ['01-4', '01-5', '02-4', '04-2'],
+      },
+      {
+        text: 'Strong knowledge of AWS security, Microsoft 365, Entra ID, IAM and cloud security',
+        means: 'Shared responsibility, cloud identity, keys and posture management.',
+        lessons: ['09-1', '09-2', '09-3'],
+      },
+      {
+        text: 'Familiarity with GitHub, GitLab, Jira, CI/CD and application security',
+        means: 'Treat the pipeline as production, and never let a secret reach a commit.',
+        lessons: ['03-8', '09-7', '05-8'],
+      },
+    ],
+  },
+  {
+    id: 'wia-senior-l3',
+    title: 'Senior Cybersecurity Engineer (L3)',
+    org: 'WIA Systems Inc · remote from Sri Lanka',
+    place: 'Microsoft security stack · 8+ years',
+    hue: 230,
+    level: 'SENIOR',
+    source: { name: 'itpro.lk', href: 'https://itpro.lk/job/14700/senior-cybersecurity-engineer-l3-at-wia-systems-inc/', seen: 'August 2026' },
+    summary:
+      'Eight years away, and included deliberately: this is the destination of the blue-team path, and it is remote from Sri Lanka, which matters. Read what it asks for — Sentinel, Defender, Entra ID, threat hunting, zero trust, NIST. Every one of those is a stage in this course. Nothing on that list is unreachable; it is just further along.',
+    evidence: [
+      'A detection lab with rules mapped to ATT&CK techniques and tested against them',
+      'A documented threat hunt: hypothesis, query, result, and the rule it produced',
+      'An incident write-up with a defensible timeline someone else could reproduce',
+    ],
+    duties: [
+      {
+        text: 'Monitor and respond to security alerts using SIEM, XDR and EDR platforms',
+        means: 'The same triage discipline as the Level 1 role, with the authority to act on it.',
+        lessons: ['07-2', '07-5', '07-8'],
+      },
+      {
+        text: 'Investigate security incidents, perform threat hunting and root-cause analysis',
+        means: 'Hunting starts from a hypothesis, not an alert, and ends in a new detection.',
+        lessons: ['07-8', '08-1', '08-3'],
+      },
+      {
+        text: 'Manage Entra ID, MFA, Conditional Access and single sign-on',
+        means: 'Identity is the perimeter, and phishing-resistant factors are the control that matters.',
+        lessons: ['04-2'],
+      },
+      {
+        text: 'Support and lead incident response, containment and recovery',
+        means: 'The full lifecycle, including the part where you rebuild rather than restore.',
+        lessons: ['08-1', '08-8'],
+      },
+      {
+        text: 'Implement Zero Trust security principles',
+        means: 'Verify every request rather than trusting network location. An architecture, not a product.',
+        lessons: ['04-4'],
+      },
+    ],
+    requirements: [
+      {
+        text: '8+ years of cybersecurity experience',
+        means: 'A long way off — which is exactly why it is worth seeing now.',
+        lessons: [],
+      },
+      {
+        text: 'Strong networking, Windows Server and Azure knowledge',
+        means: 'Stages 01, 02 and 09, still the foundation eight years in.',
+        lessons: ['02-1', '01-5', '09-1'],
+      },
+      {
+        text: 'Understanding of Zero Trust and NIST frameworks',
+        means: 'The six CSF functions and the discipline of removing implicit trust.',
+        lessons: ['00-8', '04-4'],
+      },
+      {
+        text: 'Preferred: Microsoft Cybersecurity Architect Expert, Security Operations Analyst, CISSP',
+        means: 'Certifications named at senior level, where they genuinely do carry weight.',
+        lessons: ['11-5'],
+      },
+    ],
+  },
+);
+
 /** Reachable roles first, so the list opens on what you could apply to now. */
-const ORDER: Record<Role['level'], number> = { INTERN: 0, JUNIOR: 1, 'NEXT RUNG': 2 };
+const ORDER: Record<Role['level'], number> = { INTERN: 0, JUNIOR: 1, 'NEXT RUNG': 2, SENIOR: 3 };
 roles.sort((a, b) => ORDER[a.level] - ORDER[b.level]);
 
 /** Every lesson a role touches, deduplicated. */
