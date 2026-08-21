@@ -10,11 +10,12 @@ words a beginner can follow, with the jargon decoded as it appears.
 
 ## What is in it
 
-- **12 stages**, beginner through expert, in the order they should be learned
-- **96 written lessons** — not topic titles, the actual teaching
-- **369 terms decoded** in a searchable glossary, each explained without more jargon
-- **7 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research) with stage order
-- **192 quiz questions**, two per lesson, with an explanation on every answer
+- **13 stages**, beginner through expert, in the order they should be learned
+- **104 written lessons** — not topic titles, the actual teaching
+- **393 terms decoded** in a searchable glossary, each explained without more jargon
+- **8 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research, fastest-to-hired) with stage order
+- **Real job adverts** broken into individual requirements, each mapped to the lessons covering it
+- **208 quiz questions**, two per lesson, with an explanation on every answer
 - **Spaced repetition** over all questions and terms, so what you read actually stays
 - **Narration** — listen to any lesson like an audiobook, with follow-along highlighting
 - **Progress tracking** stored only in your browser — nothing is uploaded anywhere
@@ -30,6 +31,19 @@ Every lesson follows the same shape, because that shape is what makes an idea st
 | Why this matters | The real-world consequence |
 | Go and do this | Something to actually do today, safely |
 | Check yourself | A question you should be able to answer |
+
+## Stage 12 and the job mapping
+
+Junior adverts name specific tools and tasks that most curricula skip: Burp Suite, OWASP
+ZAP, Nmap, VAPT workflow, security audits, control testing, risk registers. Stage 12
+covers exactly those, including how to write a finding somebody acts on and how to apply
+with no experience.
+
+The **Paths** tab holds two real junior adverts split into their individual lines. Each
+line shows what it is actually asking for and links to the lessons that cover it, with a
+readiness percentage that moves as you complete them. It also maps CS50's Introduction to
+Cybersecurity week by week onto these stages, so you are not studying the same material
+twice.
 
 ## How the review system works
 
@@ -59,6 +73,14 @@ was generated for it.
 The narrator is an original synthetic voice designed from a written brief. It is not a
 clone of any performer and no film audio was used to create it — cloning a real actor's
 voice is a copyright and personality-rights problem, not a technical one.
+
+### Pronunciation
+
+Narration text is rewritten before it reaches either engine, because prose written for the
+eye reads badly aloud: `SSRF` gets spelled out, `chmod 755` becomes "ch mod 7 5 5",
+`/var/log` becomes "slash var slash log", `NIST` stays a word while `CVSS` becomes letters.
+The same rules run in the browser and in the generation script, so both engines pronounce
+identically. `node pronounce.test.ts` checks the rule ordering.
 
 ### Generating the studio audio
 

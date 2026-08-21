@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Lesson } from './curriculum';
+import { forSpeech } from './pronounce';
 
 /**
  * Narration has two engines and prefers the better one it can actually use.
@@ -26,9 +27,12 @@ type Manifest = {
   lessons: Record<string, { file: string; dur: number; marks: Mark[] }>;
 };
 
-/** Must stay identical to lessonToChunks in scripts/voice-lib.mjs, or the marks drift. */
+/**
+ * Must stay identical to lessonToChunks in scripts/voice-lib.mjs, or the marks drift.
+ * Text is rewritten for speech here, so both engines pronounce the same way.
+ */
 export function lessonToChunks(lesson: Lesson): Chunk[] {
-  return [
+  const raw: Chunk[] = [
     { label: 'Title', text: lesson.title },
     { label: 'The whole idea', text: lesson.oneLine },
     { label: 'Think of it like', text: lesson.like },
@@ -38,6 +42,7 @@ export function lessonToChunks(lesson: Lesson): Chunk[] {
     { label: 'Go and do this', text: lesson.doThis },
     { label: 'Check yourself', text: lesson.check },
   ];
+  return raw.map((c) => ({ ...c, text: forSpeech(c.text) }));
 }
 
 /**

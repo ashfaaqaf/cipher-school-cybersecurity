@@ -27,6 +27,7 @@ import {
   type Stage,
 } from './curriculum';
 import { LessonQuiz, ReviewView } from './Review';
+import { CompanionSection, RolesSection } from './Roles';
 import { deckStats, schedule, today, type Deck, type Grade } from './srs';
 import { useSpeaker } from './voice';
 
@@ -269,6 +270,18 @@ export default function Home() {
       document.querySelector('.sheetBody')?.scrollTo({ top: 0 });
     },
     [flatIndex, speaker],
+  );
+
+  /** Jump straight to a lesson by id — the role requirement chips use this. */
+  const openById = useCallback(
+    (lessonId: string) => {
+      const si = stages.findIndex((st) => st.lessons.some((x) => x.id === lessonId));
+      if (si === -1) return;
+      const li = stages[si].lessons.findIndex((x) => x.id === lessonId);
+      setOpenStage(si);
+      openReader(si, li);
+    },
+    [openReader],
   );
 
   /** Read the open lesson aloud, from the top or from wherever narration stopped. */
@@ -673,9 +686,11 @@ export default function Home() {
         {/* ---------------- paths ---------------- */}
         {view === 'paths' && (
           <section id="paths">
-            <div className="sectionHead reveal">
+            <RolesSection completed={completed} onOpen={openById} />
+
+            <div className="sectionHead reveal" style={{ marginTop: 40 }}>
               <div className="kicker">Career paths</div>
-              <h2>Seven ways through</h2>
+              <h2>Eight ways through</h2>
               <p className="sectionNote">
                 Security is not one job. These are the real role families and the stage order that gets you to each one.
                 Stage 00 is compulsory for all of them.
@@ -693,6 +708,8 @@ export default function Home() {
                 </article>
               ))}
             </div>
+
+            <CompanionSection />
           </section>
         )}
 

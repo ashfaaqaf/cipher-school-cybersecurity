@@ -12,6 +12,7 @@ import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
+import { forSpeech } from '../app/pronounce.ts';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const AUDIO_DIR = path.join(ROOT, 'public', 'audio');
@@ -66,9 +67,13 @@ export async function loadLessons() {
   return stages.flatMap((stage) => stage.lessons.map((lesson) => ({ stage: stage.number, lesson })));
 }
 
-/** Must stay identical to lessonToChunks in app/voice.ts, or the marks drift. */
+/**
+ * Must stay identical to lessonToChunks in app/voice.ts, or the marks drift.
+ * The same speech rewriting is applied, so generated audio and the device voice
+ * pronounce every acronym, path and identifier the same way.
+ */
 export function lessonToChunks(lesson) {
-  return [
+  const raw = [
     { label: 'Title', text: lesson.title },
     { label: 'The whole idea', text: lesson.oneLine },
     { label: 'Think of it like', text: lesson.like },
@@ -78,6 +83,7 @@ export function lessonToChunks(lesson) {
     { label: 'Go and do this', text: lesson.doThis },
     { label: 'Check yourself', text: lesson.check },
   ];
+  return raw.map((c) => ({ ...c, text: forSpeech(c.text) }));
 }
 
 /**

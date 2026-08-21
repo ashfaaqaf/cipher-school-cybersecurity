@@ -11,15 +11,18 @@ import { s08 } from './s08';
 import { s09 } from './s09';
 import { s10 } from './s10';
 import { s11 } from './s11';
+import { s12 } from './s12';
 import { quizA } from './quiz-a';
 import { quizB } from './quiz-b';
 import { quizC } from './quiz-c';
+import { quizD } from './quiz-d';
 
 export type { Lesson, Stage, Word, Level, Question } from './types';
+export { roles, roleLessons, companions, type Role, type Requirement } from './roles';
 
-export const stages: Stage[] = [s00, s01, s02, s03, s04, s05, s06, s07, s08, s09, s10, s11];
+export const stages: Stage[] = [s00, s01, s02, s03, s04, s05, s06, s07, s08, s09, s10, s11, s12];
 
-export const filters = ['ALL', 'FOUNDATIONS', 'BUILD', 'OFFENSE', 'DEFENSE', 'CLOUD', 'RESEARCH', 'LEADERSHIP'];
+export const filters = ['ALL', 'FOUNDATIONS', 'BUILD', 'OFFENSE', 'DEFENSE', 'CLOUD', 'RESEARCH', 'LEADERSHIP', 'CAREER'];
 
 export const tracks = [
   {
@@ -65,6 +68,13 @@ export const tracks = [
     hue: 45,
   },
   {
+    code: 'INTERN',
+    title: 'Fastest route to a junior role',
+    path: '00 → 02 → 05 → 12 → 04 → 06 → 09',
+    note: 'Pick this if you want to be employable soon. Stage 12 is the tools and audit work junior adverts actually name.',
+    hue: 95,
+  },
+  {
     code: 'RESEARCH',
     title: 'Vulnerability researcher',
     path: '00 → 01 → 02 → 03 → 05 → 06 → 08 → 10 → 11',
@@ -86,6 +96,7 @@ export const sources = [
   { name: 'NIST SP 800-61r3', kind: 'INCIDENTS', href: 'https://csrc.nist.gov/pubs/sp/800/61/r3/final', why: 'Incident response guidance realigned to CSF 2.0 in 2025.' },
   { name: 'NIST SSDF 800-218', kind: 'DEVSECOPS', href: 'https://csrc.nist.gov/pubs/sp/800/218/final', why: 'Secure software practices across the development lifecycle.' },
   { name: 'Kubernetes checklist', kind: 'CLOUD', href: 'https://kubernetes.io/docs/concepts/security/security-checklist/', why: 'The official baseline for cluster security decisions.' },
+  { name: 'CS50 Cybersecurity', kind: 'COURSE', href: 'https://cs50.harvard.edu/cybersecurity/', why: 'Harvard’s free five-lecture introduction, mapped stage by stage under Paths.' },
   { name: 'MITRE ATLAS', kind: 'AI', href: 'https://atlas.mitre.org/', why: 'Adversarial techniques against AI-enabled systems.' },
   { name: 'CISA KEV catalogue', kind: 'VULNS', href: 'https://www.cisa.gov/known-exploited-vulnerabilities-catalog', why: 'What is actually being exploited right now — better than severity alone.' },
   { name: 'CVSS v4.0', kind: 'VULNS', href: 'https://www.first.org/cvss/v4.0/', why: 'The standard way to communicate vulnerability severity.' },
@@ -117,7 +128,7 @@ export const glossary = [
   ).values(),
 ].sort((a, b) => a.term.localeCompare(b.term));
 
-export const questions: Question[] = [...quizA, ...quizB, ...quizC];
+export const questions: Question[] = [...quizA, ...quizB, ...quizC, ...quizD];
 
 export const questionsByLesson = new Map<string, Question[]>();
 for (const q of questions) {
