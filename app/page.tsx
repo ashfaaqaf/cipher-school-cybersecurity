@@ -1051,7 +1051,7 @@ export default function Home() {
 
         {/* ---------------- review ---------------- */}
         {view === 'review' && (
-          <section id="review">
+          <section id="review" className="band">
             <div className="sectionHead reveal">
               <div className="kicker">Spaced repetition</div>
               <h2>Lock it in</h2>
@@ -1069,7 +1069,7 @@ export default function Home() {
 
         {/* ---------------- paths ---------------- */}
         {view === 'paths' && (
-          <section id="paths">
+          <section id="paths" className="band">
             <RolesSection completed={completed} onOpen={openById} />
 
             <div className="sectionHead reveal" style={{ marginTop: 40 }}>
@@ -1099,7 +1099,7 @@ export default function Home() {
 
         {/* ---------------- glossary ---------------- */}
         {view === 'words' && (
-          <section id="words">
+          <section id="words" className="band">
             <div className="sectionHead reveal">
               <div className="kicker">Jargon decoder</div>
               <h2>{glossary.length} words, in human</h2>
@@ -1142,7 +1142,7 @@ export default function Home() {
 
         {/* ---------------- sources ---------------- */}
         {view === 'sources' && (
-          <section id="sources">
+          <section id="sources" className="band">
             <div className="sectionHead reveal">
               <div className="kicker">Where this comes from</div>
               <h2>Primary sources</h2>

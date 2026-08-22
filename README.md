@@ -203,6 +203,13 @@ concentric radii — so hierarchy reads through depth rather than borders. Motio
 spring curves, sheets are drag-to-dismiss, and everything collapses gracefully under
 `prefers-reduced-motion`. Text passes WCAG AA contrast in both the dark and light themes.
 
+The page is not a column on a black field. The background is a mesh of large soft
+gradients plus a fine grain, so it has depth at any width; sections paint full-bleed bands
+behind a readable measure, so a long scroll has rhythm; and above 2000px the whole design
+scales rather than just the column — type, spacing, controls and the nav rail grow
+together, and the extra room goes into more columns. A 4K screen gets a bigger version of
+the same page, not the same page with a desert either side.
+
 Built phone-first and installable to the Home Screen, then widened out. Above 1024px the
 bottom dock becomes a floating vertical rail, the hero splits into two columns, card grids
 go multi-column, and the lesson reader stops being a bottom sheet and becomes a centred

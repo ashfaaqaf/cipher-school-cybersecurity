@@ -113,7 +113,13 @@ body {
   line-height: 1.6;
   letter-spacing: -0.011em;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /*
+   * clip rather than hidden: the full-bleed section bands are 100vw wide, and
+   * 100vw counts the scrollbar, so on a desktop with a classic scrollbar they
+   * overhang by its width. overflow-x: hidden makes body a scroll container and
+   * the overhang still lands in documentElement.scrollWidth; clip does not.
+   */
+  overflow-x: clip;
   transition: background var(--base) var(--ease), color var(--base) var(--ease);
 }
 

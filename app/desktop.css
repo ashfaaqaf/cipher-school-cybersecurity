@@ -53,7 +53,7 @@
 
   /* ---------- header ---------- */
 
-  .topbar { margin: 0 -40px 0 calc((var(--rail) + 40px) * -1); padding: 14px 40px 12px calc(var(--rail) + 40px); }
+  .topbar { margin: 0 -48px 0 calc((var(--rail) + 48px) * -1); padding: 14px 48px 12px calc(var(--rail) + 48px); }
   .topRow { max-width: var(--maxw); margin: 0 auto; }
   .island { max-width: var(--maxw); margin: 10px auto 0; }
   .brandName { font-size: 16px; }
@@ -166,11 +166,7 @@
   .grid { background-size: 72px 72px; }
 }
 
-/* Very wide screens: stop the column growing, let the margins take the space. */
-@media (min-width: 1600px) {
-  :root { --maxw: 1200px; }
-  .shell { padding-left: calc(var(--rail) + 80px); padding-right: 80px; }
-}
+/* Widths above this are handled in shell.css, which owns the measure. */
 
 /*
  * Scroll-linked parallax on the ambient orbs. --scroll is set by the existing
