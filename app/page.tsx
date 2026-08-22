@@ -30,6 +30,7 @@ import { LessonQuiz, ReviewView } from './Review';
 import { CompanionSection, RolesSection } from './Roles';
 import { deckStats, schedule, today, type Deck, type Grade } from './srs';
 import { useSpeaker } from './voice';
+import { applyBackup, downloadBackup, type RestoreResult } from './backup';
 
 const STORE = 'cipher-school-progress';
 const THEME = 'cipher-school-theme';
@@ -70,7 +71,12 @@ export default function Home() {
   const [installOpen, setInstallOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [deck, setDeck] = useState<Deck>({});
+  const [offlineReady, setOfflineReady] = useState(false);
+  const [updateReady, setUpdateReady] = useState(false);
+  const [restore, setRestore] = useState<RestoreResult | null>(null);
   const dragFrom = useRef<number | null>(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const waitingRef = useRef<ServiceWorker | null>(null);
   const speaker = useSpeaker();
 
   /* ---------- persistence ---------- */
@@ -143,6 +149,82 @@ export default function Home() {
       save(next);
     },
     [completed, save],
+  );
+
+  /* ---------- offline ---------- */
+
+  useEffect(() => {
+    if (!('serviceWorker' in navigator) || window.location.protocol === 'http:' && window.location.hostname !== 'localhost') return;
+
+    let cancelled = false;
+    navigator.serviceWorker
+      .register('sw.js')
+      .then((reg) => {
+        if (cancelled) return;
+        if (navigator.serviceWorker.controller) setOfflineReady(true);
+
+        /* A worker already waiting means a newer build is sitting there. */
+        if (reg.waiting) {
+          waitingRef.current = reg.waiting;
+          setUpdateReady(true);
+        }
+
+        reg.addEventListener('updatefound', () => {
+          const next = reg.installing;
+          if (!next) return;
+          next.addEventListener('statechange', () => {
+            if (next.state !== 'installed') return;
+            if (navigator.serviceWorker.controller) {
+              waitingRef.current = next;
+              setUpdateReady(true);
+            } else {
+              setOfflineReady(true);
+            }
+          });
+        });
+      })
+      .catch(() => {
+        /* offline support is an enhancement; the app works without it */
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const applyUpdate = useCallback(() => {
+    waitingRef.current?.postMessage('skip-waiting');
+    /* The new worker takes control, then the page reloads onto the new build. */
+    navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload(), { once: true });
+    setUpdateReady(false);
+  }, []);
+
+  /* ---------- backup ---------- */
+
+  const onExport = useCallback(() => {
+    const b = downloadBackup();
+    setRestore({ ok: true, lessons: b.summary.lessons, cards: b.summary.cards, skipped: [] });
+    tap();
+  }, []);
+
+  const onImportFile = useCallback(
+    async (file: File) => {
+      const result = applyBackup(await file.text());
+      setRestore(result);
+      if (result.ok) {
+        /* Re-read from storage rather than trusting local state to match. */
+        try {
+          setCompleted(new Set(JSON.parse(window.localStorage.getItem(STORE) ?? '[]')));
+          setDeck(JSON.parse(window.localStorage.getItem(DECK) ?? '{}'));
+          const t = window.localStorage.getItem(THEME);
+          if (t === 'day' || t === 'night') setTheme(t);
+        } catch {
+          /* the restore already succeeded; a read-back failure is cosmetic */
+        }
+        tap(16);
+      }
+    },
+    [],
   );
 
   /* ---------- scroll chrome ---------- */
@@ -484,6 +566,36 @@ export default function Home() {
               <p>
                 {doneCount} of {totalLessons} lessons · saved on this device only, nothing is uploaded anywhere.
               </p>
+              <div className="dataRow">
+                <button className="dataBtn" onClick={onExport}>
+                  ↓ Back up
+                </button>
+                <button className="dataBtn" onClick={() => fileRef.current?.click()}>
+                  ↑ Restore
+                </button>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="application/json,.json"
+                  className="sr"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) void onImportFile(f);
+                    e.target.value = '';
+                  }}
+                />
+              </div>
+              {restore && (
+                <p className={restore.ok ? 'dataNote ok' : 'dataNote bad'}>
+                  {restore.ok
+                    ? `Saved — ${restore.lessons} lesson${restore.lessons === 1 ? '' : 's'}, ${
+                        restore.cards
+                      } review card${restore.cards === 1 ? '' : 's'}.${
+                        restore.skipped.length ? ` Skipped: ${restore.skipped.join('; ')}.` : ''
+                      }`
+                    : restore.error}
+                </p>
+              )}
             </div>
           </div>
           </div>
@@ -808,6 +920,16 @@ export default function Home() {
         )}
       </div>
 
+      {/* ---------------- new build available ---------------- */}
+      {updateReady && (
+        <div className="updateBar glass" role="status">
+          <span className="updateText">A newer version of the course is ready.</span>
+          <button className="updateBtn" onClick={applyUpdate}>
+            Refresh
+          </button>
+        </div>
+      )}
+
       {/* ---------------- dock ---------------- */}
       <nav className="dock" aria-label="Sections">
         {views.map((v) => (
@@ -1058,6 +1180,15 @@ export default function Home() {
                 <div className="readLabel">Android</div>
                 <div className="readText">In Chrome, open the menu and choose Add to Home screen.</div>
               </div>
+              <div className={offlineReady ? 'readCard do' : 'readCard'}>
+                <div className="readLabel">Offline</div>
+                <div className="readText">
+                  {offlineReady
+                    ? 'Saved for offline use. Every lesson, question and term works with no signal — on a bus, on a plane, anywhere.'
+                    : 'Caching in the background. Once it finishes, the whole course works with no connection at all.'}
+                </div>
+              </div>
+
               <div className="readCard">
                 <div className="readLabel">Desktop</div>
                 <div className="readText">

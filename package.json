@@ -7,13 +7,13 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node scripts/make-sw.mjs",
     "start": "npx serve out",
     "lint": "eslint .",
     "voice:design": "node scripts/design-voice.mjs",
     "voice:cost": "node scripts/narrate.mjs --dry",
     "voice:build": "node scripts/narrate.mjs",
-    "test": "node srs.test.ts"
+    "test": "node srs.test.ts && node pronounce.test.ts && node backup.test.ts"
   },
   "dependencies": {
     "next": "16.2.6",

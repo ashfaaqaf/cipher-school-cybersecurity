@@ -169,3 +169,43 @@
 .voiceName { font-size: 13.5px; font-weight: 560; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .voiceLang { flex: none; font-size: 10.5px; letter-spacing: 0.06em; color: var(--ink-faint); text-transform: uppercase; }
 .studioTag { margin-left: 8px; padding: 2px 7px; border-radius: var(--r-full); background: var(--accent-soft); border: 1px solid var(--accent-line); color: var(--accent); font-size: 9.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
+
+/* ---------- backup and offline ---------- */
+
+.dataRow { display: flex; gap: 7px; margin-top: 11px; }
+.dataBtn {
+  min-height: 34px; padding: 0 13px; border-radius: var(--r-full);
+  background: var(--glass-2); border: 1px solid var(--rim); color: var(--ink-soft);
+  font-size: 12.5px; font-weight: 600; font-family: inherit; cursor: pointer;
+  transition: transform var(--fast) var(--spring), color var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+.dataBtn:active { transform: scale(0.94); }
+.dataBtn:hover { color: var(--accent); border-color: var(--accent-line); }
+
+.dataNote { margin: 9px 0 0; font-size: 12.5px; line-height: 1.5; }
+.dataNote.ok { color: var(--grow); }
+.dataNote.bad { color: var(--attend); }
+
+.updateBar {
+  position: fixed; z-index: 46;
+  left: 50%; transform: translateX(-50%);
+  bottom: calc(var(--dock-h) + 18px);
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px 10px 16px;
+  border-radius: var(--r-full);
+  max-width: calc(100vw - 24px);
+  animation: updateIn var(--slow) var(--spring);
+}
+@keyframes updateIn { from { opacity: 0; transform: translate(-50%, 16px); } }
+.updateText { font-size: 12.5px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.updateBtn {
+  flex: none; min-height: 34px; padding: 0 15px; border-radius: var(--r-full);
+  border: 0; cursor: pointer; font-family: inherit; font-size: 12.5px; font-weight: 650;
+  color: #04070d; background: linear-gradient(140deg, var(--accent), hsl(calc(var(--hue) + 34) 88% 64%));
+}
+.updateBtn:active { transform: scale(0.94); }
+
+@media (min-width: 1024px) {
+  .updateBar { bottom: 24px; left: auto; right: 32px; transform: none; }
+  @keyframes updateIn { from { opacity: 0; transform: translateY(16px); } }
+}
