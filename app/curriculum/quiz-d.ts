@@ -232,4 +232,28 @@ export const quizD: Question[] = [
     answer: 0,
     why: 'Scenario questions test your process. Two good clarifying questions demonstrate the habit the job actually requires; jumping to a tool name is weaker even when the tool is right.',
   },
+  {
+    id: '12-11-a', lesson: '12-11',
+    ask: 'You are asked your expected salary before you know the role well. What is the strongest move?',
+    options: [
+      'Ask what range they have budgeted, and give a number only if they insist',
+      'Give your ideal figure so they know you value yourself',
+      'State what you earned previously so the offer is fair',
+      'Say you are flexible and will accept whatever is standard',
+    ],
+    answer: 0,
+    why: 'Whoever names a number first sets the frame. About half the time they will answer, and then you are negotiating inside their range instead of against your own guess.',
+  },
+  {
+    id: '12-11-b', lesson: '12-11',
+    ask: 'For an internship with a fixed stipend and no room on pay, what is worth negotiating instead?',
+    options: [
+      'Conversion terms, study leave, exam fees, remote days and what you get to work on',
+      'Nothing — accept the terms as offered',
+      'A signing bonus to make up the difference',
+      'A shorter notice period',
+    ],
+    answer: 0,
+    why: 'Pushing hard on money can cost you an internship place. Everything around it is usually flexible, and a paid certification or a written conversion path is worth more than a small stipend increase.',
+  },
 ];
