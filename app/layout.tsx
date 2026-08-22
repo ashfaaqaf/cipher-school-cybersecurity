@@ -23,6 +23,15 @@ export const metadata: Metadata = {
     title: 'Cipher School',
   },
   formatDetection: { telephone: false },
+  keywords: [
+    'cybersecurity course', 'learn cybersecurity', 'security fundamentals', 'OWASP Top 10',
+    'MITRE ATT&CK', 'penetration testing', 'SOC analyst', 'VAPT', 'Burp Suite', 'Nmap',
+    'security internship', 'Sri Lanka cybersecurity jobs', 'spaced repetition',
+  ],
+  authors: [{ name: 'Ashfaaq Ahamed' }],
+  creator: 'Ashfaaq Ahamed',
+  category: 'education',
+  robots: { index: true, follow: true },
   alternates: { canonical: siteUrl },
   openGraph: {
     type: 'website',

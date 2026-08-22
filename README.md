@@ -56,6 +56,24 @@ readiness percentage that moves as you complete them. It also maps CS50's Introd
 Cybersecurity week by week onto these stages, so you are not studying the same material
 twice.
 
+## URLs, offline pages and accessibility
+
+Lessons live at hash routes — `#/lesson/05-2` — so one can be bookmarked, shared or
+reached with the back button. Hash rather than path because this is a static export:
+a real path would 404 on refresh unless every lesson got its own prerendered page.
+Bad or hand-edited hashes fall back to the course rather than breaking, which
+`node routing.test.ts` checks against a list of malformed inputs including traversal
+attempts.
+
+Dialogs trap focus while open and restore it on close. A modal you can Tab out of is only
+a modal visually: a keyboard or screen reader user lands behind it in content meant to be
+inert, with no sign anything is open. There is also a skip link, a `main` landmark, and a
+polite live region on the status capsule.
+
+An error boundary catches a render failure rather than replacing the app with a blank
+page — which on a Home Screen install would look permanent — and says plainly that
+progress is untouched, because it is.
+
 ## Keyboard
 
 `/` searches, `1`–`5` switch tabs, `j` and `k` move between lessons while reading, `Space`

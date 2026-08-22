@@ -36,6 +36,8 @@ import { WeekReview } from './Week';
 import { buildCorpus, searchIn } from './search';
 import { PrintSheet } from './Print';
 import { SHORTCUTS, actionFor, isTyping } from './keys';
+import { useFocusTrap } from './a11y';
+import { DEFAULT_ROUTE, hashFor, parseHash, sameRoute, type Route } from './routing';
 import {
   CARD_MINS,
   DEFAULT_SETTINGS,
@@ -97,6 +99,10 @@ export default function Home() {
   const [printing, setPrinting] = useState<Stage | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement | null>(null);
+  const readerRef = useRef<HTMLDivElement | null>(null);
+  const helpRef = useRef<HTMLDivElement | null>(null);
+  const voiceRef = useRef<HTMLDivElement | null>(null);
+  const installRef = useRef<HTMLDivElement | null>(null);
   const [history, setHistory] = useState<History>({});
   const [planSettings, setPlanSettings] = useState<PlanSettings>(DEFAULT_SETTINGS);
   const dragFrom = useRef<number | null>(null);
@@ -297,6 +303,50 @@ export default function Home() {
     },
     [],
   );
+
+  useFocusTrap(readerRef, reader !== null);
+  useFocusTrap(helpRef, helpOpen);
+  useFocusTrap(voiceRef, voiceOpen);
+  useFocusTrap(installRef, installOpen);
+
+  /* ---------- url ---------- */
+
+  /*
+   * Hash routing, so a lesson can be bookmarked and shared and the back button
+   * does something sensible. Reading the hash is the only source of truth on
+   * load; after that the app writes to it.
+   */
+  const applyRoute = useCallback((route: Route) => {
+    setView(route.view);
+    if (!route.lessonId) {
+      /* No lesson in the URL means no lesson open — otherwise pressing back
+         out of a lesson clears the address bar and leaves the reader sitting
+         there, which reads as the back button being broken. */
+      setReader(null);
+      return;
+    }
+    const si = stages.findIndex((st) => st.lessons.some((x) => x.id === route.lessonId));
+    if (si === -1) return;
+    setOpenStage(si);
+    setReader({ s: si, l: stages[si].lessons.findIndex((x) => x.id === route.lessonId) });
+  }, []);
+
+  useEffect(() => {
+    applyRoute(parseHash(window.location.hash));
+    const onHash = () => applyRoute(parseHash(window.location.hash));
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, [applyRoute]);
+
+  /* Write the current state back, replacing rather than pushing so the back
+     button leaves the app instead of walking every lesson you opened. */
+  useEffect(() => {
+    const lessonId = reader ? stages[reader.s].lessons[reader.l].id : null;
+    const next: Route = { view, lessonId };
+    if (sameRoute(next, parseHash(window.location.hash))) return;
+    const url = `${window.location.pathname}${window.location.search}${hashFor(next)}`;
+    window.history.replaceState(null, '', url || window.location.pathname);
+  }, [view, reader]);
 
   /* ---------- print ---------- */
 
@@ -592,6 +642,10 @@ export default function Home() {
         </defs>
       </svg>
 
+      <a className="skip" href="#main">
+        Skip to content
+      </a>
+
       <div className="shell">
         {/* ---------------- top bar ---------------- */}
         <header className={stuck ? 'topbar stuck' : 'topbar'}>
@@ -626,7 +680,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="island">
+          <div className="island" role="status" aria-live="polite">
             <span className="pulse" aria-hidden="true" />
             <div className="islandText">
               {doneCount === 0 ? (
@@ -650,6 +704,7 @@ export default function Home() {
         </header>
 
         {/* ---------------- hero ---------------- */}
+        <main id="main">
         <section className="hero">
           <div className="heroCopy">
           <span className="eyebrow">◆ Everything, in plain language</span>
@@ -1075,11 +1130,11 @@ export default function Home() {
                 </div>
               )}
               {visibleWords.map((w) => (
-                <div key={w.term} className="glossItem reveal">
+                <button key={w.term} className="glossItem reveal" onClick={() => openById(w.lessonId)}>
                   <div className="glossTerm">{w.term}</div>
                   <div className="glossMeans">{w.means}</div>
-                  <div className="glossStage">Stage {w.stage}</div>
-                </div>
+                  <div className="glossStage">Stage {w.stage} · read the lesson →</div>
+                </button>
               ))}
             </div>
           </section>
@@ -1128,6 +1183,7 @@ export default function Home() {
             </footer>
           </section>
         )}
+        </main>
       </div>
 
       {/* ---------------- new build available ---------------- */}
@@ -1163,6 +1219,7 @@ export default function Home() {
         <>
           <div className={closing ? 'scrim out' : 'scrim'} onClick={closeReader} aria-hidden="true" />
           <div
+            ref={readerRef}
             className={closing ? 'sheet out' : 'sheet'}
             style={{
               '--hue': String(current.stage.hue),
@@ -1271,7 +1328,7 @@ export default function Home() {
       {voiceOpen && (
         <>
           <div className="scrim" onClick={() => setVoiceOpen(false)} aria-hidden="true" />
-          <div className="sheet" role="dialog" aria-modal="true" aria-label="Narration settings">
+          <div ref={voiceRef} className="sheet" role="dialog" aria-modal="true" aria-label="Narration settings">
             <div className="grabber" onPointerDown={() => setVoiceOpen(false)}>
               <i />
             </div>
@@ -1370,7 +1427,7 @@ export default function Home() {
       {helpOpen && (
         <>
           <div className="scrim" onClick={() => setHelpOpen(false)} aria-hidden="true" />
-          <div className="sheet" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+          <div ref={helpRef} className="sheet" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
             <div className="grabber" onPointerDown={() => setHelpOpen(false)}>
               <i />
             </div>
@@ -1416,7 +1473,7 @@ export default function Home() {
       {installOpen && (
         <>
           <div className="scrim" onClick={() => setInstallOpen(false)} aria-hidden="true" />
-          <div className="sheet" role="dialog" aria-modal="true" aria-label="Add to iPhone">
+          <div ref={installRef} className="sheet" role="dialog" aria-modal="true" aria-label="Add to iPhone">
             <div className="grabber" onPointerDown={() => setInstallOpen(false)}>
               <i />
             </div>

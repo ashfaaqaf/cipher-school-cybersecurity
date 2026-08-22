@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ashfaaqaf.github.io/cipher-school-cybersecurity/sitemap.xml
