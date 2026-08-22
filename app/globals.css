@@ -101,7 +101,20 @@
 
 * { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /*
+   * The clip has to live here, not on body. When html is overflow:visible the
+   * browser propagates body's overflow to the viewport and body itself reverts
+   * to visible, so a clip set only on body does nothing — which is why the
+   * full-bleed bands still overhung by the scrollbar width.
+   *
+   * clip rather than hidden because clip does not create a scroll container,
+   * so position: sticky keeps working on the header.
+   */
+  overflow-x: clip;
+}
 
 body {
   margin: 0;
