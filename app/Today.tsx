@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { allLessons } from './curriculum';
 import {
   buildPlan,
@@ -43,7 +43,13 @@ export function TodayCard({
   onReview: () => void;
 }) {
   const [tuning, setTuning] = useState(false);
-  const today = dayKey();
+  /*
+   * Deliberately not known during the first render. This page is prerendered
+   * to static HTML at build time and served for weeks, so anything derived
+   * from "today" would be baked in wrong and mismatch on hydration.
+   */
+  const [today, setToday] = useState('');
+  useEffect(() => setToday(dayKey()), []);
 
   const budgetMins = dailyBudget(settings);
   const streak = computeStreak(history, today);
@@ -124,14 +130,14 @@ export function TodayCard({
       )}
 
       <div className="weekStrip">
-        {weekWindow(today).map((k, i) => {
-          const r = history[k];
+        {(today ? weekWindow(today) : ['', '', '', '', '', '', '']).map((k, i) => {
+          const r = k ? history[k] : undefined;
           const hit = r && (r.lessons > 0 || r.cards > 0);
-          const label = WEEKDAY[new Date(`${k}T00:00:00`).getDay()];
+          const label = k ? WEEKDAY[new Date(`${k}T00:00:00`).getDay()] : '\u00a0';
           return (
-            <span key={k} className={`weekDot${hit ? ' hit' : ''}${k === today ? ' now' : ''}`} title={k}>
+            <span key={k || i} className={`weekDot${hit ? ' hit' : ''}${k && k === today ? ' now' : ''}`} title={k}>
               <i />
-              <em>{i === 6 ? '·' : label}</em>
+              <em>{k && i === 6 ? '·' : label}</em>
             </span>
           );
         })}

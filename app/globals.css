@@ -454,7 +454,7 @@ h1 em { font-style: normal; color: var(--accent); }
 .ring .ringTrack { stroke: var(--glass-3); }
 .ring .fill { stroke: url(#ringGrad); transition: stroke-dashoffset var(--slow) var(--sheet); }
 .ringPct { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: -0.03em; }
-.ringInfo h3 { margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
+.ringInfo h2, .ringInfo .ringTitle { margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
 .ringInfo p { margin: 0; font-size: 13px; color: var(--ink-mute); line-height: 1.45; }
 
 /* ---------- section headers ---------- */

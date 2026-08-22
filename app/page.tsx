@@ -91,6 +91,13 @@ export default function Home() {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [view, setView] = useState<View>('learn');
   const [openStage, setOpenStage] = useState<number | null>(0);
+  /*
+   * Which stages have ever been opened. A closed stage renders its heading and
+   * nothing else: rendering all 110 lesson rows up front put 1300 elements on
+   * the page and made hydration pay for twelve stages nobody had opened. Once a
+   * stage has been opened its rows stay mounted, so closing it still animates.
+   */
+  const [everOpen, setEverOpen] = useState<Set<number>>(() => new Set([0]));
   const [reader, setReader] = useState<{ s: number; l: number } | null>(null);
   const [closing, setClosing] = useState(false);
   const [dragY, setDragY] = useState(0);
@@ -836,7 +843,7 @@ export default function Home() {
               <div className="ringPct">{pct}%</div>
             </div>
             <div className="ringInfo">
-              <h3>Your progress</h3>
+              <h2 className="ringTitle">Your progress</h2>
               <p>
                 {doneCount} of {totalLessons} lessons · saved on this device only, nothing is uploaded anywhere.
               </p>
@@ -851,6 +858,7 @@ export default function Home() {
                   ref={fileRef}
                   type="file"
                   accept="application/json,.json"
+                  aria-label="Choose a progress backup file to restore"
                   className="sr"
                   onChange={(e) => {
                     const f = e.target.files?.[0];
@@ -987,6 +995,7 @@ export default function Home() {
                       className="stageBtn"
                       onClick={() => {
                         setOpenStage(open ? null : idx);
+                        if (!open) setEverOpen((prev) => (prev.has(idx) ? prev : new Set(prev).add(idx)));
                         tap();
                       }}
                       aria-expanded={open}
@@ -1021,6 +1030,7 @@ export default function Home() {
 
                     <div className="stageBody">
                       <div className="stageBodyInner">
+                        {everOpen.has(idx) && (
                         <div className="stagePad">
                           <p className="plain">
                             <b>In plain words: </b>
@@ -1096,6 +1106,7 @@ export default function Home() {
                             </button>
                           </div>
                         </div>
+                        )}
                       </div>
                     </div>
                   </article>
