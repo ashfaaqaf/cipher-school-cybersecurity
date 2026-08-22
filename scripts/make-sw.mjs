@@ -63,8 +63,7 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE)
       // One failed asset must not fail the whole install, so they are added
       // individually rather than with addAll.
-      .then((cache) => Promise.all(PRECACHE.map((url) => cache.add(url).catch(() => {}))))
-      .then(() => self.skipWaiting()),
+      .then((cache) => Promise.all(PRECACHE.map((url) => cache.add(url).catch(() => {})))),
   );
 });
 
@@ -87,17 +86,26 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  // Navigations: try the network so a new deploy is picked up, fall back to the
-  // cached start page when offline. This is what makes the app open on a train.
+  // Navigations: answer from the cache immediately and refresh it in the
+  // background. Network-first meant every repeat visit — including every launch
+  // of the installed app — waited on a round trip for a document it already
+  // had, which on a slow connection is the difference between instant and
+  // several seconds. A new build is picked up by the revalidation and announced
+  // by the update banner rather than by making everyone wait for it.
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(START, copy)).catch(() => {});
-          return res;
-        })
-        .catch(() => caches.match(START).then((hit) => hit || caches.match(request))),
+      caches.match(START).then((hit) => {
+        const fresh = fetch(request)
+          .then((res) => {
+            if (res.ok) {
+              const copy = res.clone();
+              caches.open(CACHE).then((c) => c.put(START, copy)).catch(() => {});
+            }
+            return res;
+          })
+          .catch(() => hit || caches.match(request));
+        return hit || fresh;
+      }),
     );
     return;
   }

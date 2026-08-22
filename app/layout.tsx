@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import localFont from 'next/font/local';
 import './globals.css';
 import './study.css';
 import './roles.css';
@@ -7,6 +8,30 @@ import './find.css';
 import './desktop.css';
 import './print.css';
 import './shell.css';
+
+/*
+ * Declared through next/font rather than a hand-written @font-face so the build
+ * emits a <link rel="preload"> for each file. Without it the browser cannot
+ * discover a font until it has downloaded and parsed the stylesheet that
+ * mentions it, which is a whole round trip of reading the page in Segoe UI
+ * before it flips. adjustFontFallback derives a size-adjusted local fallback
+ * from the metrics, so that flip no longer moves the text either.
+ */
+const sans = localFont({
+  src: './fonts/inter.woff2',
+  weight: '100 900',
+  display: 'swap',
+  variable: '--font-sans',
+  adjustFontFallback: 'Arial',
+});
+
+const mono = localFont({
+  src: './fonts/jetbrains-mono.woff2',
+  weight: '100 800',
+  display: 'swap',
+  variable: '--font-mono',
+  adjustFontFallback: false,
+});
 
 const title = 'Cipher School — Master Cybersecurity';
 const description = 'Learn cybersecurity from absolute beginner to expert. 110 written lessons in plain language, a 414-word jargon decoder, eight career paths, legal labs and on-device progress.';
@@ -65,5 +90,9 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body>{children}</body></html>;
+  return (
+    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
+      <body>{children}</body>
+    </html>
+  );
 }

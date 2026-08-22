@@ -2,6 +2,7 @@
 
 import {
   useCallback,
+  useDeferredValue,
   useEffect,
   useMemo,
   useRef,
@@ -84,10 +85,16 @@ export default function Home() {
   const [closing, setClosing] = useState(false);
   const [dragY, setDragY] = useState(0);
   const [query, setQuery] = useState('');
+  /*
+   * Searching scans every word of all 110 lessons, which is a few milliseconds
+   * on a laptop and rather more on a phone. Deferring it means the keystroke
+   * paints immediately and the results land a frame later, rather than every
+   * character waiting on the scan and the re-render behind it.
+   */
+  const search = useDeferredValue(query);
   const [filter, setFilter] = useState('ALL');
   const [theme, setTheme] = useState<'night' | 'day'>('night');
-  const [stuck, setStuck] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const headerRef = useRef<HTMLElement | null>(null);
   const [popped, setPopped] = useState<string | null>(null);
   const [installOpen, setInstallOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
@@ -368,24 +375,50 @@ export default function Home() {
 
   /* ---------- scroll chrome ---------- */
 
+  /*
+   * Scroll drives two pieces of chrome: the header hairline and the reading
+   * progress bar. Both used to be React state, which meant a setState pair on
+   * every animation frame of every scroll — a full re-render of the whole app,
+   * 13 stages and 110 lesson rows, sixty times a second, to move one bar two
+   * pixels. They are written straight to the DOM now: one class toggle and one
+   * custom property, no render, and the bar is transformed by the compositor.
+   */
   useEffect(() => {
     let frame = 0;
+    let wasStuck = false;
+    /*
+     * The scrollable span is measured on resize rather than inside the frame.
+     * Reading scrollHeight forces the browser to flush layout, and doing that
+     * on every frame of a scroll is the classic way to make one janky.
+     */
+    let span = 0;
+    const measure = () => {
+      span = document.body.scrollHeight - window.innerHeight;
+    };
     const onScroll = () => {
       if (frame) return;
       frame = window.requestAnimationFrame(() => {
         frame = 0;
         const y = window.scrollY;
-        setStuck(y > 12);
-        const span = document.body.scrollHeight - window.innerHeight;
-        setProgress(span > 0 ? Math.min(1, y / span) : 0);
-        /* Drives the ambient parallax in CSS — one property write per frame. */
-        document.documentElement.style.setProperty('--scroll', String(Math.min(3, y / window.innerHeight)));
+        const isStuck = y > 12;
+        if (isStuck !== wasStuck) {
+          wasStuck = isStuck;
+          headerRef.current?.classList.toggle('stuck', isStuck);
+        }
+        document.documentElement.style.setProperty('--progress', span > 0 ? String(Math.min(1, y / span)) : '0');
       });
     };
+    /* The page grows and shrinks as stages open, so watch the document too. */
+    const ro = new ResizeObserver(measure);
+    ro.observe(document.body);
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', measure, { passive: true });
+    measure();
     onScroll();
     return () => {
+      ro.disconnect();
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', measure);
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
@@ -476,7 +509,7 @@ export default function Home() {
     );
     nodes.forEach((n) => io.observe(n));
     return () => io.disconnect();
-  }, [view, openStage, query, filter]);
+  }, [view, openStage, search, filter]);
 
   /* ---------- body lock while a sheet is open ---------- */
 
@@ -492,7 +525,7 @@ export default function Home() {
   const pct = Math.round((doneCount / totalLessons) * 100);
 
   const visibleStages = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = search.trim().toLowerCase();
     return stages.filter((stage) => {
       if (filter !== 'ALL' && !stage.tags.includes(filter)) return false;
       if (!q) return true;
@@ -508,16 +541,16 @@ export default function Home() {
         )
       );
     });
-  }, [query, filter]);
+  }, [search, filter]);
 
   /** Full-text hits, used instead of the stage list whenever there is a query. */
-  const hits = useMemo(() => (view === 'learn' ? searchIn(CORPUS, query) : []), [query, view]);
+  const hits = useMemo(() => (view === 'learn' ? searchIn(CORPUS, search) : []), [search, view]);
 
   const visibleWords = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = search.trim().toLowerCase();
     if (!q) return glossary;
     return glossary.filter((w) => w.term.toLowerCase().includes(q) || w.means.toLowerCase().includes(q));
-  }, [query]);
+  }, [search]);
 
   const stageDone = useCallback(
     (stage: Stage) => stage.lessons.filter((l) => completed.has(l.id)).length,
@@ -642,7 +675,7 @@ export default function Home() {
 
       <div className="shell">
         {/* ---------------- top bar ---------------- */}
-        <header className={stuck ? 'topbar stuck' : 'topbar'}>
+        <header className="topbar" ref={headerRef}>
           <div className="topRow">
             <div className="brand">
               <div className="mark">CS</div>
@@ -693,7 +726,7 @@ export default function Home() {
           </div>
 
           <div className="progressLine" aria-hidden="true">
-            <i style={{ transform: `scaleX(${progress})` }} />
+            <i />
           </div>
         </header>
 
@@ -861,12 +894,12 @@ export default function Home() {
               ))}
             </div>
 
-            {query.trim() && (
+            {search.trim() && (
               <div className="results">
                 <div className="resultsHead">
                   {hits.length === 0
-                    ? `Nothing matches "${query.trim()}".`
-                    : `${hits.length} lesson${hits.length === 1 ? ' mentions' : 's mention'} "${query.trim()}"`}
+                    ? `Nothing matches "${search.trim()}".`
+                    : `${hits.length} lesson${hits.length === 1 ? ' mentions' : 's mention'} "${search.trim()}"`}
                 </div>
                 {hits.map((hit) => (
                   <button
@@ -897,7 +930,7 @@ export default function Home() {
               </div>
             )}
 
-            <div className="stageList" style={{ marginTop: 14, display: query.trim() ? 'none' : undefined }}>
+            <div className="stageList" style={{ marginTop: 14, display: search.trim() ? 'none' : undefined }}>
               {visibleStages.length === 0 && (
                 <div className="empty">
                   <div className="emptyTitle">Nothing matches that</div>
