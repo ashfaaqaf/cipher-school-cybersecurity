@@ -627,9 +627,7 @@ export default function Home() {
   return (
     <div className="app" style={rootStyle}>
       <div className="field" aria-hidden="true">
-        <div className="orb a" />
-        <div className="orb b" />
-        <div className="grid" />
+        <div className="orb" />
       </div>
 
       <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}>

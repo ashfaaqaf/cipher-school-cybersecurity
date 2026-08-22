@@ -63,26 +63,22 @@
 
   /* ---------- hero ---------- */
 
-  .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-    gap: 48px;
-    align-items: center;
-    padding: 72px 0 56px;
-    min-height: 76vh;
-  }
-  .heroCopy { grid-column: 1; }
-  .heroSide { grid-column: 2; display: flex; flex-direction: column; gap: 14px; }
+  /*
+   * One centred column, not a two-column split. A product page opens with the
+   * claim alone in the middle of the screen and puts the numbers underneath —
+   * splitting them side by side makes the headline compete with a stat grid.
+   */
+  .hero { padding: 88px 0 64px; }
+  .heroSide { margin-top: 48px; }
 
   h1 { font-size: clamp(48px, 4.4vw, 68px); }
-  .lede { font-size: 19px; max-width: 30em; }
+  .lede { font-size: 21px; max-width: 34em; }
   .heroActions { margin-top: 30px; }
-  .btn { min-height: 52px; padding: 0 24px; font-size: 16px; }
+  .btn { min-height: 50px; padding: 0 26px; font-size: 17px; }
 
-  .stats { grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 0; }
-  .stat { padding: 18px 18px 16px; }
-  .statNum { font-size: 30px; }
-  .ringWrap { margin-top: 0; padding: 20px; }
+  .stat { padding: 22px; }
+  .statNum { font-size: 34px; }
+  .ringWrap { margin-top: 14px; padding: 20px; text-align: left; }
 
   /* ---------- sections ---------- */
 
@@ -155,26 +151,24 @@
 
   /* ---------- pointer affordances ---------- */
 
-  .lesson:hover { transform: translateX(2px); }
-  .stage:hover, .role:hover { border-color: var(--accent-line); }
+  .lesson:hover { transform: translateX(2px); background: var(--glass-2); }
+  .stage:hover, .role:hover { background: var(--glass-2); }
   .stage, .role, .lesson { transition: border-color var(--fast) var(--ease), transform var(--fast) var(--spring), background var(--fast) var(--ease); }
 
   /* ---------- ambient depth ---------- */
 
-  .orb.a { width: 46vw; height: 46vw; }
-  .orb.b { width: 40vw; height: 40vw; }
-  .grid { background-size: 72px 72px; }
+  .orb { width: 68vw; height: 34vw; top: -18vw; }
 }
 
 /* Widths above this are handled in shell.css, which owns the measure. */
 
 /*
- * Scroll-linked parallax on the ambient orbs. --scroll is set by the existing
+ * Scroll-linked parallax on the ambient glow. --scroll is set by the existing
  * scroll handler, so this costs one custom property update per frame and no
- * extra listener. Transform only, so it stays on the compositor.
+ * extra listener. Transform only, so it stays on the compositor. It is applied
+ * to the container rather than the glow itself, which owns its own transform
+ * for centring.
  */
-/* Applied to the container, not the orbs: the orbs already own their transform
-   via the drift animation, and an animation beats a static rule while it runs. */
 .field {
   transform: translate3d(0, calc(var(--scroll, 0) * -70px), 0);
   will-change: transform;

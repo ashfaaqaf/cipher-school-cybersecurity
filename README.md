@@ -88,10 +88,10 @@ tab-switching is disabled inside the reader and while a review card is on screen
 
 ## Print
 
-Every stage has a **Print or save as PDF** button. It renders the whole stage — all eight
-lessons, jargon, exercises, resources and the legal notice — as plain black-on-white
+Every stage has a **Print or save as PDF** button. It renders the whole stage — every
+lesson, jargon, exercises, resources and the legal notice — as plain black-on-white
 typography with each lesson starting a fresh page, so a stage prints as a small booklet.
-Screen glass, gradients and the dark canvas are all discarded: they cost ink and read
+Screen surfaces, tints and the dark canvas are all discarded: they cost ink and read
 badly in monochrome. URLs are printed in full, because a paper link you cannot type is not
 a link.
 
@@ -192,29 +192,41 @@ device voices than the defaults. iOS stops narration when the screen locks.
 
 ## Design notes
 
-The colour scheme is chosen for learning rather than decoration. A deep blue canvas
-supports sustained focus, green always means progress and never warning, amber carries
-attention without triggering the anxiety response red does, and each of the twelve stages
-recolours the interface with its own hue — distinct colour schemes create separate memory
-traces, which makes the stages easier to keep apart.
+The interface follows Apple's rules, because they suit teaching: a black canvas,
+one very large line of type per idea, and space doing the work that borders used to.
+Headlines are set in SF Pro Display at weight 600 with tight tracking, body text at 17px,
+and each section gets room around it rather than a dividing line.
 
-Surfaces use a Liquid Glass material — translucent, blurred, with a specular top edge and
-concentric radii — so hierarchy reads through depth rather than borders. Motion uses
-spring curves, sheets are drag-to-dismiss, and everything collapses gracefully under
-`prefers-reduced-motion`. Text passes WCAG AA contrast in both the dark and light themes.
+Colour is chosen for learning rather than decoration. Black is the canvas so nothing
+competes with the words on it. One system blue marks every action and only actions — the
+call to action never changes colour, because a button that recolours per stage stops
+reading as the button. Green always means progress and never warning, amber carries
+attention without triggering the anxiety response red does, and red is kept for the things
+that are genuinely critical. Each stage still has its own hue, which now tints that
+stage's marks — its number, its tags, the rule down the side of a lesson card — rather
+than repainting the room. Distinct colours create separate memory traces, and a tint is
+enough to do that.
 
-The page is not a column on a black field. The background is a mesh of large soft
-gradients plus a fine grain, so it has depth at any width; sections paint full-bleed bands
-behind a readable measure, so a long scroll has rhythm; and above 2000px the whole design
-scales rather than just the column — type, spacing, controls and the nav rail grow
+Surfaces are flat and separated by tone: a card is the canvas lifted a few per cent, with
+a hairline only where that difference is too small to read on its own. Blur is reserved
+for the three things that genuinely sit over moving content — the sticky header, the dock
+and the lesson sheet. Motion uses one easing curve, sheets are drag-to-dismiss, and
+everything collapses gracefully under `prefers-reduced-motion`. Text passes WCAG AA
+contrast in both the dark and light themes; the light theme deliberately carries one
+secondary grey rather than two, because anything lighter fails against white at the sizes
+it is used.
+
+The page is not a column on a black field. Sections paint full-bleed bands in a second
+tone behind a readable measure, so a long scroll has a rhythm; and above 2000px the whole
+design scales rather than just the column — type, spacing, controls and the nav rail grow
 together, and the extra room goes into more columns. A 4K screen gets a bigger version of
 the same page, not the same page with a desert either side.
 
 Built phone-first and installable to the Home Screen, then widened out. Above 1024px the
-bottom dock becomes a floating vertical rail, the hero splits into two columns, card grids
-go multi-column, and the lesson reader stops being a bottom sheet and becomes a centred
-dialog. All of that lives in `app/desktop.css` behind a single media query, so a desktop
-rule can never affect a phone.
+bottom dock becomes a floating vertical rail, the hero centres and fills the first screen
+with the numbers underneath it, card grids go multi-column, and the lesson reader stops
+being a bottom sheet and becomes a centred dialog. All of that lives in `app/desktop.css`
+behind a single media query, so a desktop rule can never affect a phone.
 
 ## Offline and backups
 

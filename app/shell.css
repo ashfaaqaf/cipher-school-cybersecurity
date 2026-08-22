@@ -1,67 +1,24 @@
 /* ============================================================
    The visual layer.
 
-   The previous desktop build centred a narrow column on a flat black page,
-   which left most of a wide screen dead. Three things fix that, and none of
-   them is "make the column wider":
+   A wide screen is not filled by widening the column — a 2000px line of
+   text is unreadable. It is filled the way Apple fills one: the surface
+   behind the measure runs edge to edge and alternates tone section by
+   section, so the page reads as a document with a rhythm rather than a
+   card floating on a slab. Type scales with the viewport rather than
+   stopping at a fixed size.
 
-   1. The background stops being one colour. A mesh of large soft gradients
-      plus a fine grain gives the page depth at any width, so the gutters read
-      as space rather than emptiness.
-   2. Sections get full-bleed bands. The content column stays a readable
-      measure, but the surface behind it runs edge to edge and alternates, so
-      the page reads as a document rather than a floating card.
-   3. Type scales with the viewport instead of stopping at a fixed size.
+   What used to be here: a four-colour gradient mesh, film grain and a
+   vignette. All three were doing the job that space and tone do now.
    ============================================================ */
-
-/* ---------- ambient depth ---------- */
-
-.field::before {
-  content: '';
-  position: absolute;
-  inset: -20%;
-  background:
-    radial-gradient(42vw 42vw at 12% 8%, hsl(var(--hue) 92% 52% / 0.20), transparent 62%),
-    radial-gradient(38vw 38vw at 88% 18%, hsl(calc(var(--hue) + 48) 90% 55% / 0.16), transparent 60%),
-    radial-gradient(46vw 46vw at 78% 82%, hsl(calc(var(--hue) - 36) 88% 50% / 0.14), transparent 64%),
-    radial-gradient(34vw 34vw at 8% 74%, hsl(calc(var(--hue) + 90) 85% 52% / 0.11), transparent 60%);
-  filter: blur(30px);
-  transition: background var(--slow) var(--ease);
-}
-
-/*
- * A fine grain over everything. Flat gradients band visibly on large areas of
- * dark colour, and a little noise is the standard fix — it also stops the
- * background reading as plastic.
- */
-.field::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.035;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-:root[data-theme='day'] .field::before { opacity: 0.55; }
-:root[data-theme='day'] .field::after { opacity: 0.02; }
-
-/* A soft vignette so the content column sits in light rather than on a slab. */
-.shell::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(120% 80% at 50% 0%, transparent 40%, color-mix(in srgb, var(--canvas) 70%, transparent) 100%);
-}
 
 /* ---------- full-bleed bands ---------- */
 
 /*
  * Each section paints a surface that runs the whole width while its content
- * stays a readable measure. Alternating them gives the page a rhythm, which is
- * what stops a long scroll feeling like one undifferentiated column.
+ * stays a readable measure. One flat tone against the canvas, no border and
+ * no gradient: at this size a hairline is noise, and a two-per-cent change
+ * in tone is all the eye needs to know a new section started.
  */
 .band {
   position: relative;
@@ -72,23 +29,20 @@
   left: 50%;
   width: 100vw;
   margin-left: -50vw;
-  top: -40px;
-  bottom: -40px;
+  top: -56px;
+  bottom: -56px;
   z-index: -1;
-  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--ink) 3%, transparent) 22%, color-mix(in srgb, var(--ink) 3%, transparent) 78%, transparent);
-  border-top: 1px solid var(--rim);
-  border-bottom: 1px solid var(--rim);
-  opacity: 0.7;
+  background: var(--canvas-2);
 }
 
 /* ---------- richer reveal ---------- */
 
 .reveal {
   opacity: 0;
-  transform: translateY(26px) scale(0.985);
+  transform: translateY(34px);
   transition:
-    opacity 700ms var(--sheet),
-    transform 700ms var(--sheet);
+    opacity 800ms var(--ease),
+    transform 800ms var(--ease);
 }
 .reveal.in { opacity: 1; transform: none; }
 
@@ -110,9 +64,9 @@
   .shell { max-width: none; width: 100%; padding: 0 48px 96px calc(var(--rail) + 48px); }
 
   /* The hero fills the first screen rather than being a paragraph at the top. */
-  .hero { min-height: min(88vh, 820px); padding: 40px 0 72px; }
-  h1 { font-size: clamp(52px, 5.4vw, 84px); letter-spacing: -0.05em; }
-  .lede { font-size: clamp(17px, 1.35vw, 21px); }
+  .hero { padding: 80px 0 72px; }
+  h1 { font-size: clamp(56px, 5.2vw, 88px); letter-spacing: -0.04em; }
+  .lede { font-size: clamp(19px, 1.4vw, 24px); }
 
   /* Bento: the stats stop being four identical boxes. */
   .stats { grid-template-columns: repeat(6, 1fr); grid-auto-rows: minmax(96px, auto); }
@@ -129,9 +83,8 @@
     transition: transform var(--base) var(--spring), border-color var(--base) var(--ease), box-shadow var(--base) var(--ease);
   }
   .stat:hover, .track:hover, .source:hover, .companion:hover {
-    transform: translateY(-3px);
-    border-color: var(--accent-line);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+    background: var(--glass-2);
   }
 }
 
@@ -241,7 +194,4 @@
   .readText { font-size: 23px; }
   .readCard.key .readText { font-size: 27px; }
 
-  /* The grain is sized in device pixels, so it needs to grow with everything
-     else or it disappears into the panel at this scale. */
-  .field::after { background-size: 220px 220px; opacity: 0.028; }
 }

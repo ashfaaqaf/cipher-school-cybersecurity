@@ -23,7 +23,7 @@
 .sessionBar { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
 .sessionCount { font-size: 12px; color: var(--ink-mute); font-variant-numeric: tabular-nums; flex: none; }
 .sessionTrack { flex: 1; height: 5px; border-radius: var(--r-full); background: var(--glass-3); overflow: hidden; }
-.sessionTrack i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--grow)); transition: width var(--base) var(--sheet); }
+.sessionTrack i { display: block; height: 100%; border-radius: inherit; background: var(--grow); transition: width var(--base) var(--sheet); }
 .sessionQuit { flex: none; min-height: 32px; padding: 0 12px; border-radius: var(--r-full); background: var(--glass-2); border: 1px solid var(--rim); color: var(--ink-mute); font-size: 12px; font-family: inherit; cursor: pointer; }
 
 /* ---------- cards ---------- */
@@ -98,7 +98,7 @@
   position: absolute; top: -5px; right: -10px;
   min-width: 16px; height: 16px; padding: 0 4px;
   border-radius: var(--r-full);
-  background: var(--accent); color: #04070d;
+  background: var(--accent); color: var(--on-accent);
   font-size: 9.5px; font-weight: 700; line-height: 16px;
   font-variant-numeric: tabular-nums;
 }
@@ -116,9 +116,8 @@
 .playBtn {
   width: 38px; height: 38px; flex: none; border-radius: 50%;
   display: grid; place-items: center;
-  font-size: 13px; color: #04070d; cursor: pointer; border: 0;
-  background: linear-gradient(140deg, var(--accent), hsl(calc(var(--hue) + 34) 88% 64%));
-  box-shadow: 0 4px 14px hsl(var(--hue) 88% 50% / 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  font-size: 13px; color: var(--on-action); cursor: pointer; border: 0;
+  background: var(--action);
   transition: transform var(--fast) var(--spring);
 }
 .playBtn:active { transform: scale(0.9); }
@@ -201,7 +200,7 @@
 .updateBtn {
   flex: none; min-height: 34px; padding: 0 15px; border-radius: var(--r-full);
   border: 0; cursor: pointer; font-family: inherit; font-size: 12.5px; font-weight: 650;
-  color: #04070d; background: linear-gradient(140deg, var(--accent), hsl(calc(var(--hue) + 34) 88% 64%));
+  color: var(--on-action); background: var(--action);
 }
 .updateBtn:active { transform: scale(0.94); }
 
