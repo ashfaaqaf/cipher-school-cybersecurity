@@ -449,49 +449,29 @@ export default function Home() {
   /* ---------- scroll chrome ---------- */
 
   /*
-   * Scroll drives two pieces of chrome: the header hairline and the reading
-   * progress bar. Both used to be React state, which meant a setState pair on
-   * every animation frame of every scroll — a full re-render of the whole app,
-   * 13 stages and 110 lesson rows, sixty times a second, to move one bar two
-   * pixels. They are written straight to the DOM now: one class toggle and one
-   * custom property, no render, and the bar is transformed by the compositor.
+   * All that is left for scroll to drive is the hairline under the header. It
+   * was React state once, which meant a setState on every animation frame of
+   * every scroll — a full re-render of thirteen stages and a hundred and ten
+   * lesson rows, sixty times a second, to draw one line. It is a class toggle
+   * written straight to the DOM, and only when the answer actually changes.
    */
   useEffect(() => {
     let frame = 0;
     let wasStuck = false;
-    /*
-     * The scrollable span is measured on resize rather than inside the frame.
-     * Reading scrollHeight forces the browser to flush layout, and doing that
-     * on every frame of a scroll is the classic way to make one janky.
-     */
-    let span = 0;
-    const measure = () => {
-      span = document.body.scrollHeight - window.innerHeight;
-    };
     const onScroll = () => {
       if (frame) return;
       frame = window.requestAnimationFrame(() => {
         frame = 0;
-        const y = window.scrollY;
-        const isStuck = y > 12;
-        if (isStuck !== wasStuck) {
-          wasStuck = isStuck;
-          headerRef.current?.classList.toggle('stuck', isStuck);
-        }
-        document.documentElement.style.setProperty('--progress', span > 0 ? String(Math.min(1, y / span)) : '0');
+        const isStuck = window.scrollY > 12;
+        if (isStuck === wasStuck) return;
+        wasStuck = isStuck;
+        headerRef.current?.classList.toggle('stuck', isStuck);
       });
     };
-    /* The page grows and shrinks as stages open, so watch the document too. */
-    const ro = new ResizeObserver(measure);
-    ro.observe(document.body);
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', measure, { passive: true });
-    measure();
     onScroll();
     return () => {
-      ro.disconnect();
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', measure);
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
@@ -804,9 +784,6 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="progressLine" aria-hidden="true">
-            <i />
-          </div>
         </header>
 
         <main id="main">
@@ -1141,7 +1118,7 @@ export default function Home() {
                         <div className="stageTitle">{stage.title}</div>
                         <div className="stageSub">{stage.subtitle}</div>
                         <div className="stageMeta">
-                          <span className="tag level">{stage.level}</span>
+                          <span className={`tag level lv${stage.level}`}>{stage.level}</span>
                           <span className="tag">{stage.weeks}w</span>
                           <span className="tag">{stage.hours}h</span>
                           {stage.tags.map((t) => (

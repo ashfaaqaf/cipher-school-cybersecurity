@@ -222,13 +222,22 @@ confidence, where weight 600 at the same size reads as shouting. Stage numbers, 
 percentages, readiness and streaks are all monospace with tabular figures, so the app reads
 as an instrument and the numbers line up in a column whether or not anyone is looking.
 
-Colour is a signal rather than a skin. The canvas is near-black — `#0a0a0a`, not `#000`,
-because pure black gives a hairline nothing to sit on and turns every edge into a hard
-clip. An action is the ink inverted, which is the strongest mark available and costs no
-colour at all. Each stage has one hue and it appears in exactly four places: the stage
-number, its progress, its links and the pointer response. Green always means progress and
-never warning, amber carries attention without triggering the anxiety response red does,
-and red is kept for the things that are genuinely critical.
+Colour is borrowed from a terminal and spent the way a syntax highlighter spends it: to
+say what a thing is, never to decorate one. Difficulty is a heat scale from green to red,
+so thirteen stages can be skimmed for how hard they get. The six parts of a lesson are six
+categories in six colours, so its shape is legible before a sentence is read — and the one
+part that asks you to go and type something is prefixed with a `$`. A defined term is
+cyan, the colour a highlighter gives a type name.
+
+What is not coloured is the point. Prose, headings, rules, controls and every number stay
+monochrome; six colours only avoid becoming a fruit salad because nothing wears one
+without meaning it. The canvas is near-black — `#0a0a0a`, not `#000`, because pure black
+gives a hairline nothing to sit on and turns every edge into a hard clip. An action is the
+ink inverted, the strongest mark available at no cost in colour. Each stage keeps one hue
+for its number, its progress and its links. Green always means progress and never warning,
+amber carries attention without triggering the anxiety response red does, and red is kept
+for the things that are genuinely critical. Every one of them clears WCAG AA against both
+canvases.
 
 Hovering a row lights the row: a wash that reaches past the measure into the gutter so it
 reads as a row in a table rather than a rectangle drawn round some text, and a two-pixel

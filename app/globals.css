@@ -11,17 +11,25 @@
    The rules, in full:
    · two inks, one rule, no fills   — a surface is the canvas, always
    · monospace for anything counted — numbers, identifiers, durations
-   · colour is a signal, not a skin — one accent, four places, no more
+   · colour names a kind of thing   — never decorates one
    · nothing moves that is not answering the pointer
 
-   Colour is chosen for learning, not decoration:
-   · black canvas      — nothing competes with the words on it
+   Colour is borrowed from a terminal and spent like a syntax highlighter:
    · per-stage hue     — the stage number, its progress, its links. A
                          distinct colour per stage creates separate memory
                          traces, and a mark is enough to do that
+   · difficulty        — a heat scale, green through red, so a roadmap of
+                         thirteen stages can be skimmed for how hard they get
+   · lesson parts      — six categories, six colours, so the shape of a
+                         lesson is legible before a sentence is read
+   · cyan = a term     — the same colour a highlighter gives a type name
    · green = progress  — growth and safety, never used for warnings
    · amber = attention — warns without the anxiety response red triggers
    · red  = critical   — kept for the things that are genuinely critical
+
+   What is NOT coloured is the point: prose, headings, rules, controls and
+   every number stay monochrome. Six colours only avoid becoming a fruit
+   salad because nothing wears one without meaning it.
    ============================================================ */
 
 :root {
@@ -67,6 +75,21 @@
   /* The two things that genuinely float get a surface and an edge of light. */
   --lift: #111113;
   --lift-edge: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  /*
+   * A terminal palette, used the way a syntax highlighter uses colour: to say
+   * what a thing IS, never to decorate. Difficulty is a heat scale, the seven
+   * parts of a lesson are seven categories, a defined term is a term. Anything
+   * that does not encode something stays monochrome, which is what keeps six
+   * colours from becoming a fruit salad.
+   */
+  --t-green: #7ee787;
+  --t-cyan: #56d4dd;
+  --t-blue: #79c0ff;
+  --t-purple: #d2a8ff;
+  --t-amber: #e3b341;
+  --t-orange: #ffa657;
+  --t-red: #ff7b72;
 
   /* Stage accent — the number, the progress, the links, and nothing else */
   --hue: 210;
@@ -142,6 +165,15 @@
 
   --lift: #ffffff;
   --lift-edge: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  /* The same categories, at the weight white needs behind them. */
+  --t-green: #116329;
+  --t-cyan: #0b6e75;
+  --t-blue: #0550ae;
+  --t-purple: #6639ba;
+  --t-amber: #7d4e00;
+  --t-orange: #953800;
+  --t-red: #cf222e;
 
   --accent: hsl(var(--hue) 72% 38%);
   --on-accent: #ffffff;
@@ -336,17 +368,6 @@ section { scroll-margin-top: 92px; }
 .iconBtn::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; }
 .iconBtn:active { transform: scale(0.9); }
 .iconBtn:hover { border-color: var(--ink); color: var(--ink); }
-
-/* scroll progress hairline */
-.progressLine { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: transparent; }
-.progressLine i {
-  display: block; height: 100%;
-  background: var(--accent);
-  transform-origin: left;
-  /* --progress is written by the scroll handler, so the bar moves without React */
-  transform: scaleX(var(--progress, 0));
-  will-change: transform;
-}
 
 /* ---------- status capsule (dynamic island) ---------- */
 
@@ -557,7 +578,13 @@ h2 {
   padding: 0; border-radius: 0;
   background: transparent; border: 0; color: var(--ink-faint);
 }
+/* Difficulty reads as a heat scale, so the roadmap can be skimmed for it. */
 .tag.level { color: var(--ink-mute); background: transparent; }
+.tag.level.lvBEGINNER { color: var(--t-green); }
+.tag.level.lvEASY { color: var(--t-cyan); }
+.tag.level.lvMEDIUM { color: var(--t-amber); }
+.tag.level.lvHARD { color: var(--t-orange); }
+.tag.level.lvEXPERT { color: var(--t-red); }
 
 .stageRight { display: flex; flex-direction: column; align-items: flex-end; gap: 7px; flex: none; }
 .stageCount { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
@@ -745,8 +772,21 @@ h2 {
 }
 .readCard.key { border-top: 0; padding-top: 0; }
 
+/*
+ * Each part of a lesson is labelled like a syntax category: the idea, the
+ * comparison, the jargon, the consequence, the exercise, the check. Six small
+ * monospaced words in six colours, and the shape of a lesson is legible before
+ * a single sentence is read.
+ */
 .readLabel { font-family: var(--mono); font-size: 10px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 12px; }
-.readCard.key .readLabel { color: var(--accent); }
+.readCard.key .readLabel { color: var(--t-cyan); }
+.readCard.like .readLabel { color: var(--t-purple); }
+.readCard.why .readLabel { color: var(--t-blue); }
+.readCard.do .readLabel { color: var(--t-green); }
+.readCard.check .readLabel { color: var(--t-amber); }
+
+/* The exercise is the one part that asks you to go and type something. */
+.readCard.do .readLabel::before { content: '$ '; opacity: 0.7; }
 
 .readText { font-size: 16.5px; line-height: 1.6; color: var(--ink-soft); }
 .readCard.key .readText { font-size: 23px; font-weight: 300; letter-spacing: -0.022em; line-height: 1.4; color: var(--ink); }
@@ -761,7 +801,7 @@ h2 {
 .wordList { display: flex; flex-direction: column; gap: 0; }
 .word { padding: 13px 0; border-radius: 0; background: transparent; border: 0; border-top: 1px solid var(--rim-bright); }
 .wordList > .word:first-child { border-top: 0; }
-.wordTerm { font-family: var(--mono); font-size: 12px; font-weight: 400; letter-spacing: 0.04em; color: var(--accent); }
+.wordTerm { font-family: var(--mono); font-size: 12px; font-weight: 400; letter-spacing: 0.04em; color: var(--t-cyan); }
 .wordMeans { margin-top: 6px; font-size: 15px; line-height: 1.55; color: var(--ink-soft); }
 
 .sheetFoot {
@@ -801,7 +841,7 @@ h2 {
 
 .glossList { display: flex; flex-direction: column; gap: 0; }
 .glossItem { padding: 16px 0; border-radius: 0; background: transparent; border: 0; border-top: 1px solid var(--rim-bright); }
-.glossTerm { font-size: 15.5px; font-weight: 600; letter-spacing: -0.02em; }
+.glossTerm { font-size: 15.5px; font-weight: 600; letter-spacing: -0.02em; color: var(--t-cyan); }
 .glossMeans { margin-top: 5px; font-size: 15px; line-height: 1.55; color: var(--ink-mute); }
 .glossStage { margin-top: 8px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
 
@@ -813,7 +853,7 @@ h2 {
 .source { display: block; padding: 18px 0; border-radius: 0; background: transparent; border: 0; border-top: 1px solid var(--rim-bright); text-decoration: none; color: inherit; transition: color var(--fast) var(--ease); }
 .sourceTop { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .sourceName { font-size: 15px; font-weight: 600; letter-spacing: -0.018em; transition: color var(--fast) var(--ease); }
-.sourceKind { font-family: var(--mono); font-size: 10px; font-weight: 400; letter-spacing: 0.1em; color: var(--ink-faint); }
+.sourceKind { font-family: var(--mono); font-size: 10px; font-weight: 400; letter-spacing: 0.1em; color: var(--t-purple); }
 .sourceWhy { margin-top: 6px; font-size: 14px; line-height: 1.55; color: var(--ink-mute); }
 
 /* ---------- safety notice ---------- */
