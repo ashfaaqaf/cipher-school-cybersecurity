@@ -208,4 +208,28 @@ export const quizD: Question[] = [
     answer: 0,
     why: 'Anyone can copy a tutorial to a working result. "This did not work, here is why" is the part that cannot be copied, and it is the natural opening for the interview conversation.',
   },
+  {
+    id: '12-10-a', lesson: '12-10',
+    ask: 'You are asked about a tool you have never used. What is the strongest answer?',
+    options: [
+      'Say you have not used it, then reason aloud about what category it is in and how you would approach it',
+      'Describe what you have read about it as though you have used it',
+      'Change the subject to a tool you do know well',
+      'Say you would look it up and move on',
+    ],
+    answer: 0,
+    why: 'Bluffing is the only reliably fatal move — the interviewer has done the job. Reasoning from the category outwards shows exactly the thinking the role needs.',
+  },
+  {
+    id: '12-10-b', lesson: '12-10',
+    ask: 'An interviewer describes an alert and asks what you would do. What should come first?',
+    options: [
+      'Clarifying questions — what the asset is, who the user is, what normal looks like',
+      'The name of the tool you would open',
+      'A description of the most likely attack',
+      'An estimate of the severity',
+    ],
+    answer: 0,
+    why: 'Scenario questions test your process. Two good clarifying questions demonstrate the habit the job actually requires; jumping to a tool name is weaker even when the tool is right.',
+  },
 ];
