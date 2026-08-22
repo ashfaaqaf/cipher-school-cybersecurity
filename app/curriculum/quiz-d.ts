@@ -280,4 +280,28 @@ export const quizD: Question[] = [
     answer: 0,
     why: 'Leaked real questions are cheating, and in a field whose entire product is trustworthiness that is not a small thing. Provider-written practice questions are fine; actual exam questions are not.',
   },
+  {
+    id: '12-13-a', lesson: '12-13',
+    ask: 'What actually limits how large a home lab you can run?',
+    options: [
+      'Memory — a domain controller, a client and a logging stack are roughly 4GB each',
+      'Processor cores, since each virtual machine needs a dedicated one',
+      'Disk space, because every machine needs a full operating system image',
+      'Network bandwidth between the virtual machines',
+    ],
+    answer: 0,
+    why: 'On 16GB you can comfortably run three machines at once, which covers every exercise here — provided you stop treating "all machines on" as the normal state.',
+  },
+  {
+    id: '12-13-b', lesson: '12-13',
+    ask: 'What turns a home lab from a hobby into a portfolio piece?',
+    options: [
+      'A repository with the diagram, build steps, configs and what broke along the way',
+      'Running more virtual machines than anyone else',
+      'Using exactly the same tools a real company uses',
+      'Building all of it without following any guide',
+    ],
+    answer: 0,
+    why: 'Adverts ask for test labs and personal projects by name, but only a documented lab is something a stranger can look at. An undocumented one is invisible.',
+  },
 ];
