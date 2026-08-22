@@ -60,11 +60,12 @@
 
 .tuneBtn {
   margin-left: auto; flex: none;
-  min-height: 30px; padding: 0 12px; border-radius: var(--r-full);
+  min-height: 44px; padding: 0 14px; border-radius: var(--r-full);
   background: transparent; border: 1px solid var(--rim); color: var(--ink-mute);
-  font-size: 11.5px; font-weight: 600; font-family: inherit; cursor: pointer;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; cursor: pointer;
+  transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease);
 }
-.tuneBtn:active { transform: scale(0.94); }
+.tuneBtn:hover { color: var(--ink); border-color: var(--ink); }
 
 /* ---------- budget tuning ---------- */
 

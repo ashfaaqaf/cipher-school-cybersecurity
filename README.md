@@ -198,26 +198,38 @@ edge. That distinction matters, because stripping the fills out without adding t
 is how a minimal page turns into text floating in a void — the rules and the alignment
 are what the boxes were for.
 
-Weight comes from the type scale. Eleven-pixel monospaced metadata sits directly above a
-sixty-pixel headline, and that jump is a bigger gesture than any border, shadow or glow.
-Everything that is counted — stage numbers, durations, percentages, readiness, streaks —
-is set in monospace with tabular figures, so the app reads as an instrument and the
-numbers line up in a column whether or not anyone is looking for that.
+Two typefaces, both variable and both self-hosted: **Inter** for text and **JetBrains
+Mono** for anything counted. Self-hosted because this is an offline-first app — a font
+fetched from a CDN at runtime is a font the app does not have on a plane — and the build
+fingerprints them into the precache automatically. Two files, 80kB together.
 
-Colour is a signal rather than a skin. The canvas is black and the ink is white; an
-action is the ink inverted, which is the strongest mark available and costs no colour at
-all. Each stage has one hue, and it appears in exactly four places: the stage number, its
-progress, its links and the pointer response. Green always means progress and never
-warning, amber carries attention without triggering the anxiety response red does, and red
-is kept for the things that are genuinely critical. Distinct colours create separate
-memory traces per stage, and a mark is enough to do that.
+Weight comes from the type scale, not from decoration. Eleven-pixel monospaced metadata
+sits directly above a seventy-two-pixel headline set in Inter Light, and that jump is a
+bigger gesture than any border, shadow or glow: weight 300 at display size reads as
+confidence, where weight 600 at the same size reads as shouting. Stage numbers, durations,
+percentages, readiness and streaks are all monospace with tabular figures, so the app reads
+as an instrument and the numbers line up in a column whether or not anyone is looking.
 
-Nothing moves that is not answering the pointer. There is no ambient gradient, no grain,
-no glow, no parallax and no lift on hover — the hover state is a title taking the stage
-colour. Sheets are still drag-to-dismiss, and everything collapses gracefully under
-`prefers-reduced-motion`. Text passes WCAG AA contrast in both the dark and light themes;
-the light theme deliberately carries one secondary grey rather than two, because anything
-lighter fails against white at the sizes it is used.
+Colour is a signal rather than a skin. The canvas is near-black — `#0a0a0a`, not `#000`,
+because pure black gives a hairline nothing to sit on and turns every edge into a hard
+clip. An action is the ink inverted, which is the strongest mark available and costs no
+colour at all. Each stage has one hue and it appears in exactly four places: the stage
+number, its progress, its links and the pointer response. Green always means progress and
+never warning, amber carries attention without triggering the anxiety response red does,
+and red is kept for the things that are genuinely critical.
+
+Hovering a row lights the row: a wash that reaches past the measure into the gutter so it
+reads as a row in a table rather than a rectangle drawn round some text, and a two-pixel
+rule in the stage colour growing out from the middle of its left edge. Nothing moves,
+nothing resizes, no layout is touched — which is what keeps it subtle at the twentieth row
+as well as the first. It sits behind a `hover: hover` query, because on a touch screen a
+hover state latches: tap a row, come back, and it is still lit with no pointer anywhere
+near it. Touch gets `:active` instead, and the browser's own grey tap flash is turned off
+because it is the wrong shape for every row here.
+
+Text passes WCAG AA contrast in all five views in both themes, and every control clears
+the 44px touch target — several of them through an invisible expander, so a 34px link or
+an 18px checkbox still takes a thumb without becoming a button.
 
 Sections are separated by a rule and named in the same small monospace as every other
 label, which is what used to take full-bleed alternating bands and forty lines of CSS.
@@ -230,6 +242,11 @@ bottom dock becomes a floating vertical rail, the thirteen stages read as an ind
 hanging number column, card grids go multi-column, and the lesson reader stops being a
 bottom sheet and becomes a centred dialog. All of that lives in `app/desktop.css`
 behind a single media query, so a desktop rule can never affect a phone.
+
+The home screen icons are drawn by `node scripts/make-icons.mjs` — a 5x7 bitmap of the
+mark and a small PNG encoder, no dependencies. They are generated rather than exported
+because the manifest previously pointed at the 1200x630 social banner as the app icon,
+which gave an installed copy a squashed tile on every platform that renders one.
 
 ## Offline and backups
 

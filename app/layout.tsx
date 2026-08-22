@@ -18,6 +18,13 @@ export const metadata: Metadata = {
   description,
   applicationName: 'Cipher School',
   manifest: './manifest.webmanifest',
+  icons: {
+    icon: [
+      { url: './icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: './icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [{ url: './apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -53,8 +60,8 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#070b12',
-  colorScheme: 'dark',
+  themeColor: '#000000',
+  colorScheme: 'dark light',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
