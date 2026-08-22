@@ -11,11 +11,11 @@ words a beginner can follow, with the jargon decoded as it appears.
 ## What is in it
 
 - **13 stages**, beginner through expert, in the order they should be learned
-- **104 written lessons** — not topic titles, the actual teaching
-- **393 terms decoded** in a searchable glossary, each explained without more jargon
+- **105 written lessons** — not topic titles, the actual teaching
+- **395 terms decoded** in a searchable glossary, each explained without more jargon
 - **8 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research, fastest-to-hired) with stage order
 - **Nine real job adverts**, all but one Sri Lankan, broken into individual requirements and mapped to the lessons covering each — plus sourced market context
-- **208 quiz questions**, two per lesson, with an explanation on every answer
+- **210 quiz questions**, two per lesson, with an explanation on every answer
 - **Spaced repetition** over all questions and terms, so what you read actually stays
 - **A daily plan** built from your weekly hour budget, with a streak and a week strip
 - **A weekly review** naming what you actually learned, against last week

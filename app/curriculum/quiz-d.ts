@@ -184,4 +184,28 @@ export const quizD: Question[] = [
     answer: 0,
     why: 'Evidence a stranger can look at beats any wording. Most of the other applicants will attach nothing at all.',
   },
+  {
+    id: '12-9-a', lesson: '12-9',
+    ask: 'What belongs on a junior security CV instead of a long skills list?',
+    options: [
+      'A projects section where each entry says what you built and links to it',
+      'Skill bars showing your proficiency percentage in each tool',
+      'Every tool and framework you have ever opened',
+      'A personal statement describing your passion for cybersecurity',
+    ],
+    answer: 0,
+    why: 'Nobody can act on "Networking ▓▓▓▓░". Three real projects a stranger can click beat any list, because they are evidence rather than a claim.',
+  },
+  {
+    id: '12-9-b', lesson: '12-9',
+    ask: 'Why include the failures and dead ends in a project write-up?',
+    options: [
+      'They show judgement and how you think, which is what an interviewer is assessing',
+      'They make the project look harder than it was',
+      'They pad the write-up to a respectable length',
+      'They prove the work is original rather than copied',
+    ],
+    answer: 0,
+    why: 'Anyone can copy a tutorial to a working result. "This did not work, here is why" is the part that cannot be copied, and it is the natural opening for the interview conversation.',
+  },
 ];
