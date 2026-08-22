@@ -499,11 +499,16 @@ h2 { margin: 7px 0 0; font-size: clamp(23px, 6.4vw, 30px); line-height: 1.14; le
 
 .links { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
 .link {
+  position: relative;
+  display: inline-flex; align-items: center;
+  min-height: 38px;
   font-size: 12.5px; font-weight: 560; text-decoration: none;
-  padding: 7px 12px; border-radius: var(--r-full);
+  padding: 7px 13px; border-radius: var(--r-full);
   background: var(--glass-2); border: 1px solid var(--rim); color: var(--ink-soft);
   transition: transform var(--fast) var(--spring), color var(--fast) var(--ease), border-color var(--fast) var(--ease);
 }
+/* Invisible 44pt hit area, per Apple's minimum touch target. */
+.link::after { content: ''; position: absolute; inset: -3px; border-radius: inherit; }
 .link:active { transform: scale(0.94); }
 .link:hover { color: var(--accent); border-color: var(--accent-line); }
 

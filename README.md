@@ -20,6 +20,8 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **A daily plan** built from your weekly hour budget, with a streak and a week strip
 - **A weekly review** naming what you actually learned, against last week
 - **Full-text search** across every word, with the matching passage highlighted
+- **Keyboard shortcuts** throughout, and `?` to see them
+- **Print or save any stage as a PDF**, typeset for paper
 - **Narration** — listen to any lesson like an audiobook, with follow-along highlighting
 - **Progress tracking** stored only in your browser — nothing is uploaded anywhere
 - **Back up and restore** progress as a JSON file, so clearing your browser is survivable
@@ -53,6 +55,27 @@ line shows what it is actually asking for and links to the lessons that cover it
 readiness percentage that moves as you complete them. It also maps CS50's Introduction to
 Cybersecurity week by week onto these stages, so you are not studying the same material
 twice.
+
+## Keyboard
+
+`/` searches, `1`–`5` switch tabs, `j` and `k` move between lessons while reading, `Space`
+marks a lesson understood, `l` starts narration, `Esc` closes whatever is open, and `?`
+lists all of it.
+
+The fiddly part of shortcuts is not binding keys, it is refusing to act: anything with
+Ctrl, Cmd or Alt is left to the browser, nothing but `Esc` fires while you are typing, and
+tab-switching is disabled inside the reader and while a review card is on screen.
+`node keys.test.ts` mostly asserts that keys do *nothing* — it caught a bug where pressing
+`1` before revealing a card threw you out of the review session.
+
+## Print
+
+Every stage has a **Print or save as PDF** button. It renders the whole stage — all eight
+lessons, jargon, exercises, resources and the legal notice — as plain black-on-white
+typography with each lesson starting a fresh page, so a stage prints as a small booklet.
+Screen glass, gradients and the dark canvas are all discarded: they cost ink and read
+badly in monochrome. URLs are printed in full, because a paper link you cannot type is not
+a link.
 
 ## Search
 

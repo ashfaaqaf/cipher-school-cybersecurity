@@ -83,3 +83,27 @@
   .resultTitle { font-size: 15.5px; }
   .resultSnippet { font-size: 13.5px; }
 }
+
+/* ---------- keyboard help ---------- */
+
+.keyList { display: flex; flex-direction: column; gap: 4px; }
+.keyRow {
+  display: flex; align-items: baseline; gap: 12px;
+  padding: 10px 12px; border-radius: var(--r-sm);
+  background: var(--glass); border: 1px solid var(--rim);
+}
+.keyCombo { flex: none; min-width: 92px; display: flex; align-items: center; gap: 4px; }
+.keyRow kbd {
+  display: inline-block; min-width: 24px; padding: 3px 7px;
+  border-radius: 6px; text-align: center;
+  background: var(--glass-3); border: 1px solid var(--rim);
+  box-shadow: 0 1px 0 var(--rim);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px; font-weight: 620; color: var(--ink);
+}
+.keyDash { color: var(--ink-faint); font-size: 11px; }
+.keyWhat { font-size: 13.5px; line-height: 1.45; color: var(--ink-soft); }
+.keyWhen { font-style: normal; color: var(--ink-faint); }
+
+/* The print trigger is a button among links, so it has to match them. */
+button.link { cursor: pointer; font-family: inherit; }

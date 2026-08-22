@@ -34,6 +34,8 @@ import { applyBackup, downloadBackup, type RestoreResult } from './backup';
 import { TodayCard } from './Today';
 import { WeekReview } from './Week';
 import { buildCorpus, searchIn } from './search';
+import { PrintSheet } from './Print';
+import { SHORTCUTS, actionFor, isTyping } from './keys';
 import {
   CARD_MINS,
   DEFAULT_SETTINGS,
@@ -92,6 +94,9 @@ export default function Home() {
   const [offlineReady, setOfflineReady] = useState(false);
   const [updateReady, setUpdateReady] = useState(false);
   const [restore, setRestore] = useState<RestoreResult | null>(null);
+  const [printing, setPrinting] = useState<Stage | null>(null);
+  const [helpOpen, setHelpOpen] = useState(false);
+  const searchRef = useRef<HTMLInputElement | null>(null);
   const [history, setHistory] = useState<History>({});
   const [planSettings, setPlanSettings] = useState<PlanSettings>(DEFAULT_SETTINGS);
   const dragFrom = useRef<number | null>(null);
@@ -293,6 +298,25 @@ export default function Home() {
     [],
   );
 
+  /* ---------- print ---------- */
+
+  /*
+   * Render the sheet first, then print — calling window.print() in the same tick
+   * prints the previous frame, which is a blank page.
+   *
+   * A timeout rather than requestAnimationFrame on purpose: rAF is throttled to
+   * nothing in a background or hidden tab, which would leave the button dead
+   * with no way to tell why.
+   */
+  useEffect(() => {
+    if (!printing) return;
+    const id = window.setTimeout(() => {
+      window.print();
+      setPrinting(null);
+    }, 60);
+    return () => window.clearTimeout(id);
+  }, [printing]);
+
   /* ---------- scroll chrome ---------- */
 
   useEffect(() => {
@@ -316,6 +340,71 @@ export default function Home() {
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, []);
+
+  /* ---------- keyboard ---------- */
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const action = actionFor(
+        { key: e.key, ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey, shiftKey: e.shiftKey },
+        {
+          inReader: reader !== null,
+          inReview: false,
+          revealed: false,
+          typing: isTyping(e.target),
+          sheetOpen: reader !== null || installOpen || voiceOpen || helpOpen,
+        },
+      );
+      if (!action) return;
+
+      switch (action.type) {
+        case 'search':
+          e.preventDefault();
+          setView('learn');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          window.setTimeout(() => searchRef.current?.focus(), 120);
+          break;
+        case 'view':
+          e.preventDefault();
+          goto(views[action.index].id);
+          break;
+        case 'next':
+          e.preventDefault();
+          step(1);
+          break;
+        case 'prev':
+          e.preventDefault();
+          step(-1);
+          break;
+        case 'toggleDone':
+          if (current) {
+            e.preventDefault();
+            toggle(current.lesson.id);
+          }
+          break;
+        case 'listen':
+          e.preventDefault();
+          listen();
+          break;
+        case 'help':
+          e.preventDefault();
+          setHelpOpen(true);
+          break;
+        case 'close':
+          if (helpOpen) setHelpOpen(false);
+          else if (voiceOpen) setVoiceOpen(false);
+          else if (installOpen) setInstallOpen(false);
+          else if (reader) closeReader();
+          else if (isTyping(e.target)) (e.target as HTMLElement).blur();
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
 
   /* ---------- reveal on scroll ---------- */
 
@@ -696,9 +785,10 @@ export default function Home() {
               <label className="search">
                 <span aria-hidden="true">⌕</span>
                 <input
+                  ref={searchRef}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search lessons, ideas, jargon…"
+                  placeholder="Search every word — press /"
                   aria-label="Search the curriculum"
                   type="search"
                 />
@@ -880,6 +970,9 @@ export default function Home() {
                                 {r.label} ↗
                               </a>
                             ))}
+                            <button className="link" onClick={() => setPrinting(stage)}>
+                              ⎙ Print or save as PDF
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -1272,6 +1365,52 @@ export default function Home() {
           </div>
         </>
       )}
+
+      {/* ---------------- keyboard help ---------------- */}
+      {helpOpen && (
+        <>
+          <div className="scrim" onClick={() => setHelpOpen(false)} aria-hidden="true" />
+          <div className="sheet" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
+            <div className="grabber" onPointerDown={() => setHelpOpen(false)}>
+              <i />
+            </div>
+            <div className="sheetHead">
+              <div className="sheetCrumb">Faster on a keyboard</div>
+              <h3 className="sheetTitle">Shortcuts</h3>
+            </div>
+            <div className="sheetBody">
+              <div className="keyList">
+                {SHORTCUTS.map((s, i) => (
+                  <div className="keyRow" key={i}>
+                    <span className="keyCombo">
+                      {s.keys.map((k, n) =>
+                        k === '–' ? (
+                          <span className="keyDash" key={n}>
+                            –
+                          </span>
+                        ) : (
+                          <kbd key={n}>{k}</kbd>
+                        ),
+                      )}
+                    </span>
+                    <span className="keyWhat">
+                      {s.what}
+                      {s.when && <em className="keyWhen"> · while {s.when}</em>}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="sheetFoot">
+              <button className="btn primary" onClick={() => setHelpOpen(false)}>
+                Got it
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {printing && <PrintSheet stage={printing} />}
 
       {/* ---------------- install sheet ---------------- */}
       {installOpen && (
