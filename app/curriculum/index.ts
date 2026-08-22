@@ -110,10 +110,6 @@ export const allLessons: { lesson: Lesson; stage: Stage }[] = stages.flatMap((st
 export const totalLessons = allLessons.length;
 export const totalHours = stages.reduce((sum, stage) => sum + stage.hours, 0);
 export const totalWeeks = stages.reduce((sum, stage) => sum + stage.weeks, 0);
-export const totalWords = stages.reduce(
-  (sum, stage) => sum + stage.lessons.reduce((n, l) => n + l.words.length, 0),
-  0,
-);
 export const totalReadMins = stages.reduce(
   (sum, stage) => sum + stage.lessons.reduce((n, l) => n + l.mins, 0),
   0,

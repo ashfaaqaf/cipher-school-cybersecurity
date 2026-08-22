@@ -11,11 +11,11 @@ words a beginner can follow, with the jargon decoded as it appears.
 ## What is in it
 
 - **13 stages**, beginner through expert, in the order they should be learned
-- **109 written lessons** — not topic titles, the actual teaching
-- **409 terms decoded** in a searchable glossary, each explained without more jargon
+- **110 written lessons** — not topic titles, the actual teaching
+- **414 terms decoded** in a searchable glossary, each explained without more jargon
 - **8 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research, fastest-to-hired) with stage order
 - **Nine real job adverts**, all but one Sri Lankan, broken into individual requirements and mapped to the lessons covering each — plus sourced market context
-- **218 quiz questions**, two per lesson, with an explanation on every answer
+- **220 quiz questions**, two per lesson, with an explanation on every answer
 - **Spaced repetition** over all questions and terms, so what you read actually stays
 - **A daily plan** built from your weekly hour budget, with a streak and a week strip
 - **A weekly review** naming what you actually learned, against last week
@@ -180,7 +180,7 @@ npm run voice:cost              # dry run: character count and estimated cost
 npm run voice:build             # generate everything
 ```
 
-Roughly 215,000 characters across the 96 lessons. Generation is incremental — a lesson is
+Roughly 260,000 characters across the 110 lessons. Generation is incremental — a lesson is
 only regenerated when its text changes, so editing one lesson costs one lesson.
 
 Alternatively, run it without handling the key locally at all: add `ELEVENLABS_API_KEY`

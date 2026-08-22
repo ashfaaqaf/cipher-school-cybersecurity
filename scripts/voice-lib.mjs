@@ -9,7 +9,7 @@
  */
 
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import { readdir, readFile } from 'node:fs/promises';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import path from 'node:path';
 import { forSpeech } from '../app/pronounce.ts';
@@ -58,10 +58,12 @@ export async function loadLessons() {
    * stage file only imports its types, and type-only imports are erased.
    * pathToFileURL because a bare Windows path is not a valid ESM specifier.
    */
+  const dir = path.join(ROOT, 'app', 'curriculum');
+  const files = (await readdir(dir)).filter((f) => /^s\d\d\.ts$/.test(f)).sort();
   const stages = [];
-  for (let i = 0; i < 12; i += 1) {
-    const name = `s${String(i).padStart(2, '0')}`;
-    const mod = await import(pathToFileURL(path.join(ROOT, 'app', 'curriculum', `${name}.ts`)).href);
+  for (const file of files) {
+    const name = file.slice(0, -3);
+    const mod = await import(pathToFileURL(path.join(dir, file)).href);
     stages.push(mod[name]);
   }
   return stages.flatMap((stage) => stage.lessons.map((lesson) => ({ stage: stage.number, lesson })));

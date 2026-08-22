@@ -41,3 +41,6 @@ out/
 .env.local
 .voice-drafts/
 !.env.example
+
+# TypeScript incremental build cache
+*.tsbuildinfo

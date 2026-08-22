@@ -21,7 +21,6 @@ import {
   totalQuestions,
   totalReadMins,
   totalWeeks,
-  totalWords,
   tracks,
   type Lesson,
   type Stage,
@@ -37,7 +36,7 @@ import { buildCorpus, searchIn } from './search';
 import { PrintSheet } from './Print';
 import { SHORTCUTS, actionFor, isTyping } from './keys';
 import { useFocusTrap } from './a11y';
-import { DEFAULT_ROUTE, hashFor, parseHash, sameRoute, type Route } from './routing';
+import { hashFor, parseHash, sameRoute, type Route } from './routing';
 import {
   CARD_MINS,
   DEFAULT_SETTINGS,
@@ -712,7 +711,7 @@ export default function Home() {
             Learn cybersecurity <em>from zero</em> to genuinely expert.
           </h1>
           <p className="lede">
-            Twelve stages. {totalLessons} written lessons — not a list of topics, but the actual explanation, in words a
+            {stages.length} stages. {totalLessons} written lessons — not a list of topics, but the actual explanation, in words a
             beginner can follow. Every idea gets a plain meaning, an everyday comparison, a jargon decoder, and something
             to go and do.
           </p>
@@ -746,7 +745,7 @@ export default function Home() {
               <div className="statLabel">Written lessons</div>
             </div>
             <div className="stat glass">
-              <div className="statNum">{totalWords}</div>
+              <div className="statNum">{glossary.length}</div>
               <div className="statLabel">Terms decoded</div>
             </div>
             <div className="stat glass">
@@ -829,7 +828,7 @@ export default function Home() {
 
             <div className="sectionHead reveal">
               <div className="kicker">The roadmap</div>
-              <h2>Twelve stages, in order</h2>
+              <h2>{stages.length} stages, in order</h2>
               <p className="sectionNote">
                 Do them in sequence if you are new. Each stage recolours the app — a different colour per stage helps
                 your memory keep them separate. Tap any lesson to read it.
