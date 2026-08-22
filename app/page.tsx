@@ -58,6 +58,7 @@ import {
 const STORE = 'cipher-school-progress';
 const THEME = 'cipher-school-theme';
 const DECK = 'cipher-school-srs';
+const UPDATED = 'cipher-school-updated';
 const PLAN = 'cipher-school-plan';
 
 type View = 'learn' | 'review' | 'paths' | 'words' | 'sources';
@@ -260,10 +261,55 @@ export default function Home() {
 
   /* ---------- offline ---------- */
 
+  /*
+   * Repeat visits are answered from the cache, which is what makes the app open
+   * instantly and work with no signal. The cost is that a new build has to be
+   * picked up deliberately, and asking somebody to notice a banner is not good
+   * enough: the symptom is clicking something and appearing to get the old
+   * behaviour, which reads as the app being broken.
+   *
+   * So a new version is taken automatically when taking it costs nothing — the
+   * page has only just loaded, or the tab has just come back, and no lesson is
+   * open. Mid-read, the banner asks instead. The timestamp guard means a build
+   * that somehow reinstalls itself cannot put the page in a reload loop.
+   */
   useEffect(() => {
     if (!('serviceWorker' in navigator) || window.location.protocol === 'http:' && window.location.hostname !== 'localhost') return;
 
     let cancelled = false;
+    let freshAt = performance.now();
+    let cleanup = () => {};
+
+    const takeover = (worker: ServiceWorker) => {
+      worker.postMessage('skip-waiting');
+      navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload(), { once: true });
+    };
+
+    const offer = (worker: ServiceWorker) => {
+      waitingRef.current = worker;
+      let looping = false;
+      try {
+        looping = Date.now() - Number(window.sessionStorage.getItem(UPDATED) ?? 0) < 10_000;
+      } catch {
+        /* private mode: fall back to asking */
+        looping = true;
+      }
+      /* The route is the source of truth for whether a lesson is open, and
+         reading it here keeps this effect from re-subscribing on every open. */
+      const reading = window.location.hash.startsWith('#/lesson/');
+      const quiet = !reading && performance.now() - freshAt < 8_000;
+      if (!quiet || looping) {
+        setUpdateReady(true);
+        return;
+      }
+      try {
+        window.sessionStorage.setItem(UPDATED, String(Date.now()));
+      } catch {
+        /* the guard is best effort */
+      }
+      takeover(worker);
+    };
+
     navigator.serviceWorker
       .register('sw.js')
       .then((reg) => {
@@ -271,24 +317,27 @@ export default function Home() {
         if (navigator.serviceWorker.controller) setOfflineReady(true);
 
         /* A worker already waiting means a newer build is sitting there. */
-        if (reg.waiting) {
-          waitingRef.current = reg.waiting;
-          setUpdateReady(true);
-        }
+        if (reg.waiting) offer(reg.waiting);
 
         reg.addEventListener('updatefound', () => {
           const next = reg.installing;
           if (!next) return;
           next.addEventListener('statechange', () => {
             if (next.state !== 'installed') return;
-            if (navigator.serviceWorker.controller) {
-              waitingRef.current = next;
-              setUpdateReady(true);
-            } else {
-              setOfflineReady(true);
-            }
+            if (navigator.serviceWorker.controller) offer(next);
+            else setOfflineReady(true);
           });
         });
+
+        /* Ask on load, and again whenever the tab is looked at after a while. */
+        void reg.update().catch(() => {});
+        const onVisible = () => {
+          if (document.visibilityState !== 'visible') return;
+          freshAt = performance.now();
+          void reg.update().catch(() => {});
+        };
+        document.addEventListener('visibilitychange', onVisible);
+        cleanup = () => document.removeEventListener('visibilitychange', onVisible);
       })
       .catch(() => {
         /* offline support is an enhancement; the app works without it */
@@ -296,6 +345,7 @@ export default function Home() {
 
     return () => {
       cancelled = true;
+      cleanup();
     };
   }, []);
 
@@ -595,7 +645,6 @@ export default function Home() {
   const flatIndex = reader ? allLessons.findIndex((x) => x.lesson.id === current!.lesson.id) : -1;
 
   const cameFrom = useRef(0);
-
   const openReader = useCallback((s: number, l: number) => {
     cameFrom.current = window.scrollY;
     setReader({ s, l });

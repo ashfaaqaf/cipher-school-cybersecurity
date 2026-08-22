@@ -308,9 +308,15 @@ automatically a new cache and the old one is dropped on activate.
 
 Navigations are answered from the cache and revalidated in the background. Network-first
 meant every repeat visit — including every launch of the installed app — waited on a round
-trip for a document it already had. A new build is picked up by that revalidation and
-announced by the update banner, so nobody waits for it and nobody is silently swapped
-mid-session either. Everything else is cache-first, which is
+trip for a document it already had.
+
+The cost of that is staleness, and asking somebody to notice a banner is not good enough:
+the symptom is clicking something, appearing to get the old behaviour, and concluding the
+app is broken. So a new build is taken automatically when taking it costs nothing — the
+page has only just loaded, or the tab has just come back, and no lesson is open. Mid-read
+the banner asks instead, because reloading somebody out of a lesson to deliver a typo fix
+is worse than the typo. A timestamp guard means a build that somehow reinstalls itself
+cannot put the page in a reload loop. Everything else is cache-first, which is
 safe because Next content-hashes its filenames — a changed file is a different URL. Audio
 is deliberately excluded from precaching; a full narration library is tens of megabytes
 and forcing that down on a first visit would be hostile, so it caches as you listen.
