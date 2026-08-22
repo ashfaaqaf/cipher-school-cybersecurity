@@ -17,6 +17,7 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **Nine real job adverts**, all but one Sri Lankan, broken into individual requirements and mapped to the lessons covering each — plus sourced market context
 - **208 quiz questions**, two per lesson, with an explanation on every answer
 - **Spaced repetition** over all questions and terms, so what you read actually stays
+- **A daily plan** built from your weekly hour budget, with a streak and a week strip
 - **Narration** — listen to any lesson like an audiobook, with follow-along highlighting
 - **Progress tracking** stored only in your browser — nothing is uploaded anywhere
 - **Back up and restore** progress as a JSON file, so clearing your browser is survivable
@@ -50,6 +51,25 @@ line shows what it is actually asking for and links to the lessons that cover it
 readiness percentage that moves as you complete them. It also maps CS50's Introduction to
 Cybersecurity week by week onto these stages, so you are not studying the same material
 twice.
+
+## The daily plan
+
+104 lessons is a backlog, not a habit. Set a weekly hour budget and how many days you
+intend to study, and the top of the Learn tab answers one question: what do I do today.
+Review comes before new reading, always — cards arrive just before you would forget them,
+so a skipped review costs more than a skipped lesson.
+
+Two decisions worth knowing. A day is capped at four lessons however large the budget,
+because a list of twelve is a backlog wearing a plan's clothing and nobody starts one. And
+lessons are budgeted at the stage's own hour estimate — roughly two and a half hours —
+rather than the six minutes it takes to read the page, because the stage hours cover the
+lab, the notes and the exercise. Budgeting on reading time produced a cheerful twelve-
+lesson day and a course nobody would finish.
+
+The streak counts consecutive days with any activity, and yesterday still counts, since
+breaking a streak at midnight punishes people for not having studied yet on a day that is
+still in progress. Dates are local, not UTC — `toISOString` would roll the day over at
+5:30am in Colombo. `node plan.test.ts` covers both.
 
 ## How the review system works
 

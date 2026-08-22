@@ -64,6 +64,12 @@ reject('null', 'null');
 reject('"a string"', 'a bare string');
 reject(JSON.stringify({ format: 'something-else', version: 1, data: {} }), 'a foreign format');
 reject(good({ version: 99 }), 'a version newer than this app understands');
+
+// A version 1 file predates the study plan and must still restore cleanly.
+store.clear();
+const v1 = applyBackup(good({ version: 1 }));
+assert.ok(v1.ok, 'older backups stay restorable');
+assert.equal(store.get('cipher-school-plan'), undefined, 'and simply carry no plan');
 reject(good({ data: undefined }), 'no data section');
 reject('{"format":"cipher-school-backup","version":1,"data":{}}'.padEnd(2_000_100, ' '), 'an absurdly large file');
 

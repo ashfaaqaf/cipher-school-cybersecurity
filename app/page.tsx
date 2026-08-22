@@ -31,10 +31,22 @@ import { CompanionSection, RolesSection } from './Roles';
 import { deckStats, schedule, today, type Deck, type Grade } from './srs';
 import { useSpeaker } from './voice';
 import { applyBackup, downloadBackup, type RestoreResult } from './backup';
+import { TodayCard } from './Today';
+import {
+  CARD_MINS,
+  DEFAULT_SETTINGS,
+  dayKey,
+  prune,
+  record,
+  studyMinsFor,
+  type History,
+  type PlanSettings,
+} from './plan';
 
 const STORE = 'cipher-school-progress';
 const THEME = 'cipher-school-theme';
 const DECK = 'cipher-school-srs';
+const PLAN = 'cipher-school-plan';
 
 type View = 'learn' | 'review' | 'paths' | 'words' | 'sources';
 
@@ -74,6 +86,8 @@ export default function Home() {
   const [offlineReady, setOfflineReady] = useState(false);
   const [updateReady, setUpdateReady] = useState(false);
   const [restore, setRestore] = useState<RestoreResult | null>(null);
+  const [history, setHistory] = useState<History>({});
+  const [planSettings, setPlanSettings] = useState<PlanSettings>(DEFAULT_SETTINGS);
   const dragFrom = useRef<number | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const waitingRef = useRef<ServiceWorker | null>(null);
@@ -89,10 +103,47 @@ export default function Home() {
       if (t === 'day' || t === 'night') setTheme(t);
       const d = window.localStorage.getItem(DECK);
       if (d) setDeck(JSON.parse(d));
+      const p = window.localStorage.getItem(PLAN);
+      if (p) {
+        const parsed = JSON.parse(p) as { settings?: PlanSettings; history?: History };
+        if (parsed.settings) setPlanSettings({ ...DEFAULT_SETTINGS, ...parsed.settings });
+        if (parsed.history) setHistory(prune(parsed.history));
+      }
     } catch {
       /* progress simply starts clean when storage is unavailable */
     }
   }, []);
+
+  /* ---------- daily plan ---------- */
+
+  const savePlan = useCallback((settings: PlanSettings, hist: History) => {
+    try {
+      window.localStorage.setItem(PLAN, JSON.stringify({ settings, history: prune(hist) }));
+    } catch {
+      /* the session still works without persistence */
+    }
+  }, []);
+
+  /** Fold a finished piece of work into today's record. */
+  const logWork = useCallback(
+    (add: { lessons?: number; cards?: number; mins?: number }) => {
+      setHistory((prev) => {
+        const next = record(prev, dayKey(), add);
+        savePlan(planSettings, next);
+        return next;
+      });
+    },
+    [planSettings, savePlan],
+  );
+
+  const changeSettings = useCallback(
+    (next: PlanSettings) => {
+      setPlanSettings(next);
+      savePlan(next, history);
+      tap();
+    },
+    [history, savePlan],
+  );
 
   /* ---------- spaced repetition ---------- */
 
@@ -114,8 +165,9 @@ export default function Home() {
       }
       return next;
     });
+    logWork({ cards: 1, mins: CARD_MINS });
     tap(g === 0 ? 18 : 8);
-  }, []);
+  }, [logWork]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -143,12 +195,20 @@ export default function Home() {
       } else {
         next.add(id);
         setPopped(id);
+        /* Count the stage's study estimate, not the reading time. The plan
+           budgets a lesson at roughly two and a half hours because that covers
+           the lab and the exercise; logging six minutes against it would leave
+           the day's progress bar permanently near zero. Marking a lesson
+           understood is a claim to have done that work. */
+        const entry = allLessons.find((x) => x.lesson.id === id);
+        const mins = entry ? studyMinsFor(entry.stage.hours, entry.stage.lessons.length) : 30;
+        logWork({ lessons: 1, mins });
         tap(12);
         window.setTimeout(() => setPopped(null), 480);
       }
       save(next);
     },
-    [completed, save],
+    [completed, save, logWork],
   );
 
   /* ---------- offline ---------- */
@@ -604,6 +664,16 @@ export default function Home() {
         {/* ---------------- learn ---------------- */}
         {view === 'learn' && (
           <section id="learn">
+            <TodayCard
+              history={history}
+              settings={planSettings}
+              setSettings={changeSettings}
+              completed={completed}
+              dueCards={srs.due}
+              onOpen={openById}
+              onReview={() => goto('review')}
+            />
+
             <div className="sectionHead reveal">
               <div className="kicker">The roadmap</div>
               <h2>Twelve stages, in order</h2>

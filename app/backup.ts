@@ -17,10 +17,11 @@ const KEYS = {
   deck: 'cipher-school-srs',
   theme: 'cipher-school-theme',
   voice: 'cipher-school-voice',
+  plan: 'cipher-school-plan',
 } as const;
 
 const FORMAT = 'cipher-school-backup';
-const VERSION = 1;
+const VERSION = 2;
 
 /** Guards against a hostile or corrupt file eating memory or the UI. */
 const LIMITS = { lessons: 5000, cards: 20000, fileBytes: 2_000_000 };
@@ -30,7 +31,14 @@ export type Backup = {
   version: number;
   exported: string;
   summary: { lessons: number; cards: number };
-  data: { progress: string[]; deck: Record<string, unknown>; theme: string | null; voice: unknown };
+  data: {
+    progress: string[];
+    deck: Record<string, unknown>;
+    theme: string | null;
+    voice: unknown;
+    /** Added in version 2. Absent in older backups, which still restore. */
+    plan?: unknown;
+  };
 };
 
 export type RestoreResult =
@@ -62,6 +70,7 @@ export function buildBackup(): Backup {
       deck: cards,
       theme: window.localStorage.getItem(KEYS.theme),
       voice: read(KEYS.voice),
+      plan: read(KEYS.plan),
     },
   };
 }
@@ -153,6 +162,10 @@ export function applyBackup(text: string): RestoreResult {
     }
     if (b.data.voice && typeof b.data.voice === 'object') {
       window.localStorage.setItem(KEYS.voice, JSON.stringify(b.data.voice));
+    }
+    /* Absent in version 1 backups, which is fine — the streak simply restarts. */
+    if (b.data.plan && typeof b.data.plan === 'object') {
+      window.localStorage.setItem(KEYS.plan, JSON.stringify(b.data.plan));
     }
   } catch {
     return { ok: false, error: 'This browser would not let the app save the restored data.' };

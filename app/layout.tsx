@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import './study.css';
 import './roles.css';
+import './today.css';
 import './desktop.css';
 
 const title = 'Cipher School — Master Cybersecurity';
