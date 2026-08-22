@@ -105,10 +105,10 @@
 /* ---------- narration ---------- */
 
 .player {
-  flex: none; display: flex; align-items: center; gap: 10px;
-  padding: 9px 16px;
-  border-bottom: 1px solid var(--rim);
-  background: var(--glass);
+  flex: none; display: flex; align-items: center; gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rim-bright);
+  background: transparent;
 }
 .player.on { background: var(--accent-soft); }
 

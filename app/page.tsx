@@ -8,7 +8,6 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type PointerEvent as ReactPointerEvent,
 } from 'react';
 import {
   allLessons,
@@ -99,8 +98,6 @@ export default function Home() {
    */
   const [everOpen, setEverOpen] = useState<Set<number>>(() => new Set([0]));
   const [reader, setReader] = useState<{ s: number; l: number } | null>(null);
-  const [closing, setClosing] = useState(false);
-  const [dragY, setDragY] = useState(0);
   const [query, setQuery] = useState('');
   /*
    * Searching scans every word of all 110 lessons, which is a few milliseconds
@@ -125,13 +122,11 @@ export default function Home() {
   const [printing, setPrinting] = useState<FullStage | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement | null>(null);
-  const readerRef = useRef<HTMLDivElement | null>(null);
   const helpRef = useRef<HTMLDivElement | null>(null);
   const voiceRef = useRef<HTMLDivElement | null>(null);
   const installRef = useRef<HTMLDivElement | null>(null);
   const [history, setHistory] = useState<History>({});
   const [planSettings, setPlanSettings] = useState<PlanSettings>(DEFAULT_SETTINGS);
-  const dragFrom = useRef<number | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const waitingRef = useRef<ServiceWorker | null>(null);
   const speaker = useSpeaker();
@@ -339,7 +334,6 @@ export default function Home() {
     [],
   );
 
-  useFocusTrap(readerRef, reader !== null);
   useFocusTrap(helpRef, helpOpen);
   useFocusTrap(voiceRef, voiceOpen);
   useFocusTrap(installRef, installOpen);
@@ -540,13 +534,13 @@ export default function Home() {
     return () => io.disconnect();
   }, [view, openStage, search, filter]);
 
-  /* ---------- body lock while a sheet is open ---------- */
+  /* ---------- body lock while a dialog is open ---------- */
 
-  const sheetOpen = reader !== null || installOpen;
+  /* The lesson is a page now, not a sheet, so only the remaining dialogs lock. */
   useEffect(() => {
-    document.body.classList.toggle('locked', sheetOpen);
+    document.body.classList.toggle('locked', installOpen);
     return () => document.body.classList.remove('locked');
-  }, [sheetOpen]);
+  }, [installOpen]);
 
   /* ---------- derived ---------- */
 
@@ -600,21 +594,29 @@ export default function Home() {
   const readerLesson = current && full ? (full.lessonById.get(current.lesson.id) ?? null) : null;
   const flatIndex = reader ? allLessons.findIndex((x) => x.lesson.id === current!.lesson.id) : -1;
 
+  const cameFrom = useRef(0);
+
   const openReader = useCallback((s: number, l: number) => {
-    setDragY(0);
-    setClosing(false);
+    cameFrom.current = window.scrollY;
     setReader({ s, l });
+    window.scrollTo({ top: 0 });
   }, []);
 
   const closeReader = useCallback(() => {
     speaker.stop();
-    setClosing(true);
-    window.setTimeout(() => {
-      setReader(null);
-      setClosing(false);
-      setDragY(0);
-    }, 300);
+    setReader(null);
   }, [speaker]);
+
+  /*
+   * Restoring the scroll has to wait until the roadmap is back in the DOM, so
+   * it is an effect rather than part of the click: by the time this runs the
+   * rows are laid out and the position you came from means something again.
+   */
+  useEffect(() => {
+    if (reader !== null || !cameFrom.current) return;
+    window.scrollTo({ top: cameFrom.current });
+    cameFrom.current = 0;
+  }, [reader]);
 
   const step = useCallback(
     (dir: 1 | -1) => {
@@ -623,10 +625,9 @@ export default function Home() {
       const { lesson } = allLessons[target];
       const s = stages.findIndex((st) => st.lessons.some((x) => x.id === lesson.id));
       const l = stages[s].lessons.findIndex((x) => x.id === lesson.id);
-      setDragY(0);
       speaker.stop();
       setReader({ s, l });
-      document.querySelector('.sheetBody')?.scrollTo({ top: 0 });
+      window.scrollTo({ top: 0 });
     },
     [flatIndex, speaker],
   );
@@ -671,31 +672,19 @@ export default function Home() {
     return () => window.removeEventListener('keydown', onKey);
   }, [reader, closeReader, step]);
 
-  /* drag the grabber to dismiss, the way an iOS sheet behaves */
-  const onGrabStart = (e: ReactPointerEvent) => {
-    dragFrom.current = e.clientY;
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  };
-  const onGrabMove = (e: ReactPointerEvent) => {
-    if (dragFrom.current === null) return;
-    setDragY(Math.max(0, e.clientY - dragFrom.current));
-  };
-  const onGrabEnd = () => {
-    if (dragFrom.current === null) return;
-    dragFrom.current = null;
-    if (dragY > 110) closeReader();
-    else setDragY(0);
-  };
-
   /* ---------- stage hue drives the whole palette ---------- */
 
   const activeHue = current ? current.stage.hue : openStage !== null ? stages[openStage]?.hue : 210;
   const rootStyle = { '--hue': String(activeHue ?? 210) } as CSSProperties;
 
   const goto = (id: View) => {
+    /* Changing section is not going back — it starts at the top of the new one. */
+    cameFrom.current = 0;
+    setReader(null);
     setView(id);
     tap();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    /* Instant, not smooth: this is a change of page, not a scroll within one. */
+    window.scrollTo({ top: 0 });
   };
 
   return (
@@ -771,8 +760,105 @@ export default function Home() {
           </div>
         </header>
 
-        {/* ---------------- hero ---------------- */}
         <main id="main">
+        {/* ---------------- lesson ---------------- */}
+        {reader && current && (
+          <article className="reader" style={{ '--hue': String(current.stage.hue) } as CSSProperties}>
+            <button className="readerBack" onClick={closeReader}>
+              ← Stage {current.stage.number} · {current.stage.title}
+            </button>
+
+            <div className="readerHead">
+              <h1 className="readerTitle">{current.lesson.title}</h1>
+              <div className="readerMeta">
+                Lesson {flatIndex + 1} of {totalLessons} · about {current.lesson.mins} minutes to read
+              </div>
+            </div>
+
+            {speaker.supported && (
+              <div className={speaker.speaking ? 'player on' : 'player'}>
+                <button className="playBtn" onClick={listen} aria-label={speaker.speaking && !speaker.paused ? 'Pause' : 'Listen'}>
+                  {speaker.speaking && !speaker.paused ? '❙❙' : '▶'}
+                </button>
+                <div className="playInfo">
+                  {speaker.speaking ? (
+                    <>
+                      <div className="playLabel">{speaker.chunks[speaker.index]?.label ?? 'Reading'}</div>
+                      <div className="playTrack" aria-hidden="true">
+                        <i style={{ width: `${((speaker.index + 1) / Math.max(1, speaker.total)) * 100}%` }} />
+                      </div>
+                    </>
+                  ) : (
+                    <div className="playLabel">
+                      Listen to this lesson
+                      {speaker.hasAudioFor(current.lesson.id) && speaker.preferStudio && (
+                        <span className="studioTag">studio voice</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+                {speaker.speaking && (
+                  <>
+                    <button className="playMini" onClick={() => speaker.jump(-1)} aria-label="Back">
+                      ↺
+                    </button>
+                    <button className="playMini" onClick={() => speaker.jump(1)} aria-label="Skip">
+                      ↻
+                    </button>
+                    <button className="playMini" onClick={speaker.stop} aria-label="Stop">
+                      ✕
+                    </button>
+                  </>
+                )}
+                <button className="playMini" onClick={() => setVoiceOpen(true)} aria-label="Voice settings">
+                  ⚙
+                </button>
+              </div>
+            )}
+
+            <div className="readerBody">
+              {readerLesson ? (
+                <>
+                  <LessonBody
+                    lesson={readerLesson}
+                    activeLabel={speaker.speaking ? speaker.chunks[speaker.index]?.label : undefined}
+                  />
+                  <LessonQuiz lessonId={current.lesson.id} onGrade={gradeCard} />
+                </>
+              ) : (
+                <p className="readWait">{current.lesson.oneLine}</p>
+              )}
+            </div>
+
+            <div className="readerFoot">
+              <button className="navBtn" onClick={() => step(-1)} disabled={flatIndex <= 0} aria-label="Previous lesson">
+                ‹
+              </button>
+              <button
+                className={completed.has(current.lesson.id) ? 'btn done' : 'btn primary'}
+                onClick={() => {
+                  toggle(current.lesson.id);
+                  if (!completed.has(current.lesson.id) && flatIndex < allLessons.length - 1) {
+                    window.setTimeout(() => step(1), 320);
+                  }
+                }}
+              >
+                {completed.has(current.lesson.id) ? '✓ Done — tap to undo' : 'Mark as understood'}
+              </button>
+              <button
+                className="navBtn"
+                onClick={() => step(1)}
+                disabled={flatIndex >= allLessons.length - 1}
+                aria-label="Next lesson"
+              >
+                ›
+              </button>
+            </div>
+          </article>
+        )}
+
+        {/* ---------------- hero ---------------- */}
+        {!reader && view === 'learn' && (
         <section className="hero">
           <div className="heroCopy">
           <span className="eyebrow">◆ Everything, in plain language</span>
@@ -882,9 +968,10 @@ export default function Home() {
           </div>
           </div>
         </section>
+        )}
 
         {/* ---------------- learn ---------------- */}
-        {view === 'learn' && (
+        {!reader && view === 'learn' && (
           <section id="learn">
             <TodayCard
               history={history}
@@ -1127,7 +1214,7 @@ export default function Home() {
         )}
 
         {/* ---------------- review ---------------- */}
-        {view === 'review' && (
+        {!reader && view === 'review' && (
           <section id="review" className="band">
             <div className="sectionHead reveal">
               <div className="kicker">Spaced repetition</div>
@@ -1145,7 +1232,7 @@ export default function Home() {
         )}
 
         {/* ---------------- paths ---------------- */}
-        {view === 'paths' && (
+        {!reader && view === 'paths' && (
           <section id="paths" className="band">
             <RolesSection completed={completed} onOpen={openById} />
 
@@ -1175,7 +1262,7 @@ export default function Home() {
         )}
 
         {/* ---------------- glossary ---------------- */}
-        {view === 'words' && (
+        {!reader && view === 'words' && (
           <section id="words" className="band">
             <div className="sectionHead reveal">
               <div className="kicker">Jargon decoder</div>
@@ -1218,7 +1305,7 @@ export default function Home() {
         )}
 
         {/* ---------------- sources ---------------- */}
-        {view === 'sources' && (
+        {!reader && view === 'sources' && (
           <section id="sources" className="band">
             <div className="sectionHead reveal">
               <div className="kicker">Where this comes from</div>
@@ -1290,125 +1377,6 @@ export default function Home() {
           </button>
         ))}
       </nav>
-
-      {/* ---------------- lesson reader ---------------- */}
-      {reader && current && (
-        <>
-          <div className={closing ? 'scrim out' : 'scrim'} onClick={closeReader} aria-hidden="true" />
-          <div
-            ref={readerRef}
-            className={closing ? 'sheet out' : 'sheet'}
-            style={{
-              '--hue': String(current.stage.hue),
-              transform: dragY ? `translateY(${dragY}px)` : undefined,
-              transition: dragY ? 'none' : undefined,
-            } as CSSProperties}
-            role="dialog"
-            aria-modal="true"
-            aria-label={current.lesson.title}
-          >
-            <div
-              className="grabber"
-              onPointerDown={onGrabStart}
-              onPointerMove={onGrabMove}
-              onPointerUp={onGrabEnd}
-              onPointerCancel={onGrabEnd}
-            >
-              <i />
-            </div>
-
-            <div className="sheetHead">
-              <div className="sheetCrumb">
-                Stage {current.stage.number} · {current.stage.title}
-              </div>
-              <h3 className="sheetTitle">{current.lesson.title}</h3>
-              <div className="sheetMeta">
-                Lesson {flatIndex + 1} of {totalLessons} · about {current.lesson.mins} minutes to read
-              </div>
-            </div>
-
-            {speaker.supported && (
-              <div className={speaker.speaking ? 'player on' : 'player'}>
-                <button className="playBtn" onClick={listen} aria-label={speaker.speaking && !speaker.paused ? 'Pause' : 'Listen'}>
-                  {speaker.speaking && !speaker.paused ? '❙❙' : '▶'}
-                </button>
-                <div className="playInfo">
-                  {speaker.speaking ? (
-                    <>
-                      <div className="playLabel">{speaker.chunks[speaker.index]?.label ?? 'Reading'}</div>
-                      <div className="playTrack" aria-hidden="true">
-                        <i style={{ width: `${((speaker.index + 1) / Math.max(1, speaker.total)) * 100}%` }} />
-                      </div>
-                    </>
-                  ) : (
-                    <div className="playLabel">
-                      Listen to this lesson
-                      {speaker.hasAudioFor(current.lesson.id) && speaker.preferStudio && (
-                        <span className="studioTag">studio voice</span>
-                      )}
-                    </div>
-                  )}
-                </div>
-                {speaker.speaking && (
-                  <>
-                    <button className="playMini" onClick={() => speaker.jump(-1)} aria-label="Back">
-                      ↺
-                    </button>
-                    <button className="playMini" onClick={() => speaker.jump(1)} aria-label="Skip">
-                      ↻
-                    </button>
-                    <button className="playMini" onClick={speaker.stop} aria-label="Stop">
-                      ✕
-                    </button>
-                  </>
-                )}
-                <button className="playMini" onClick={() => setVoiceOpen(true)} aria-label="Voice settings">
-                  ⚙
-                </button>
-              </div>
-            )}
-
-            <div className="sheetBody">
-              {readerLesson ? (
-                <>
-                  <LessonBody
-                    lesson={readerLesson}
-                    activeLabel={speaker.speaking ? speaker.chunks[speaker.index]?.label : undefined}
-                  />
-                  <LessonQuiz lessonId={current.lesson.id} onGrade={gradeCard} />
-                </>
-              ) : (
-                <p className="readWait">{current.lesson.oneLine}</p>
-              )}
-            </div>
-
-            <div className="sheetFoot">
-              <button className="navBtn" onClick={() => step(-1)} disabled={flatIndex <= 0} aria-label="Previous lesson">
-                ‹
-              </button>
-              <button
-                className={completed.has(current.lesson.id) ? 'btn done' : 'btn primary'}
-                onClick={() => {
-                  toggle(current.lesson.id);
-                  if (!completed.has(current.lesson.id) && flatIndex < allLessons.length - 1) {
-                    window.setTimeout(() => step(1), 320);
-                  }
-                }}
-              >
-                {completed.has(current.lesson.id) ? '✓ Done — tap to undo' : 'Mark as understood'}
-              </button>
-              <button
-                className="navBtn"
-                onClick={() => step(1)}
-                disabled={flatIndex >= allLessons.length - 1}
-                aria-label="Next lesson"
-              >
-                ›
-              </button>
-            </div>
-          </div>
-        </>
-      )}
 
       {/* ---------------- narration settings ---------------- */}
       {voiceOpen && (

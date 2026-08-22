@@ -642,6 +642,54 @@ h2 {
 .link::after { content: ''; position: absolute; inset: -5px -4px; }
 .link:hover { border-bottom-color: var(--accent); }
 
+/* ---------- the lesson, as a page ---------- */
+
+/*
+ * A lesson used to open as a modal sheet over the roadmap: a scrim, a drag
+ * handle, a focus trap and a locked body, all so a reader could spend ten
+ * minutes inside a layer that was pretending to be temporary. It is a page
+ * now. The roadmap steps aside, the lesson takes the column, and leaving it
+ * puts you back on the row you came from.
+ */
+.reader { padding: 8px 0 40px; }
+
+.readerBack {
+  display: inline-flex; align-items: center; gap: 8px;
+  min-height: 44px; padding: 0;
+  background: transparent; border: 0; cursor: pointer;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-faint);
+  transition: color var(--fast) var(--ease);
+}
+.readerBack:hover { color: var(--accent); }
+
+.readerHead { padding: 18px 0 22px; border-bottom: 1px solid var(--rim); }
+.readerTitle {
+  margin: 0;
+  font-size: clamp(30px, 7.4vw, 42px);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-weight: 300;
+  text-wrap: balance;
+}
+.readerMeta { margin-top: 14px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--ink-faint); }
+
+.readerBody { padding: 26px 0 0; }
+
+/* The one control that matters sits where you finish reading, not floating. */
+.readerFoot {
+  display: flex; gap: 10px; align-items: center;
+  margin-top: 44px; padding-top: 22px;
+  border-top: 1px solid var(--rim);
+}
+.readerFoot .btn { flex: 1; }
+
+@media (min-width: 1024px) {
+  .reader { max-width: 760px; padding: 16px 0 64px; }
+  .readerHead { padding: 22px 0 26px; }
+  .readerBody { padding: 32px 0 0; }
+}
+
 /* ---------- reader sheet ---------- */
 
 .scrim {

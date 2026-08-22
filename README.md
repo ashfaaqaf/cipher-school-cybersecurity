@@ -58,6 +58,16 @@ twice.
 
 ## URLs, offline pages and accessibility
 
+A lesson is a page, not a modal. It used to open as a sheet over the roadmap — a scrim, a
+drag handle, a focus trap and a locked body, all so a reader could spend ten minutes inside
+a layer that was pretending to be temporary. Now the roadmap steps aside, the lesson takes
+the column, and leaving it puts you back on the row you came from. Nothing to dismiss,
+nothing trapped, and the back button already worked because it was a route all along.
+
+The nav rail changes page rather than scrolling one. The hero belongs to the roadmap and
+renders only there, so choosing Review, Paths, Words or Sources lands you on that section's
+first line instead of on a headline you have already read.
+
 Lessons live at hash routes — `#/lesson/05-2` — so one can be bookmarked, shared or
 reached with the back button. Hash rather than path because this is a static export:
 a real path would 404 on refresh unless every lesson got its own prerendered page.
@@ -65,7 +75,9 @@ Bad or hand-edited hashes fall back to the course rather than breaking, which
 `node routing.test.ts` checks against a list of malformed inputs including traversal
 attempts.
 
-Dialogs trap focus while open and restore it on close. A modal you can Tab out of is only
+What is left as a dialog is what should be: narration settings, the shortcut list and the
+install instructions — small, transient, and genuinely on top of something. Those trap
+focus while open and restore it on close. A modal you can Tab out of is only
 a modal visually: a keyboard or screen reader user lands behind it in content meant to be
 inert, with no sign anything is open. There is also a skip link, a `main` landmark, and a
 polite live region on the status capsule.
