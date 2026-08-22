@@ -123,7 +123,23 @@ concentric radii — so hierarchy reads through depth rather than borders. Motio
 spring curves, sheets are drag-to-dismiss, and everything collapses gracefully under
 `prefers-reduced-motion`. Text passes WCAG AA contrast in both the dark and light themes.
 
-Built mobile-first for iPhone, installable to the Home Screen.
+Built phone-first and installable to the Home Screen, then widened out. Above 1024px the
+bottom dock becomes a floating vertical rail, the hero splits into two columns, card grids
+go multi-column, and the lesson reader stops being a bottom sheet and becomes a centred
+dialog. All of that lives in `app/desktop.css` behind a single media query, so a desktop
+rule can never affect a phone.
+
+## Tools
+
+`tools/logtriage/` — a small standard-library Python CLI that reads an SSH auth log and
+reports password spraying, brute force, and successful logins that followed repeated
+failures. It is the working version of the exercise in lessons 03-1 and 03-2.
+
+```bash
+cd tools/logtriage
+python logtriage.py --demo
+python test_logtriage.py
+```
 
 ## Practise legally
 

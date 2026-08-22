@@ -1,0 +1,23 @@
+Mar 14 02:11:04 web01 sshd[2201]: Accepted password for ashfaaq from 192.168.1.24 port 51422 ssh2
+Mar 14 02:11:09 web01 systemd-logind[901]: New session 12 of user ashfaaq.
+Mar 14 03:02:11 web01 sshd[3310]: Failed password for admin from 203.0.113.44 port 40122 ssh2
+Mar 14 03:02:12 web01 sshd[3311]: Failed password for root from 203.0.113.44 port 40124 ssh2
+Mar 14 03:02:14 web01 sshd[3312]: Failed password for invalid user oracle from 203.0.113.44 port 40126 ssh2
+Mar 14 03:02:15 web01 sshd[3313]: Failed password for postgres from 203.0.113.44 port 40128 ssh2
+Mar 14 03:02:17 web01 sshd[3314]: Failed password for jenkins from 203.0.113.44 port 40130 ssh2
+Mar 14 03:02:18 web01 sshd[3315]: Failed password for backup from 203.0.113.44 port 40132 ssh2
+Mar 14 03:02:20 web01 sshd[3316]: Failed password for invalid user deploy from 203.0.113.44 port 40134 ssh2
+Mar 14 03:02:22 web01 sshd[3317]: Failed password for git from 203.0.113.44 port 40136 ssh2
+Mar 14 03:14:55 web01 CRON[3401]: pam_unix(cron:session): session opened for user root
+Mar 14 04:41:02 web01 sshd[4820]: Failed password for svc_backup from 198.51.100.7 port 33110 ssh2
+Mar 14 04:41:19 web01 sshd[4821]: Failed password for svc_backup from 198.51.100.7 port 33114 ssh2
+Mar 14 04:41:37 web01 sshd[4822]: Failed password for svc_backup from 198.51.100.7 port 33118 ssh2
+Mar 14 04:41:55 web01 sshd[4823]: Failed password for svc_backup from 198.51.100.7 port 33122 ssh2
+Mar 14 04:42:13 web01 sshd[4824]: Failed password for svc_backup from 198.51.100.7 port 33126 ssh2
+Mar 14 04:42:31 web01 sshd[4825]: Failed password for svc_backup from 198.51.100.7 port 33130 ssh2
+Mar 14 04:42:49 web01 sshd[4826]: Failed password for svc_backup from 198.51.100.7 port 33134 ssh2
+Mar 14 04:43:07 web01 sshd[4827]: Accepted password for svc_backup from 198.51.100.7 port 33138 ssh2
+Mar 14 04:43:08 web01 systemd-logind[901]: New session 19 of user svc_backup.
+Mar 14 06:20:41 web01 sshd[5510]: Failed password for ashfaaq from 192.168.1.24 port 52001 ssh2
+Mar 14 06:20:58 web01 sshd[5511]: Accepted password for ashfaaq from 192.168.1.24 port 52004 ssh2
+Mar 14 07:55:03 web01 sudo:  ashfaaq : TTY=pts/0 ; PWD=/home/ashfaaq ; USER=root ; COMMAND=/usr/bin/apt update

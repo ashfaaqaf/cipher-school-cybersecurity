@@ -157,6 +157,8 @@ export default function Home() {
         setStuck(y > 12);
         const span = document.body.scrollHeight - window.innerHeight;
         setProgress(span > 0 ? Math.min(1, y / span) : 0);
+        /* Drives the ambient parallax in CSS — one property write per frame. */
+        document.documentElement.style.setProperty('--scroll', String(Math.min(3, y / window.innerHeight)));
       });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -409,6 +411,7 @@ export default function Home() {
 
         {/* ---------------- hero ---------------- */}
         <section className="hero">
+          <div className="heroCopy">
           <span className="eyebrow">◆ Everything, in plain language</span>
           <h1>
             Learn cybersecurity <em>from zero</em> to genuinely expert.
@@ -439,6 +442,9 @@ export default function Home() {
             </button>
           </div>
 
+          </div>
+
+          <div className="heroSide">
           <div className="stats">
             <div className="stat glass">
               <div className="statNum">{totalLessons}</div>
@@ -479,6 +485,7 @@ export default function Home() {
                 {doneCount} of {totalLessons} lessons · saved on this device only, nothing is uploaded anywhere.
               </p>
             </div>
+          </div>
           </div>
         </section>
 

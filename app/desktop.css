@@ -1,0 +1,188 @@
+/* ============================================================
+   Desktop.
+
+   Everything else in this project is designed phone-first, and that stays
+   the source of truth — these rules only widen out above 1024px. Nothing
+   here changes mobile, which is why it lives in its own file: if a rule
+   is in here, it cannot affect a phone.
+
+   The shape: a floating vertical nav rail on the left, a centred column
+   that grows to a real desktop width, grids that become multi-column, and
+   a lesson reader that stops being a bottom sheet and becomes a proper
+   centred dialog.
+   ============================================================ */
+
+@media (min-width: 1024px) {
+  :root {
+    --maxw: 1120px;
+    --rail: 96px;
+  }
+
+  body { font-size: 17px; }
+
+  .shell {
+    padding: 0 40px 80px calc(var(--rail) + 40px);
+  }
+
+  /* ---------- nav becomes a left rail ---------- */
+
+  .dock {
+    left: 20px;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    border-radius: var(--r-lg);
+    max-width: none;
+    animation: railIn var(--slow) var(--spring);
+  }
+  @keyframes railIn {
+    from { opacity: 0; transform: translate(-24px, -50%); }
+  }
+
+  .dockBtn {
+    min-width: 60px;
+    padding: 10px 8px 8px;
+    border-radius: var(--r-md);
+    gap: 4px;
+  }
+  .dockIcon { font-size: 17px; }
+  .dockLabel { font-size: 10px; }
+
+  /* ---------- header ---------- */
+
+  .topbar { margin: 0 -40px 0 calc((var(--rail) + 40px) * -1); padding: 14px 40px 12px calc(var(--rail) + 40px); }
+  .topRow { max-width: var(--maxw); margin: 0 auto; }
+  .island { max-width: var(--maxw); margin: 10px auto 0; }
+  .brandName { font-size: 16px; }
+  .mark { width: 38px; height: 38px; font-size: 14px; }
+
+  .topRow, .island, .hero, section, .foot { max-width: var(--maxw); margin-left: auto; margin-right: auto; }
+
+  /* ---------- hero ---------- */
+
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
+    padding: 72px 0 56px;
+    min-height: 76vh;
+  }
+  .heroCopy { grid-column: 1; }
+  .heroSide { grid-column: 2; display: flex; flex-direction: column; gap: 14px; }
+
+  h1 { font-size: clamp(48px, 4.4vw, 68px); }
+  .lede { font-size: 19px; max-width: 30em; }
+  .heroActions { margin-top: 30px; }
+  .btn { min-height: 52px; padding: 0 24px; font-size: 16px; }
+
+  .stats { grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 0; }
+  .stat { padding: 18px 18px 16px; }
+  .statNum { font-size: 30px; }
+  .ringWrap { margin-top: 0; padding: 20px; }
+
+  /* ---------- sections ---------- */
+
+  .sectionHead { margin: 72px 0 22px; }
+  h2 { font-size: clamp(30px, 2.6vw, 40px); }
+  .sectionNote { font-size: 16px; max-width: 62ch; }
+
+  /* Two columns for anything that is a grid of independent cards. */
+  .trackGrid { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .sourceGrid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .glossList { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .srsGrid { gap: 12px; }
+  .srsTile { padding: 18px 14px; }
+  .srsNum { font-size: 28px; }
+
+  /* Stages and roles stay one column: they expand in place, and a card that
+     grows tall inside a two-column grid drags its neighbour around. */
+  .stageList, .roleGrid { max-width: 860px; }
+
+  .stageBtn, .roleBtn { padding: 20px; }
+  .stageTitle { font-size: 18px; }
+  .stageSub { font-size: 14.5px; }
+  .stagePad, .rolePad { padding: 0 20px 20px; }
+  .lesson { padding: 13px 14px; }
+  .lessonTitle { font-size: 15.5px; }
+  .lessonOne { font-size: 13px; -webkit-line-clamp: 2; }
+
+  .blocks { grid-template-columns: repeat(3, 1fr); }
+
+  /* ---------- search and filters ---------- */
+
+  .searchRow { max-width: 560px; }
+  .chips { flex-wrap: wrap; overflow: visible; }
+
+  /* ---------- reader becomes a centred dialog ---------- */
+
+  .sheet {
+    top: 50%;
+    bottom: auto;
+    left: 50%;
+    width: min(860px, 88vw);
+    max-height: 86vh;
+    transform: translate(-50%, -50%);
+    border-radius: var(--r-xl);
+    border: 1px solid var(--rim);
+    animation: dialogIn var(--slow) var(--sheet);
+  }
+  @keyframes dialogIn {
+    from { opacity: 0; transform: translate(-50%, calc(-50% + 28px)) scale(0.97); }
+  }
+  .sheet.out { animation: dialogOut var(--base) var(--sheet) forwards; }
+  @keyframes dialogOut {
+    to { opacity: 0; transform: translate(-50%, calc(-50% + 20px)) scale(0.98); }
+  }
+
+  /* The drag handle is a touch affordance; on a pointer device it is clutter. */
+  .grabber { display: none; }
+  .sheetHead { padding: 24px 28px 16px; }
+  .sheetTitle { font-size: 27px; }
+  .sheetBody { padding: 22px 28px 26px; }
+  .sheetFoot { padding: 16px 28px; }
+  .prose p { font-size: 17px; max-width: 68ch; }
+  .readText { font-size: 16.5px; }
+  .readCard.key .readText { font-size: 19px; }
+
+  /* Two columns of jargon, since the definitions are short. */
+  .wordList { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .options { max-width: 68ch; }
+
+  /* ---------- pointer affordances ---------- */
+
+  .lesson:hover { transform: translateX(2px); }
+  .stage:hover, .role:hover { border-color: var(--accent-line); }
+  .stage, .role, .lesson { transition: border-color var(--fast) var(--ease), transform var(--fast) var(--spring), background var(--fast) var(--ease); }
+
+  /* ---------- ambient depth ---------- */
+
+  .orb.a { width: 46vw; height: 46vw; }
+  .orb.b { width: 40vw; height: 40vw; }
+  .grid { background-size: 72px 72px; }
+}
+
+/* Very wide screens: stop the column growing, let the margins take the space. */
+@media (min-width: 1600px) {
+  :root { --maxw: 1200px; }
+  .shell { padding-left: calc(var(--rail) + 80px); padding-right: 80px; }
+}
+
+/*
+ * Scroll-linked parallax on the ambient orbs. --scroll is set by the existing
+ * scroll handler, so this costs one custom property update per frame and no
+ * extra listener. Transform only, so it stays on the compositor.
+ */
+/* Applied to the container, not the orbs: the orbs already own their transform
+   via the drift animation, and an animation beats a static rule while it runs. */
+.field {
+  transform: translate3d(0, calc(var(--scroll, 0) * -70px), 0);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .field { transform: none; }
+}
