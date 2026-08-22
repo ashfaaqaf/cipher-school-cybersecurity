@@ -17,54 +17,53 @@
 .restTitle { font-size: 15px; font-weight: 650; letter-spacing: -0.02em; }
 .restText { margin: 7px 0 13px; font-size: 13.5px; line-height: 1.58; color: var(--ink-soft); }
 
-.srsNote { margin-top: 16px; padding: 14px 16px; border-radius: var(--r-md); background: var(--glass); border: 1px solid var(--rim); font-size: 13px; line-height: 1.6; color: var(--ink-mute); }
+.srsNote { margin-top: 20px; padding: 16px 0 0; border-radius: 0; background: transparent; border: 0; border-top: 1px solid var(--rim-bright); font-size: 14px; line-height: 1.6; color: var(--ink-mute); }
 .srsNote b { color: var(--ink-soft); font-weight: 640; }
 
 .sessionBar { display: flex; align-items: center; gap: 11px; margin-bottom: 12px; }
 .sessionCount { font-size: 12px; color: var(--ink-mute); font-variant-numeric: tabular-nums; flex: none; }
-.sessionTrack { flex: 1; height: 5px; border-radius: var(--r-full); background: var(--glass-3); overflow: hidden; }
-.sessionTrack i { display: block; height: 100%; border-radius: inherit; background: var(--grow); transition: width var(--base) var(--sheet); }
+.sessionTrack { flex: 1; height: 2px; border-radius: 0; background: var(--glass-3); overflow: hidden; }
+.sessionTrack i { display: block; height: 100%; background: var(--accent); transition: width var(--base) var(--sheet); }
 .sessionQuit { flex: none; min-height: 32px; padding: 0 12px; border-radius: var(--r-full); background: var(--glass-2); border: 1px solid var(--rim); color: var(--ink-mute); font-size: 12px; font-family: inherit; cursor: pointer; }
 
 /* ---------- cards ---------- */
 
-.card { padding: 18px; border-radius: var(--r-lg); animation: cardIn var(--base) var(--spring); }
-.card.inline { background: var(--glass); border: 1px solid var(--rim); margin-top: 10px; padding: 15px; border-radius: var(--r-md); animation: none; }
-@keyframes cardIn { from { opacity: 0; transform: translateY(14px) scale(0.985); } }
+.card { padding: 26px 0; border-radius: 0; border-top: 1px solid var(--rim); border-bottom: 1px solid var(--rim); animation: cardIn var(--base) var(--ease); }
+.card.inline { background: transparent; border: 0; border-top: 1px solid var(--rim-bright); margin-top: 18px; padding: 18px 0 0; border-radius: 0; animation: none; }
+@keyframes cardIn { from { opacity: 0; transform: translateY(8px); } }
 
-.cardKind { font-size: 10px; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: var(--accent); }
-.cardAsk { margin-top: 8px; font-size: 17px; line-height: 1.45; font-weight: 560; letter-spacing: -0.022em; }
-.cardTerm { margin-top: 10px; font-size: 26px; font-weight: 700; letter-spacing: -0.035em; line-height: 1.2; }
+.cardKind { font-family: var(--mono); font-size: 10px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+.cardAsk { margin-top: 14px; font-size: 19px; line-height: 1.42; font-weight: 500; letter-spacing: -0.024em; }
+.cardTerm { margin-top: 14px; font-size: 28px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.18; }
 .cardPrompt { margin-top: 8px; margin-bottom: 14px; font-size: 13.5px; color: var(--ink-mute); line-height: 1.5; }
-.cardWhy { margin-top: 12px; padding: 11px 13px; border-radius: var(--r-sm); background: var(--glass-2); border: 1px solid var(--rim); font-size: 13.5px; line-height: 1.6; color: var(--ink-soft); }
+.cardWhy { margin-top: 16px; padding: 0 0 0 14px; border-radius: 0; background: transparent; border: 0; border-left: 1px solid var(--rim); font-size: 14.5px; line-height: 1.6; color: var(--ink-mute); }
 .cardWhy.big { font-size: 15.5px; margin-bottom: 14px; }
 
 .options { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
 .option {
   display: flex; align-items: flex-start; gap: 10px;
-  padding: 12px 13px; border-radius: var(--r-md);
-  background: var(--glass); border: 1px solid var(--rim); color: var(--ink);
-  font-size: 14.5px; line-height: 1.45; font-family: inherit; text-align: left;
+  padding: 13px 14px; border-radius: var(--r-md);
+  background: transparent; border: 1px solid var(--rim); color: var(--ink);
+  font-size: 15px; line-height: 1.45; font-family: inherit; text-align: left;
   cursor: pointer;
-  transition: transform var(--fast) var(--spring), background var(--fast) var(--ease), border-color var(--fast) var(--ease), opacity var(--fast) var(--ease);
+  transition: border-color var(--fast) var(--ease), opacity var(--fast) var(--ease);
 }
-.option:not(:disabled):active { transform: scale(0.985); }
-.option:not(:disabled):hover { background: var(--glass-2); border-color: var(--accent-line); }
+.option:not(:disabled):hover { border-color: var(--ink); }
 .option:disabled { cursor: default; }
-.option.right { background: hsl(152 68% 46% / 0.14); border-color: hsl(152 68% 55% / 0.42); }
-.option.wrong { background: hsl(8 88% 60% / 0.12); border-color: hsl(8 88% 60% / 0.4); }
+.option.right { border-color: var(--grow); }
+.option.wrong { border-color: var(--alert); }
 .option.dim { opacity: 0.45; }
 
 .optionMark {
-  flex: none; width: 22px; height: 22px; border-radius: 50%;
+  flex: none; width: 20px; height: 20px; border-radius: 50%;
   display: grid; place-items: center;
-  font-size: 11px; font-weight: 700;
-  background: var(--glass-3); border: 1px solid var(--rim); color: var(--ink-mute);
+  font-family: var(--mono); font-size: 10px; font-weight: 400;
+  background: transparent; border: 1px solid var(--rim); color: var(--ink-faint);
 }
-.option.right .optionMark { background: var(--grow); border-color: var(--grow); color: #04160e; }
-.option.wrong .optionMark { background: var(--alert); border-color: var(--alert); color: #1a0603; }
+.option.right .optionMark { background: var(--grow); border-color: var(--grow); color: var(--canvas); }
+.option.wrong .optionMark { background: var(--alert); border-color: var(--alert); color: var(--canvas); }
 
-.verdict { margin-top: 14px; font-size: 13.5px; font-weight: 640; letter-spacing: -0.015em; }
+.verdict { margin-top: 16px; font-family: var(--mono); font-size: 11px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; }
 .verdict.ok { color: var(--grow); }
 .verdict.no { color: var(--attend); }
 
@@ -72,12 +71,12 @@
 .grade {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
   min-height: 50px; padding: 8px 6px; border-radius: var(--r-md);
-  background: var(--glass-2); border: 1px solid var(--rim); color: var(--ink);
-  font-size: 13px; font-weight: 620; font-family: inherit; cursor: pointer;
-  transition: transform var(--fast) var(--spring), background var(--fast) var(--ease);
+  background: transparent; border: 1px solid var(--rim); color: var(--ink);
+  font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer;
+  transition: border-color var(--fast) var(--ease);
 }
-.grade:active { transform: scale(0.94); }
-.grade em { font-style: normal; font-size: 10.5px; font-weight: 560; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+.grade:hover { border-color: var(--ink); }
+.grade em { font-style: normal; font-family: var(--mono); font-size: 10px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 .grade.again { border-color: hsl(8 88% 60% / 0.4); color: var(--alert); }
 .grade.hard { border-color: hsl(38 92% 55% / 0.36); color: var(--attend); }
 .grade.good { border-color: var(--accent-line); color: var(--accent); }

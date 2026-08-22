@@ -192,40 +192,43 @@ device voices than the defaults. iOS stops narration when the screen locks.
 
 ## Design notes
 
-The interface follows Apple's rules, because they suit teaching: a black canvas,
-one very large line of type per idea, and space doing the work that borders used to.
-Headlines are set in SF Pro Display at weight 600 with tight tracking, body text at 17px,
-and each section gets room around it rather than a dividing line.
+The interface is minimal, and the minimalism is the structure rather than the absence
+of it. There are no cards: content is divided by hairline rules and held on a shared left
+edge. That distinction matters, because stripping the fills out without adding the rules
+is how a minimal page turns into text floating in a void — the rules and the alignment
+are what the boxes were for.
 
-Colour is chosen for learning rather than decoration. Black is the canvas so nothing
-competes with the words on it. One system blue marks every action and only actions — the
-call to action never changes colour, because a button that recolours per stage stops
-reading as the button. Green always means progress and never warning, amber carries
-attention without triggering the anxiety response red does, and red is kept for the things
-that are genuinely critical. Each stage still has its own hue, which now tints that
-stage's marks — its number, its tags, the rule down the side of a lesson card — rather
-than repainting the room. Distinct colours create separate memory traces, and a tint is
-enough to do that.
+Weight comes from the type scale. Eleven-pixel monospaced metadata sits directly above a
+sixty-pixel headline, and that jump is a bigger gesture than any border, shadow or glow.
+Everything that is counted — stage numbers, durations, percentages, readiness, streaks —
+is set in monospace with tabular figures, so the app reads as an instrument and the
+numbers line up in a column whether or not anyone is looking for that.
 
-Surfaces are flat and separated by tone: a card is the canvas lifted a few per cent, with
-a hairline only where that difference is too small to read on its own. Blur is reserved
-for the three things that genuinely sit over moving content — the sticky header, the dock
-and the lesson sheet. Motion uses one easing curve, sheets are drag-to-dismiss, and
-everything collapses gracefully under `prefers-reduced-motion`. Text passes WCAG AA
-contrast in both the dark and light themes; the light theme deliberately carries one
-secondary grey rather than two, because anything lighter fails against white at the sizes
-it is used.
+Colour is a signal rather than a skin. The canvas is black and the ink is white; an
+action is the ink inverted, which is the strongest mark available and costs no colour at
+all. Each stage has one hue, and it appears in exactly four places: the stage number, its
+progress, its links and the pointer response. Green always means progress and never
+warning, amber carries attention without triggering the anxiety response red does, and red
+is kept for the things that are genuinely critical. Distinct colours create separate
+memory traces per stage, and a mark is enough to do that.
 
-The page is not a column on a black field. Sections paint full-bleed bands in a second
-tone behind a readable measure, so a long scroll has a rhythm; and above 2000px the whole
-design scales rather than just the column — type, spacing, controls and the nav rail grow
-together, and the extra room goes into more columns. A 4K screen gets a bigger version of
-the same page, not the same page with a desert either side.
+Nothing moves that is not answering the pointer. There is no ambient gradient, no grain,
+no glow, no parallax and no lift on hover — the hover state is a title taking the stage
+colour. Sheets are still drag-to-dismiss, and everything collapses gracefully under
+`prefers-reduced-motion`. Text passes WCAG AA contrast in both the dark and light themes;
+the light theme deliberately carries one secondary grey rather than two, because anything
+lighter fails against white at the sizes it is used.
+
+Sections are separated by a rule and named in the same small monospace as every other
+label, which is what used to take full-bleed alternating bands and forty lines of CSS.
+Above 2000px the whole design scales rather than just the column — type, spacing, rules
+and the nav rail grow together, and the extra room goes into more columns. A 4K screen
+gets a bigger version of the same page, not the same page with a desert either side.
 
 Built phone-first and installable to the Home Screen, then widened out. Above 1024px the
-bottom dock becomes a floating vertical rail, the hero centres and fills the first screen
-with the numbers underneath it, card grids go multi-column, and the lesson reader stops
-being a bottom sheet and becomes a centred dialog. All of that lives in `app/desktop.css`
+bottom dock becomes a floating vertical rail, the thirteen stages read as an index with a
+hanging number column, card grids go multi-column, and the lesson reader stops being a
+bottom sheet and becomes a centred dialog. All of that lives in `app/desktop.css`
 behind a single media query, so a desktop rule can never affect a phone.
 
 ## Offline and backups

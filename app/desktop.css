@@ -68,28 +68,28 @@
    * claim alone in the middle of the screen and puts the numbers underneath —
    * splitting them side by side makes the headline compete with a stat grid.
    */
-  .hero { padding: 88px 0 64px; }
-  .heroSide { margin-top: 48px; }
+  .hero { padding: 100px 0 72px; }
+  .heroSide { margin-top: 56px; }
 
   h1 { font-size: clamp(48px, 4.4vw, 68px); }
   .lede { font-size: 21px; max-width: 34em; }
   .heroActions { margin-top: 30px; }
-  .btn { min-height: 50px; padding: 0 26px; font-size: 17px; }
+  .btn { min-height: 48px; padding: 0 24px; font-size: 16px; }
 
-  .stat { padding: 22px; }
-  .statNum { font-size: 34px; }
+  .stat { padding: 22px 20px 22px 0; }
+  .statNum { font-size: 38px; }
   .ringWrap { margin-top: 14px; padding: 20px; text-align: left; }
 
   /* ---------- sections ---------- */
 
-  .sectionHead { margin: 72px 0 22px; }
-  h2 { font-size: clamp(30px, 2.6vw, 40px); }
+  .sectionHead { margin: 88px 0 30px; padding-top: 28px; }
+  h2 { font-size: clamp(30px, 2.4vw, 40px); }
   .sectionNote { font-size: 16px; max-width: 62ch; }
 
   /* Two columns for anything that is a grid of independent cards. */
-  .trackGrid { grid-template-columns: 1fr 1fr; gap: 14px; }
-  .sourceGrid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .glossList { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .trackGrid { grid-template-columns: 1fr 1fr; gap: 0 40px; }
+  .sourceGrid { grid-template-columns: repeat(3, 1fr); gap: 0 32px; }
+  .glossList { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
   .srsGrid { gap: 12px; }
   .srsTile { padding: 18px 14px; }
   .srsNum { font-size: 28px; }
@@ -98,15 +98,15 @@
      grows tall inside a two-column grid drags its neighbour around. */
   .stageList, .roleGrid { max-width: 860px; }
 
-  .stageBtn, .roleBtn { padding: 20px; }
-  .stageTitle { font-size: 18px; }
-  .stageSub { font-size: 14.5px; }
-  .stagePad, .rolePad { padding: 0 20px 20px; }
-  .lesson { padding: 13px 14px; }
+  .stageBtn, .roleBtn { padding: 26px 0; }
+  .stageTitle { font-size: 22px; }
+  .stageSub { font-size: 15px; }
+  .stagePad, .rolePad { padding: 0 0 30px 52px; }
+  .lesson { padding: 13px 0; }
   .lessonTitle { font-size: 15.5px; }
   .lessonOne { font-size: 13px; -webkit-line-clamp: 2; }
 
-  .blocks { grid-template-columns: repeat(3, 1fr); }
+  .blocks { grid-template-columns: repeat(3, 1fr); gap: 0 32px; }
 
   /* ---------- search and filters ---------- */
 
@@ -124,55 +124,36 @@
     transform: translate(-50%, -50%);
     border-radius: var(--r-xl);
     border: 1px solid var(--rim);
-    animation: dialogIn var(--slow) var(--sheet);
+    animation: dialogIn var(--base) var(--ease);
   }
   @keyframes dialogIn {
-    from { opacity: 0; transform: translate(-50%, calc(-50% + 28px)) scale(0.97); }
+    from { opacity: 0; transform: translate(-50%, calc(-50% + 10px)); }
   }
   .sheet.out { animation: dialogOut var(--base) var(--sheet) forwards; }
   @keyframes dialogOut {
-    to { opacity: 0; transform: translate(-50%, calc(-50% + 20px)) scale(0.98); }
+    to { opacity: 0; transform: translate(-50%, calc(-50% + 10px)); }
   }
 
   /* The drag handle is a touch affordance; on a pointer device it is clutter. */
   .grabber { display: none; }
-  .sheetHead { padding: 24px 28px 16px; }
-  .sheetTitle { font-size: 27px; }
-  .sheetBody { padding: 22px 28px 26px; }
-  .sheetFoot { padding: 16px 28px; }
-  .prose p { font-size: 17px; max-width: 68ch; }
-  .readText { font-size: 16.5px; }
-  .readCard.key .readText { font-size: 19px; }
+  .sheetHead { padding: 26px 30px 20px; }
+  .sheetTitle { font-size: 30px; }
+  .sheetBody { padding: 26px 30px 30px; }
+  .sheetFoot { padding: 16px 30px; }
+  .prose p { font-size: 17px; max-width: 66ch; }
+  .readText { font-size: 17px; }
+  .readCard.key .readText { font-size: 26px; }
 
   /* Two columns of jargon, since the definitions are short. */
-  .wordList { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .wordList { display: grid; grid-template-columns: 1fr 1fr; gap: 0 40px; }
 
   .options { max-width: 68ch; }
 
   /* ---------- pointer affordances ---------- */
 
-  .lesson:hover { transform: translateX(2px); background: var(--glass-2); }
-  .stage:hover, .role:hover { background: var(--glass-2); }
-  .stage, .role, .lesson { transition: border-color var(--fast) var(--ease), transform var(--fast) var(--spring), background var(--fast) var(--ease); }
+  .lesson:hover .lessonTitle, .role:hover .roleTitle { color: var(--accent); }
 
-  /* ---------- ambient depth ---------- */
-
-  .orb { width: 68vw; height: 34vw; top: -18vw; }
 }
 
 /* Widths above this are handled in shell.css, which owns the measure. */
 
-/*
- * Scroll-linked parallax on the ambient glow. --scroll is set by the existing
- * scroll handler, so this costs one custom property update per frame and no
- * extra listener. Transform only, so it stays on the compositor. It is applied
- * to the container rather than the glow itself, which owns its own transform
- * for centring.
- */
-.field {
-  transform: translate3d(0, calc(var(--scroll, 0) * -70px), 0);
-  will-change: transform;
-}
-@media (prefers-reduced-motion: reduce) {
-  .field { transform: none; }
-}

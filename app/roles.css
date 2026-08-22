@@ -1,24 +1,25 @@
 /* Job adverts broken into requirements, and companion course mapping. */
 
-.roleGrid { display: flex; flex-direction: column; gap: 12px; }
+.roleGrid { display: flex; flex-direction: column; gap: 0; }
 
-.role { border-radius: var(--r-lg); }
+.role { border-radius: 0; border-top: 1px solid var(--rim); }
+.roleGrid > .role:last-child { border-bottom: 1px solid var(--rim); }
 
 .roleBtn {
   width: 100%; display: flex; align-items: center; gap: 13px;
-  padding: 15px; background: transparent; border: 0; color: inherit;
+  padding: 20px 0; background: transparent; border: 0; color: inherit;
   text-align: left; cursor: pointer; font-family: inherit;
 }
 
 .roleRing { position: relative; width: 52px; height: 52px; flex: none; }
 .roleRing svg { display: block; }
 .roleRing .ringTrack { stroke: var(--glass-3); }
-.roleRingPct { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12px; font-weight: 700; letter-spacing: -0.03em; }
+.roleRingPct { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: -0.03em; }
 
 .roleMain { flex: 1; min-width: 0; }
-.roleTitle { font-size: 16px; font-weight: 650; letter-spacing: -0.024em; line-height: 1.25; }
-.roleOrg { margin-top: 2px; font-size: 12.5px; color: var(--accent); font-weight: 560; }
-.roleReady { margin-top: 5px; font-size: 12px; color: var(--ink-mute); font-variant-numeric: tabular-nums; }
+.roleTitle { font-size: 17px; font-weight: 600; letter-spacing: -0.024em; line-height: 1.25; transition: color var(--fast) var(--ease); }
+.roleOrg { margin-top: 4px; font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.06em; }
+.roleReady { margin-top: 7px; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 
 .role .caret { flex: none; }
 .role.open .caret { transform: rotate(180deg); }
@@ -26,82 +27,81 @@
 .roleBody { display: grid; grid-template-rows: 0fr; transition: grid-template-rows var(--base) var(--sheet); }
 .role.open .roleBody { grid-template-rows: 1fr; }
 .roleBodyInner { overflow: hidden; }
-.rolePad { padding: 0 15px 15px; }
+.rolePad { padding: 0 0 24px 0; }
 
 .reqGroup { margin-top: 14px; }
-.reqGroupLabel { font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; }
+.reqGroupLabel { font-family: var(--mono); font-size: 10px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 4px; }
 
-.req { padding: 12px 13px; border-radius: var(--r-md); background: var(--glass); border: 1px solid var(--rim); margin-bottom: 8px; }
-.req.covered { background: hsl(152 68% 46% / 0.09); border-color: hsl(152 68% 55% / 0.28); }
+.req { padding: 14px 0; border-radius: 0; background: transparent; border: 0; border-top: 1px solid var(--rim-bright); margin-bottom: 0; }
 
 .reqTop { display: flex; align-items: flex-start; gap: 9px; }
 .reqTick {
-  flex: none; min-width: 26px; height: 20px; padding: 0 5px;
-  border-radius: var(--r-full);
-  display: grid; place-items: center;
-  font-size: 10px; font-weight: 700; font-variant-numeric: tabular-nums;
-  background: var(--glass-3); border: 1px solid var(--rim); color: var(--ink-mute);
+  flex: none; min-width: 26px; height: 18px; padding: 0;
+  border-radius: 0;
+  display: grid; place-items: start;
+  font-family: var(--mono); font-size: 10px; font-weight: 400; font-variant-numeric: tabular-nums;
+  background: transparent; border: 0; color: var(--ink-faint);
 }
-.req.covered .reqTick { background: var(--grow); border-color: var(--grow); color: #04160e; }
-.reqText { font-size: 14px; font-weight: 560; line-height: 1.4; letter-spacing: -0.015em; }
+.req.covered .reqTick { background: transparent; border: 0; color: var(--grow); }
+.reqText { font-size: 15px; font-weight: 400; line-height: 1.45; letter-spacing: -0.015em; }
+.req.covered .reqText { color: var(--ink-mute); }
 .reqMeans { margin-top: 6px; padding-left: 35px; font-size: 13px; line-height: 1.5; color: var(--ink-mute); }
 
-.reqLessons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; padding-left: 35px; }
+.reqLessons { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 12px; padding-left: 35px; }
 .reqChip {
-  min-height: 32px; padding: 6px 11px; border-radius: var(--r-full);
-  background: var(--glass-2); border: 1px solid var(--rim); color: var(--ink-soft);
-  font-size: 12px; font-weight: 560; font-family: inherit; text-align: left;
+  min-height: 30px; padding: 4px 0; border-radius: 0;
+  background: transparent; border: 0; border-bottom: 1px solid var(--rim); color: var(--ink-mute);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; text-align: left;
   cursor: pointer; line-height: 1.3;
   transition: transform var(--fast) var(--spring), border-color var(--fast) var(--ease), color var(--fast) var(--ease);
 }
-.reqChip:active { transform: scale(0.94); }
-.reqChip:hover { border-color: var(--accent-line); color: var(--accent); }
-.reqChip.done { color: var(--grow); border-color: hsl(152 68% 55% / 0.34); }
+.reqChip:hover { border-bottom-color: var(--accent); color: var(--accent); }
+.reqChip.done { color: var(--grow); }
 
 .evidenceList { margin: 7px 0 0; padding-left: 18px; }
 .evidenceList li { font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); margin-bottom: 5px; }
 
 /* ---------- companion courses ---------- */
 
-.companion { padding: 16px; border-radius: var(--r-lg); }
+.companion { padding: 24px 0; border-radius: 0; border-top: 1px solid var(--rim); }
 .companionTop { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
-.companionName { font-size: 15.5px; font-weight: 650; letter-spacing: -0.022em; }
-.companionOrg { margin-top: 2px; font-size: 12px; color: var(--ink-mute); }
+.companionName { font-size: 17px; font-weight: 600; letter-spacing: -0.022em; }
+.companionOrg { margin-top: 4px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--ink-faint); }
 .companionNote { margin-top: 10px; font-size: 13.5px; line-height: 1.55; color: var(--ink-soft); }
 
-.weekList { display: flex; flex-direction: column; gap: 7px; margin-top: 13px; }
-.week { padding: 11px 13px; border-radius: var(--r-md); background: var(--glass); border: 1px solid var(--rim); }
+.weekList { display: flex; flex-direction: column; gap: 0; margin-top: 18px; }
+.week { padding: 13px 0; border-radius: 0; background: transparent; border: 0; border-top: 1px solid var(--rim-bright); }
 .weekTop { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .weekName { font-size: 13.5px; font-weight: 620; letter-spacing: -0.018em; }
 .weekStages { display: flex; gap: 4px; flex: none; }
 .weekStage {
-  min-width: 26px; padding: 3px 6px; border-radius: var(--r-xs);
-  background: var(--accent-soft); border: 1px solid var(--accent-line); color: var(--accent);
-  font-size: 10.5px; font-weight: 700; text-align: center; font-variant-numeric: tabular-nums;
+  min-width: 22px; padding: 0; border-radius: 0;
+  background: transparent; border: 0; color: var(--accent);
+  font-family: var(--mono); font-size: 11px; font-weight: 400; text-align: right; font-variant-numeric: tabular-nums;
 }
 .weekCovers { margin-top: 6px; font-size: 12.5px; line-height: 1.52; color: var(--ink-mute); }
 
-.roleSource { margin: -4px 0 12px; font-size: 11.5px; color: var(--ink-faint); }
+.roleSource { margin: 0 0 16px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); }
 .roleSource a { color: var(--ink-mute); }
 
-.marketCard { padding: 16px; border-radius: var(--r-lg); margin-top: 14px; }
+.marketCard { padding: 24px 0 0; border-radius: 0; border-top: 1px solid var(--rim); margin-top: 24px; }
 .marketTop { display: flex; align-items: flex-start; gap: 11px; }
 .marketFlag { font-size: 18px; color: var(--accent); line-height: 1.2; }
-.marketTitle { font-size: 15.5px; font-weight: 650; letter-spacing: -0.022em; }
-.marketSource { margin-top: 2px; font-size: 11.5px; color: var(--ink-faint); }
+.marketTitle { font-size: 16px; font-weight: 600; letter-spacing: -0.022em; }
+.marketSource { margin-top: 4px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); }
 .marketSource a { color: var(--ink-mute); }
 .marketList { margin: 12px 0 0; padding-left: 18px; }
 .marketList li { font-size: 13.5px; line-height: 1.58; color: var(--ink-soft); margin-bottom: 7px; }
 
 .roleTitleRow { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
 .roleLevel {
-  flex: none; padding: 2px 7px; border-radius: var(--r-full);
-  font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
-  background: var(--glass-3); border: 1px solid var(--rim); color: var(--ink-mute);
+  flex: none; padding: 0; border-radius: 0;
+  font-family: var(--mono); font-size: 9.5px; font-weight: 400; letter-spacing: 0.12em;
+  background: transparent; border: 0; color: var(--ink-faint);
 }
-.roleLevel.lINTERN { background: hsl(152 68% 46% / 0.14); border-color: hsl(152 68% 55% / 0.4); color: var(--grow); }
-.roleLevel.lJUNIOR { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
-.roleLevel.lNEXTRUNG { background: hsl(38 92% 55% / 0.12); border-color: hsl(38 92% 55% / 0.34); color: var(--attend); }
+.roleLevel.lINTERN { color: var(--grow); }
+.roleLevel.lJUNIOR { color: var(--accent); }
+.roleLevel.lNEXTRUNG { color: var(--attend); }
 /* Deliberately understated: this rung is years away, so it should not compete
    with the reachable ones for attention. */
-.roleLevel.lSENIOR { background: var(--glass-2); border-color: var(--rim); color: var(--ink-mute); }
+.roleLevel.lSENIOR { color: var(--ink-faint); }
