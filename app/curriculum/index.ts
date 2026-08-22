@@ -1,26 +1,24 @@
-import type { Lesson, Question, Stage } from './types';
-import { s00 } from './s00';
-import { s01 } from './s01';
-import { s02 } from './s02';
-import { s03 } from './s03';
-import { s04 } from './s04';
-import { s05 } from './s05';
-import { s06 } from './s06';
-import { s07 } from './s07';
-import { s08 } from './s08';
-import { s09 } from './s09';
-import { s10 } from './s10';
-import { s11 } from './s11';
-import { s12 } from './s12';
-import { quizA } from './quiz-a';
-import { quizB } from './quiz-b';
-import { quizC } from './quiz-c';
-import { quizD } from './quiz-d';
+/**
+ * What the app needs before anyone has clicked anything.
+ *
+ * The roadmap is drawn from `light.ts`, which is generated from the stage files
+ * and carries a stage's metadata plus each lesson's title, one line and length —
+ * and nothing else. The prose, the questions, the definitions and the job
+ * adverts live in `./full` and `./roles`, both reached by dynamic import.
+ *
+ * The light stage has the same shape as the real one minus the heavy fields,
+ * which is what lets every piece of navigation, filtering and lookup in the app
+ * work against it unchanged.
+ */
 
-export type { Lesson, Stage, Word, Level, Question } from './types';
-export { roles, roleLessons, companions, marketNote, type Role, type Requirement } from './roles';
+import { stages } from './light';
 
-export const stages: Stage[] = [s00, s01, s02, s03, s04, s05, s06, s07, s08, s09, s10, s11, s12];
+export { stages, cardIdsByLesson, glossaryCount, totalQuestions } from './light';
+
+/* Within the app, a Stage is what the roadmap draws. The full ones — the
+   versions that carry prose — are named so it is obvious which you have. */
+export type { LightStage as Stage, LightLesson as Lesson } from './light';
+export type { Lesson as FullLesson, Stage as FullStage, Word, Level, Question } from './types';
 
 export const filters = ['ALL', 'FOUNDATIONS', 'BUILD', 'OFFENSE', 'DEFENSE', 'CLOUD', 'RESEARCH', 'LEADERSHIP', 'CAREER'];
 
@@ -103,9 +101,7 @@ export const sources = [
   { name: 'NIST PQC standards', kind: 'CRYPTO', href: 'https://csrc.nist.gov/projects/post-quantum-cryptography', why: 'FIPS 203, 204 and 205 — the post-quantum migration you will live through.' },
 ];
 
-export const allLessons: { lesson: Lesson; stage: Stage }[] = stages.flatMap((stage) =>
-  stage.lessons.map((lesson) => ({ lesson, stage })),
-);
+export const allLessons = stages.flatMap((stage) => stage.lessons.map((lesson) => ({ lesson, stage })));
 
 export const totalLessons = allLessons.length;
 export const totalHours = stages.reduce((sum, stage) => sum + stage.hours, 0);
@@ -114,43 +110,3 @@ export const totalReadMins = stages.reduce(
   (sum, stage) => sum + stage.lessons.reduce((n, l) => n + l.mins, 0),
   0,
 );
-
-/** Flat jargon dictionary, deduplicated by term, for the glossary view. */
-export const glossary = [
-  ...new Map(
-    allLessons
-      .flatMap(({ lesson, stage }) => lesson.words.map((w) => ({ ...w, stage: stage.number, lessonId: lesson.id })))
-      .map((w) => [w.term.toLowerCase(), w]),
-  ).values(),
-].sort((a, b) => a.term.localeCompare(b.term));
-
-export const questions: Question[] = [...quizA, ...quizB, ...quizC, ...quizD];
-
-export const questionsByLesson = new Map<string, Question[]>();
-for (const q of questions) {
-  const list = questionsByLesson.get(q.lesson) ?? [];
-  list.push(q);
-  questionsByLesson.set(q.lesson, list);
-}
-
-export const totalQuestions = questions.length;
-
-/**
- * One review card. Two kinds, because they train different things:
- * a question tests whether you understood, a term tests whether you can recall.
- */
-export type Card =
-  | { kind: 'quiz'; id: string; lesson: string; question: Question }
-  | { kind: 'term'; id: string; lesson: string; term: string; means: string };
-
-export const cards: Card[] = [
-  ...questions.map((question) => ({ kind: 'quiz' as const, id: `q:${question.id}`, lesson: question.lesson, question })),
-  ...glossary.map((w) => ({ kind: 'term' as const, id: `w:${w.term}`, lesson: w.lessonId, term: w.term, means: w.means })),
-];
-
-export const cardsById = new Map(cards.map((c) => [c.id, c]));
-
-/** Cards belonging to one lesson, questions before terms. */
-export function cardsForLesson(lessonId: string): Card[] {
-  return cards.filter((c) => c.lesson === lessonId);
-}

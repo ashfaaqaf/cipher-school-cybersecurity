@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, type CSSProperties } from 'react';
-import { allLessons, companions, marketNote, roleLessons, roles, type Requirement, type Role } from './curriculum';
+import { allLessons } from './curriculum';
+import { companions, marketNote, roleLessons, roles, type Requirement, type Role } from './curriculum/roles';
 
 /** Find a lesson by id so a requirement can link straight into the reader. */
 const byId = new Map(allLessons.map(({ lesson, stage }) => [lesson.id, { lesson, stage }]));

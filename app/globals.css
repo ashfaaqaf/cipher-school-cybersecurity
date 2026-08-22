@@ -706,6 +706,10 @@ h2 {
 .prose p { margin: 0 0 18px; font-size: 16.5px; line-height: 1.7; color: var(--ink-soft); letter-spacing: -0.012em; }
 .prose p:last-child { margin-bottom: 0; }
 
+/* Shown in the fraction of a second between a lesson opening and its prose
+   arriving, on a cold load where the idle prefetch has not landed yet. */
+.readWait { margin: 0; font-size: 17px; line-height: 1.6; color: var(--ink-mute); }
+
 .wordList { display: flex; flex-direction: column; gap: 0; }
 .word { padding: 13px 0; border-radius: 0; background: transparent; border: 0; border-top: 1px solid var(--rim-bright); }
 .wordList > .word:first-child { border-top: 0; }

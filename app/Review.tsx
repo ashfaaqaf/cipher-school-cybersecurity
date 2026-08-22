@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { cardsById, questionsByLesson, type Card } from './curriculum';
+import { cardsById, questionsByLesson, type Card } from './curriculum/full';
 import { deckStats, dueNow, intervalLabel, schedule, today, type Deck, type Grade } from './srs';
 
 const GRADES: { g: Grade; label: string; tone: string }[] = [

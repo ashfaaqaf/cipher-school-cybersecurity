@@ -1,6 +1,6 @@
 'use client';
 
-import type { Stage } from './curriculum';
+import type { FullStage } from './curriculum';
 
 /**
  * A whole stage laid out for paper.
@@ -10,7 +10,7 @@ import type { Stage } from './curriculum';
  * gradients and dark backgrounds all vanish here — they cost ink and read badly
  * in monochrome — leaving plain black-on-white typography.
  */
-export function PrintSheet({ stage }: { stage: Stage }) {
+export function PrintSheet({ stage }: { stage: FullStage }) {
   return (
     <div className="printSheet" aria-hidden="true">
       <header className="pHead">

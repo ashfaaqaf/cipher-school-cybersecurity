@@ -12,9 +12,9 @@ import {
 } from 'react';
 import {
   allLessons,
-  cardsForLesson,
+  cardIdsByLesson,
   filters,
-  glossary,
+  glossaryCount,
   sources,
   stages,
   totalHours,
@@ -23,11 +23,17 @@ import {
   totalReadMins,
   totalWeeks,
   tracks,
-  type Lesson,
+  type FullLesson,
+  type FullStage,
   type Stage,
 } from './curriculum';
-import { LessonQuiz, ReviewView } from './Review';
-import { CompanionSection, RolesSection } from './Roles';
+import { loadFull, prefetchCurriculum, useFull } from './curriculum/load';
+import dynamic from 'next/dynamic';
+
+const LessonQuiz = dynamic(() => import('./Review').then((m) => m.LessonQuiz), { ssr: false });
+const ReviewView = dynamic(() => import('./Review').then((m) => m.ReviewView), { ssr: false });
+const RolesSection = dynamic(() => import('./Roles').then((m) => m.RolesSection), { ssr: false });
+const CompanionSection = dynamic(() => import('./Roles').then((m) => m.CompanionSection), { ssr: false });
 import { deckStats, schedule, today, type Deck, type Grade } from './srs';
 import { useSpeaker } from './voice';
 import { applyBackup, downloadBackup, type RestoreResult } from './backup';
@@ -65,8 +71,12 @@ const views: { id: View; icon: string; label: string }[] = [
   { id: 'sources', icon: '❖', label: 'Sources' },
 ];
 
-/* The curriculum is static, so the search corpus is built once, not per render. */
-const CORPUS = buildCorpus(allLessons);
+/*
+ * The corpus needs every word of every lesson, so it is built the first time
+ * the heavy half of the curriculum is in memory — once, not per render, and
+ * not before anyone has typed anything.
+ */
+let CORPUS: ReturnType<typeof buildCorpus> | null = null;
 
 /** Light haptic tap where the device supports it. Silent everywhere else. */
 function tap(ms = 8) {
@@ -95,6 +105,9 @@ export default function Home() {
   const [filter, setFilter] = useState('ALL');
   const [theme, setTheme] = useState<'night' | 'day'>('night');
   const headerRef = useRef<HTMLElement | null>(null);
+  /* The prose, the questions and the definitions. Null only until the idle
+     prefetch lands, which is well before anyone has clicked into a lesson. */
+  const full = useFull();
   const [popped, setPopped] = useState<string | null>(null);
   const [installOpen, setInstallOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
@@ -102,7 +115,7 @@ export default function Home() {
   const [offlineReady, setOfflineReady] = useState(false);
   const [updateReady, setUpdateReady] = useState(false);
   const [restore, setRestore] = useState<RestoreResult | null>(null);
-  const [printing, setPrinting] = useState<Stage | null>(null);
+  const [printing, setPrinting] = useState<FullStage | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement | null>(null);
   const readerRef = useRef<HTMLDivElement | null>(null);
@@ -170,9 +183,14 @@ export default function Home() {
 
   /* ---------- spaced repetition ---------- */
 
-  /** A card is only in play once you have read the lesson it came from. */
+  /*
+   * A card is only in play once you have read the lesson it came from. Only the
+   * ids are needed to work that out, and the ids are in the light index — so
+   * the review count on the dock does not drag two hundred questions and four
+   * hundred definitions into the first bundle to display a number.
+   */
   const unlocked = useMemo(
-    () => [...completed].flatMap((lessonId) => cardsForLesson(lessonId).map((c) => c.id)),
+    () => [...completed].flatMap((lessonId) => cardIdsByLesson[lessonId] ?? []),
     [completed],
   );
 
@@ -191,6 +209,10 @@ export default function Home() {
     logWork({ cards: 1, mins: CARD_MINS });
     tap(g === 0 ? 18 : 8);
   }, [logWork]);
+
+  useEffect(() => {
+    prefetchCurriculum();
+  }, []);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -536,21 +558,25 @@ export default function Home() {
         stage.lessons.some(
           (l) =>
             l.title.toLowerCase().includes(q) ||
-            l.oneLine.toLowerCase().includes(q) ||
-            l.words.some((w) => w.term.toLowerCase().includes(q)),
+            l.oneLine.toLowerCase().includes(q),
         )
       );
     });
   }, [search, filter]);
 
   /** Full-text hits, used instead of the stage list whenever there is a query. */
-  const hits = useMemo(() => (view === 'learn' ? searchIn(CORPUS, search) : []), [search, view]);
+  const hits = useMemo(() => {
+    if (view !== 'learn' || !full) return [];
+    CORPUS ??= buildCorpus(full.allLessons);
+    return searchIn(CORPUS, search);
+  }, [search, view, full]);
 
   const visibleWords = useMemo(() => {
+    if (!full) return [];
     const q = search.trim().toLowerCase();
-    if (!q) return glossary;
-    return glossary.filter((w) => w.term.toLowerCase().includes(q) || w.means.toLowerCase().includes(q));
-  }, [search]);
+    if (!q) return full.glossary;
+    return full.glossary.filter((w) => w.term.toLowerCase().includes(q) || w.means.toLowerCase().includes(q));
+  }, [search, full]);
 
   const stageDone = useCallback(
     (stage: Stage) => stage.lessons.filter((l) => completed.has(l.id)).length,
@@ -563,6 +589,8 @@ export default function Home() {
   /* ---------- reader ---------- */
 
   const current = reader ? { stage: stages[reader.s], lesson: stages[reader.s].lessons[reader.l] } : null;
+  /* The lesson with its prose, once the heavy module is in memory. */
+  const readerLesson = current && full ? (full.lessonById.get(current.lesson.id) ?? null) : null;
   const flatIndex = reader ? allLessons.findIndex((x) => x.lesson.id === current!.lesson.id) : -1;
 
   const openReader = useCallback((s: number, l: number) => {
@@ -610,13 +638,19 @@ export default function Home() {
 
   /** Read the open lesson aloud, from the top or from wherever narration stopped. */
   const listen = useCallback(() => {
-    if (!current) return;
     if (speaker.speaking) {
       if (speaker.paused) speaker.resume();
       else speaker.pause();
       return;
     }
-    speaker.play(current.lesson);
+    /* Narration needs the prose, so it waits on the module rather than the
+       other way round. In practice the prefetch has long since landed. */
+    if (!current) return;
+    const id = current.lesson.id;
+    void loadFull().then((f) => {
+      const lesson = f.lessonById.get(id);
+      if (lesson) speaker.play(lesson);
+    });
   }, [current, speaker]);
 
   useEffect(() => {
@@ -773,7 +807,7 @@ export default function Home() {
               <div className="statLabel">Written lessons</div>
             </div>
             <div className="stat glass">
-              <div className="statNum">{glossary.length}</div>
+              <div className="statNum">{glossaryCount}</div>
               <div className="statLabel">Terms decoded</div>
             </div>
             <div className="stat glass">
@@ -1052,7 +1086,12 @@ export default function Home() {
                                 {r.label} ↗
                               </a>
                             ))}
-                            <button className="link" onClick={() => setPrinting(stage)}>
+                            <button
+                              className="link"
+                              onClick={() => {
+                                void loadFull().then((f) => setPrinting(f.stageByNumber.get(stage.number) ?? null));
+                              }}
+                            >
                               ⎙ Print or save as PDF
                             </button>
                           </div>
@@ -1083,7 +1122,7 @@ export default function Home() {
               <div className="kicker">Spaced repetition</div>
               <h2>Lock it in</h2>
               <p className="sectionNote">
-                Reading a lesson once teaches you almost nothing. {totalQuestions} questions and {glossary.length} terms
+                Reading a lesson once teaches you almost nothing. {totalQuestions} questions and {glossaryCount} terms
                 come back at growing intervals — just before you would have forgotten them, which is exactly when
                 recalling something makes it permanent.
               </p>
@@ -1129,7 +1168,7 @@ export default function Home() {
           <section id="words" className="band">
             <div className="sectionHead reveal">
               <div className="kicker">Jargon decoder</div>
-              <h2>{glossary.length} words, in human</h2>
+              <h2>{glossaryCount} words, in human</h2>
               <p className="sectionNote">
                 Every term this course uses, explained without using more jargon to explain it. This is the page to come
                 back to when someone says something that sounds like a spell.
@@ -1319,8 +1358,17 @@ export default function Home() {
             )}
 
             <div className="sheetBody">
-              <LessonBody lesson={current.lesson} activeLabel={speaker.speaking ? speaker.chunks[speaker.index]?.label : undefined} />
-              <LessonQuiz lessonId={current.lesson.id} onGrade={gradeCard} />
+              {readerLesson ? (
+                <>
+                  <LessonBody
+                    lesson={readerLesson}
+                    activeLabel={speaker.speaking ? speaker.chunks[speaker.index]?.label : undefined}
+                  />
+                  <LessonQuiz lessonId={current.lesson.id} onGrade={gradeCard} />
+                </>
+              ) : (
+                <p className="readWait">{current.lesson.oneLine}</p>
+              )}
             </div>
 
             <div className="sheetFoot">
@@ -1550,7 +1598,7 @@ export default function Home() {
 }
 
 /** The reading view for one lesson. Order matters: idea, comparison, detail, jargon, why, do, check. */
-function LessonBody({ lesson, activeLabel }: { lesson: Lesson; activeLabel?: string }) {
+function LessonBody({ lesson, activeLabel }: { lesson: FullLesson; activeLabel?: string }) {
   /* While narration runs, the section being spoken is marked so the eye can follow it. */
   const lit = (label: string) => (activeLabel === label ? ' reading' : '');
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { Lesson } from './curriculum';
+import type { FullLesson } from './curriculum';
 import { forSpeech } from './pronounce';
 
 /**
@@ -31,7 +31,7 @@ type Manifest = {
  * Must stay identical to lessonToChunks in scripts/voice-lib.mjs, or the marks drift.
  * Text is rewritten for speech here, so both engines pronounce the same way.
  */
-export function lessonToChunks(lesson: Lesson): Chunk[] {
+export function lessonToChunks(lesson: FullLesson): Chunk[] {
   const raw: Chunk[] = [
     { label: 'Title', text: lesson.title },
     { label: 'The whole idea', text: lesson.oneLine },
@@ -253,7 +253,7 @@ export function useSpeaker() {
   );
 
   const play = useCallback(
-    (lesson: Lesson, from = 0) => {
+    (lesson: FullLesson, from = 0) => {
       const list = lessonToChunks(lesson);
       chunksRef.current = list;
       setChunks(list);
