@@ -304,4 +304,28 @@ export const quizD: Question[] = [
     answer: 0,
     why: 'Adverts ask for test labs and personal projects by name, but only a documented lab is something a stranger can look at. An undocumented one is invisible.',
   },
+  {
+    id: '12-14-a', lesson: '12-14',
+    ask: 'Why does asking a stranger to refer you almost never work?',
+    options: [
+      'A referral spends their credibility, so they need to have seen your work first',
+      'Companies forbid employees from referring people they met online',
+      'Referrals are only allowed for senior roles',
+      'Recruiters ignore referred candidates to keep the process fair',
+    ],
+    answer: 0,
+    why: 'The person forwarding your CV wears part of the blame if you turn out badly. That is why the order runs: do the work publicly, be around the people who do it, and let the referral become the obvious thing rather than the favour.',
+  },
+  {
+    id: '12-14-b', lesson: '12-14',
+    ask: 'You get fifteen minutes with somebody working in a security team you admire. What is the best use of it?',
+    options: [
+      'Ask how they got there, say what you are learning, and show the one thing you built',
+      'Ask directly whether they have an opening and can refer you',
+      'Ask them to review your CV line by line',
+      'Explain everything you have studied so far in as much detail as fits',
+    ],
+    answer: 0,
+    why: 'Asking a near-stranger for a job puts them in an awkward position and is the fastest way to be remembered badly. Most people happily give fifteen minutes about their own path, and some of those conversations end with them forwarding you something.',
+  },
 ];
