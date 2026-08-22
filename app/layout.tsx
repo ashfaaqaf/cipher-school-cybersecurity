@@ -3,6 +3,7 @@ import './globals.css';
 import './study.css';
 import './roles.css';
 import './today.css';
+import './find.css';
 import './desktop.css';
 
 const title = 'Cipher School — Master Cybersecurity';

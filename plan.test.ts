@@ -18,6 +18,7 @@ import {
   record,
   shiftDay,
   streak,
+  summariseWeek,
   weekWindow,
   type History,
 } from './app/plan.ts';
@@ -148,6 +149,36 @@ hist = record(hist, '2026-08-22', { lessons: 1, mins: 7 });
 hist = record(hist, '2026-08-22', { cards: 12, mins: 3 });
 assert.deepEqual(hist['2026-08-22'], { lessons: 1, cards: 12, mins: 10 }, 'sessions accumulate');
 assert.equal(Object.keys(hist).length, 1, 'and stay on one day');
+
+// Lesson ids accumulate without duplicating, so a toggle does not inflate the week.
+let withIds: History = {};
+withIds = record(withIds, '2026-08-22', { lessons: 1, mins: 150, ids: ['00-1'] });
+withIds = record(withIds, '2026-08-22', { lessons: 1, mins: 150, ids: ['00-1', '00-2'] });
+assert.deepEqual(withIds['2026-08-22'].ids, ['00-1', '00-2'], 'ids are deduplicated');
+
+// --- the weekly review --------------------------------------------------
+
+const weekHist: History = {
+  '2026-08-10': { lessons: 2, cards: 0, mins: 300 },              // the week before
+  '2026-08-17': { lessons: 1, cards: 10, mins: 160, ids: ['00-1'] },
+  '2026-08-19': { lessons: 2, cards: 20, mins: 320, ids: ['00-2', '00-3'] },
+  '2026-08-22': { lessons: 0, cards: 5, mins: 2 },
+};
+
+const sum = summariseWeek(weekHist, '2026-08-22');
+assert.equal(sum.lessons, 3, 'lessons across the window are totalled');
+assert.equal(sum.cards, 35);
+assert.equal(sum.mins, 482);
+assert.equal(sum.activeDays, 3, 'three of the seven days had activity');
+assert.deepEqual(sum.lessonIds, ['00-1', '00-2', '00-3'], 'and it can name them');
+assert.equal(sum.prevMins, 300, 'the previous seven days are counted separately');
+
+// A record from before ids existed must not break the summary.
+assert.deepEqual(summariseWeek({ '2026-08-22': { lessons: 1, cards: 0, mins: 30 } }, '2026-08-22').lessonIds, [],
+  'older records simply contribute no names');
+
+const quiet = summariseWeek({}, '2026-08-22');
+assert.deepEqual(quiet, { mins: 0, lessons: 0, cards: 0, activeDays: 0, lessonIds: [], prevMins: 0 });
 
 const old = prune({ '2020-01-01': active(1), '2026-08-22': active(1) }, '2026-08-22');
 assert.deepEqual(Object.keys(old), ['2026-08-22'], 'history older than a year is dropped');

@@ -44,6 +44,7 @@
     "srs.test.ts",
     "pronounce.test.ts",
     "backup.test.ts",
-    "plan.test.ts"
+    "plan.test.ts",
+    "search.test.ts"
   ]
 }

@@ -18,6 +18,8 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **208 quiz questions**, two per lesson, with an explanation on every answer
 - **Spaced repetition** over all questions and terms, so what you read actually stays
 - **A daily plan** built from your weekly hour budget, with a streak and a week strip
+- **A weekly review** naming what you actually learned, against last week
+- **Full-text search** across every word, with the matching passage highlighted
 - **Narration** — listen to any lesson like an audiobook, with follow-along highlighting
 - **Progress tracking** stored only in your browser — nothing is uploaded anywhere
 - **Back up and restore** progress as a JSON file, so clearing your browser is survivable
@@ -51,6 +53,21 @@ line shows what it is actually asking for and links to the lessons that cover it
 readiness percentage that moves as you complete them. It also maps CS50's Introduction to
 Cybersecurity week by week onto these stages, so you are not studying the same material
 twice.
+
+## Search
+
+Search covers every word of every lesson — the explanations, the analogies, the jargon
+decoder, the exercises — not just titles. Results are ranked by where the match landed (a
+title match outranks a body match), every term must appear so multi-word queries narrow
+rather than widen, and each result shows the matching passage with the terms highlighted
+and a label saying which part of the lesson it came from.
+
+A title hit deliberately shows a snippet from somewhere other than the title, because
+repeating the title back as the excerpt tells the reader nothing. `node search.test.ts`
+covers the ranking, the tokeniser and the snippet windowing against the real curriculum.
+
+At 104 lessons a linear scan per keystroke is instant, so there is no index. If that ever
+stops being true, that is the moment to build one.
 
 ## The daily plan
 

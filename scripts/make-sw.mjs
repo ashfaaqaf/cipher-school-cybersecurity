@@ -24,6 +24,9 @@ const PRECACHE_EXT = new Set(['.html', '.css', '.js', '.png', '.svg', '.webmanif
    megabytes, and forcing that down on first visit would be hostile. It caches
    as you listen instead. */
 const SKIP_DIRS = new Set(['audio']);
+/* The worker must never precache itself: a cached worker is how you ship an
+   update that can never take effect. */
+const SKIP_FILES = new Set(['sw.js']);
 
 async function walk(dir, base = '') {
   const out = [];
@@ -32,7 +35,7 @@ async function walk(dir, base = '') {
     if (entry.isDirectory()) {
       if (SKIP_DIRS.has(entry.name)) continue;
       out.push(...(await walk(path.join(dir, entry.name), rel)));
-    } else if (PRECACHE_EXT.has(path.extname(entry.name))) {
+    } else if (PRECACHE_EXT.has(path.extname(entry.name)) && !SKIP_FILES.has(rel)) {
       out.push(rel);
     }
   }

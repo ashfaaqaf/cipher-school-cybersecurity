@@ -1,0 +1,85 @@
+/* Full-text search results, and the weekly review. */
+
+.results { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+.resultsHead { font-size: 12.5px; color: var(--ink-mute); margin-bottom: 2px; }
+
+.result {
+  width: 100%; padding: 13px 14px; border-radius: var(--r-md);
+  background: var(--glass); border: 1px solid var(--rim); color: inherit;
+  font-family: inherit; text-align: left; cursor: pointer;
+  transition: transform var(--fast) var(--spring), border-color var(--fast) var(--ease), background var(--fast) var(--ease);
+}
+.result:active { transform: scale(0.99); }
+.result:hover { background: var(--glass-2); border-color: var(--accent-line); }
+
+.resultTop { display: flex; align-items: center; gap: 9px; }
+.resultStage {
+  flex: none; min-width: 26px; padding: 3px 6px; border-radius: var(--r-xs);
+  background: var(--accent-soft); border: 1px solid var(--accent-line); color: var(--accent);
+  font-size: 10px; font-weight: 700; text-align: center; font-variant-numeric: tabular-nums;
+}
+.resultTitle { font-size: 14.5px; font-weight: 600; letter-spacing: -0.018em; line-height: 1.3; }
+.resultDone {
+  margin-left: auto; flex: none;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.07em;
+  padding: 2px 7px; border-radius: var(--r-full);
+  background: hsl(152 68% 46% / 0.14); border: 1px solid hsl(152 68% 55% / 0.34); color: var(--grow);
+}
+
+.resultSnippet { margin-top: 7px; font-size: 13px; line-height: 1.55; color: var(--ink-mute); }
+.resultWhere {
+  display: inline-block; margin-right: 7px; padding: 1px 6px; border-radius: var(--r-xs);
+  background: var(--glass-3); color: var(--ink-faint);
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  vertical-align: 1px;
+}
+
+/* Amber rather than the stage accent: the highlight has to stay legible as the
+   accent changes hue from card to card, and amber reads as "look here" without
+   the alarm that red carries. */
+.resultSnippet mark {
+  background: hsl(38 92% 55% / 0.26);
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 0 2px;
+  font-weight: 620;
+}
+
+/* ---------- weekly review ---------- */
+
+.week { padding: 18px; border-radius: var(--r-lg); margin-bottom: 14px; }
+.weekHead { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.weekBig { margin-top: 6px; font-size: 18px; font-weight: 640; letter-spacing: -0.026em; line-height: 1.3; }
+.deltaUp { color: var(--grow); }
+.deltaDown { color: var(--ink-faint); }
+
+.weekStats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+.weekStat {
+  padding: 12px 10px; border-radius: var(--r-md); text-align: center;
+  background: var(--glass); border: 1px solid var(--rim);
+}
+.weekStatNum { display: block; font-size: 20px; font-weight: 700; letter-spacing: -0.035em; }
+.weekStatLabel { display: block; margin-top: 2px; font-size: 10px; color: var(--ink-mute); letter-spacing: 0.05em; text-transform: uppercase; }
+
+.weekLearnedLabel { margin-top: 16px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+.weekLearned { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.learnedChip {
+  display: inline-flex; align-items: center; gap: 7px;
+  min-height: 34px; padding: 7px 12px; border-radius: var(--r-full);
+  background: hsl(152 68% 46% / 0.1); border: 1px solid hsl(152 68% 55% / 0.28); color: var(--ink-soft);
+  font-size: 12px; font-weight: 560; font-family: inherit; text-align: left;
+  cursor: pointer; line-height: 1.3;
+  transition: transform var(--fast) var(--spring);
+}
+.learnedChip:active { transform: scale(0.94); }
+.learnedStage { color: var(--grow); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.weekEmpty { margin: 14px 0 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-mute); }
+
+@media (min-width: 1024px) {
+  .week { padding: 24px; max-width: 860px; }
+  .results { max-width: 860px; }
+  .weekBig { font-size: 21px; }
+  .resultTitle { font-size: 15.5px; }
+  .resultSnippet { font-size: 13.5px; }
+}

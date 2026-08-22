@@ -9,7 +9,13 @@
  * without waiting for tomorrow.
  */
 
-export type DayRecord = { lessons: number; cards: number; mins: number };
+export type DayRecord = {
+  lessons: number;
+  cards: number;
+  mins: number;
+  /** Which lessons, so the weekly review can name them. Absent in older records. */
+  ids?: string[];
+};
 export type History = Record<string, DayRecord>;
 
 export type PlanSettings = {
@@ -170,20 +176,55 @@ export function buildPlan({ budgetMins, dueCards, nextLessons, doneToday }: Plan
 }
 
 /** Fold one session into the history. */
-export function record(
-  history: History,
-  day: string,
-  add: Partial<DayRecord>,
-): History {
+export function record(history: History, day: string, add: Partial<DayRecord>): History {
   const prev = history[day] ?? { lessons: 0, cards: 0, mins: 0 };
+  /* Deduplicated, because completing then un-completing then completing again
+     should not make the week look busier than it was. */
+  const ids = [...new Set([...(prev.ids ?? []), ...(add.ids ?? [])])];
   return {
     ...history,
     [day]: {
       lessons: prev.lessons + (add.lessons ?? 0),
       cards: prev.cards + (add.cards ?? 0),
       mins: prev.mins + (add.mins ?? 0),
+      ...(ids.length ? { ids } : {}),
     },
   };
+}
+
+export type WeekSummary = {
+  mins: number;
+  lessons: number;
+  cards: number;
+  /** Days out of seven with any activity. */
+  activeDays: number;
+  /** Lesson ids finished this week, in the order they were finished. */
+  lessonIds: string[];
+  /** Minutes in the seven days before this one, for the comparison. */
+  prevMins: number;
+};
+
+/** Everything the weekly review screen needs, in one pass. */
+export function summariseWeek(history: History, today: string = dayKey()): WeekSummary {
+  const days = weekWindow(today);
+  let mins = 0;
+  let lessons = 0;
+  let cards = 0;
+  let activeDays = 0;
+  const lessonIds: string[] = [];
+
+  for (const key of days) {
+    const r = history[key];
+    if (!r) continue;
+    mins += r.mins;
+    lessons += r.lessons;
+    cards += r.cards;
+    if (r.lessons > 0 || r.cards > 0) activeDays += 1;
+    for (const id of r.ids ?? []) if (!lessonIds.includes(id)) lessonIds.push(id);
+  }
+
+  const prevMins = weekWindow(shiftDay(today, -7)).reduce((sum, k) => sum + (history[k]?.mins ?? 0), 0);
+  return { mins, lessons, cards, activeDays, lessonIds, prevMins };
 }
 
 /** Keep the history from growing without bound — a year is plenty. */

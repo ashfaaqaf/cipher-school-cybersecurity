@@ -32,6 +32,8 @@ import { deckStats, schedule, today, type Deck, type Grade } from './srs';
 import { useSpeaker } from './voice';
 import { applyBackup, downloadBackup, type RestoreResult } from './backup';
 import { TodayCard } from './Today';
+import { WeekReview } from './Week';
+import { buildCorpus, searchIn } from './search';
 import {
   CARD_MINS,
   DEFAULT_SETTINGS,
@@ -39,6 +41,7 @@ import {
   prune,
   record,
   studyMinsFor,
+  type DayRecord,
   type History,
   type PlanSettings,
 } from './plan';
@@ -57,6 +60,9 @@ const views: { id: View; icon: string; label: string }[] = [
   { id: 'words', icon: '¶', label: 'Words' },
   { id: 'sources', icon: '❖', label: 'Sources' },
 ];
+
+/* The curriculum is static, so the search corpus is built once, not per render. */
+const CORPUS = buildCorpus(allLessons);
 
 /** Light haptic tap where the device supports it. Silent everywhere else. */
 function tap(ms = 8) {
@@ -126,7 +132,7 @@ export default function Home() {
 
   /** Fold a finished piece of work into today's record. */
   const logWork = useCallback(
-    (add: { lessons?: number; cards?: number; mins?: number }) => {
+    (add: Partial<DayRecord>) => {
       setHistory((prev) => {
         const next = record(prev, dayKey(), add);
         savePlan(planSettings, next);
@@ -202,7 +208,7 @@ export default function Home() {
            understood is a claim to have done that work. */
         const entry = allLessons.find((x) => x.lesson.id === id);
         const mins = entry ? studyMinsFor(entry.stage.hours, entry.stage.lessons.length) : 30;
-        logWork({ lessons: 1, mins });
+        logWork({ lessons: 1, mins, ids: [id] });
         tap(12);
         window.setTimeout(() => setPopped(null), 480);
       }
@@ -365,6 +371,9 @@ export default function Home() {
       );
     });
   }, [query, filter]);
+
+  /** Full-text hits, used instead of the stage list whenever there is a query. */
+  const hits = useMemo(() => (view === 'learn' ? searchIn(CORPUS, query) : []), [query, view]);
 
   const visibleWords = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -713,7 +722,43 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="stageList" style={{ marginTop: 14 }}>
+            {query.trim() && (
+              <div className="results">
+                <div className="resultsHead">
+                  {hits.length === 0
+                    ? `Nothing matches "${query.trim()}".`
+                    : `${hits.length} lesson${hits.length === 1 ? ' mentions' : 's mention'} "${query.trim()}"`}
+                </div>
+                {hits.map((hit) => (
+                  <button
+                    className="result"
+                    key={hit.lessonId}
+                    style={{ '--hue': String(hit.stageHue) } as CSSProperties}
+                    onClick={() => openById(hit.lessonId)}
+                  >
+                    <div className="resultTop">
+                      <span className="resultStage">{hit.stageNumber}</span>
+                      <span className="resultTitle">{hit.title}</span>
+                      {completed.has(hit.lessonId) && <span className="resultDone">OK</span>}
+                    </div>
+                    <div className="resultSnippet">
+                      <span className="resultWhere">{hit.where}</span>
+                      {hit.snippet.map((seg, i) =>
+                        seg.hit ? <mark key={i}>{seg.text}</mark> : <span key={i}>{seg.text}</span>,
+                      )}
+                    </div>
+                  </button>
+                ))}
+                {hits.length === 0 && (
+                  <div className="emptyText" style={{ marginTop: 8 }}>
+                    Search covers every word of every lesson, including the explanations and the jargon decoder. Try a
+                    shorter phrase.
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="stageList" style={{ marginTop: 14, display: query.trim() ? 'none' : undefined }}>
               {visibleStages.length === 0 && (
                 <div className="empty">
                   <div className="emptyTitle">Nothing matches that</div>
@@ -868,6 +913,8 @@ export default function Home() {
                 recalling something makes it permanent.
               </p>
             </div>
+            <WeekReview history={history} settings={planSettings} onOpen={openById} />
+
             <ReviewView deck={deck} unlocked={unlocked} onGrade={gradeCard} speak={speaker.supported ? speaker.say : undefined} />
           </section>
         )}

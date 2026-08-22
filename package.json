@@ -13,7 +13,7 @@
     "voice:design": "node scripts/design-voice.mjs",
     "voice:cost": "node scripts/narrate.mjs --dry",
     "voice:build": "node scripts/narrate.mjs",
-    "test": "node srs.test.ts && node pronounce.test.ts && node backup.test.ts && node plan.test.ts"
+    "test": "node srs.test.ts && node pronounce.test.ts && node backup.test.ts && node plan.test.ts && node search.test.ts"
   },
   "dependencies": {
     "next": "16.2.6",
