@@ -256,4 +256,28 @@ export const quizD: Question[] = [
     answer: 0,
     why: 'Pushing hard on money can cost you an internship place. Everything around it is usually flexible, and a paid certification or a written conversion path is worth more than a small stipend increase.',
   },
+  {
+    id: '12-12-a', lesson: '12-12',
+    ask: 'How should you choose your first certification?',
+    options: [
+      'Read ten adverts for the role you want and buy whichever one they name most',
+      'Pick the most respected certification in the industry overall',
+      'Start with the cheapest and work upwards',
+      'Choose whichever has the highest pass rate',
+    ],
+    answer: 0,
+    why: 'A certification is only worth what a specific employer weighs it at. In Sri Lanka that is usually Security+ or CEH at entry level, plus a cloud certification where the employer runs on Azure or AWS.',
+  },
+  {
+    id: '12-12-b', lesson: '12-12',
+    ask: 'Why are braindumps a career-ending shortcut rather than a study aid?',
+    options: [
+      'They mean revocation and a ban, and the industry reads it as an integrity failure',
+      'They are usually out of date and contain wrong answers',
+      'They cost more than official practice material',
+      'They only cover a fraction of the exam objectives',
+    ],
+    answer: 0,
+    why: 'Leaked real questions are cheating, and in a field whose entire product is trustworthiness that is not a small thing. Provider-written practice questions are fine; actual exam questions are not.',
+  },
 ];
