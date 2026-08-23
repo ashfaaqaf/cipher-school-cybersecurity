@@ -834,7 +834,32 @@ h2 {
   background: transparent; border: 0; color: var(--accent);
 }
 .trackTitle { font-size: 17px; font-weight: 600; letter-spacing: -0.024em; }
-.trackPath { margin-top: 12px; font-family: var(--mono); font-size: 11.5px; color: var(--ink-mute); font-variant-numeric: tabular-nums; letter-spacing: 0.04em; }
+/*
+ * A path is a sequence of stage numbers, and a bare "04" is a code until it is
+ * labelled and pressable. Both, then: it says what the numbers are, and each
+ * one opens the stage it names.
+ */
+.trackPath { margin-top: 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 2px; }
+.trackPathLabel {
+  width: 100%; margin-bottom: 8px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-faint);
+}
+.trackStage {
+  position: relative;
+  min-height: 32px; padding: 0 4px;
+  background: transparent; border: 0; cursor: pointer;
+  font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-mute);
+  border-bottom: 1px solid transparent;
+  transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+/* The same invisible 44px target the links and chips use: these are small
+   numbers by design and a thumb is not. */
+.trackStage::after { content: ''; position: absolute; inset: -6px -2px; }
+.trackStage:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.trackArrow { color: var(--ink-faint); font-size: 11px; padding: 0 2px; }
 .trackNote { margin-top: 10px; font-size: 14.5px; color: var(--ink-mute); line-height: 1.55; }
 
 /* ---------- glossary ---------- */

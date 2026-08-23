@@ -126,6 +126,8 @@ export default function Home() {
   const [restore, setRestore] = useState<RestoreResult | null>(null);
   const [printing, setPrinting] = useState<FullStage | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
+  /** A stage number waiting to be scrolled to once the roadmap is rendered. */
+  const [pendingStage, setPendingStage] = useState<string | null>(null);
   const searchRef = useRef<HTMLInputElement | null>(null);
   const helpRef = useRef<HTMLDivElement | null>(null);
   const voiceRef = useRef<HTMLDivElement | null>(null);
@@ -665,6 +667,39 @@ export default function Home() {
     [flatIndex, speaker],
   );
 
+  /*
+   * Jump to a stage by its number. The career paths are written as a sequence
+   * of stage numbers, and a bare "04" means nothing until you can press it and
+   * land on the stage it names.
+   */
+  const showStage = useCallback((number: string) => {
+    const idx = stages.findIndex((st) => st.number === number);
+    if (idx === -1) return;
+    cameFrom.current = 0;
+    setReader(null);
+    setView('learn');
+    /* A filter or a search would hide the stage being jumped to, so clear both:
+       being sent somewhere and finding nothing there is worse than no link. */
+    setFilter('ALL');
+    setQuery('');
+    setOpenStage(idx);
+    setEverOpen((prev) => (prev.has(idx) ? prev : new Set(prev).add(idx)));
+    setPendingStage(number);
+    tap();
+  }, []);
+
+  /* The stage only exists in the DOM after the view has switched, so the scroll
+     waits for the render rather than racing it. */
+  useEffect(() => {
+    if (!pendingStage || view !== 'learn') return;
+    const el = document.getElementById(`stage-${pendingStage}`);
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.scrollY - 88;
+      window.scrollTo({ top: Math.max(0, top) });
+    }
+    setPendingStage(null);
+  }, [pendingStage, view]);
+
   /** Jump straight to a lesson by id — the role requirement chips use this. */
   const openById = useCallback(
     (lessonId: string) => {
@@ -1113,6 +1148,7 @@ export default function Home() {
                 return (
                   <article
                     key={stage.number}
+                    id={`stage-${stage.number}`}
                     className={`stage glass reveal${open ? ' open' : ''}${complete ? ' done' : ''}`}
                     style={{ '--hue': String(stage.hue) } as CSSProperties}
                   >
@@ -1284,7 +1320,7 @@ export default function Home() {
               <h2>Eight ways through</h2>
               <p className="sectionNote">
                 Security is not one job. These are the real role families and the stage order that gets you to each one.
-                Stage 00 is compulsory for all of them.
+                Stage 00 is compulsory for all of them. The numbers are stages — press one to open it.
               </p>
             </div>
             <div className="trackGrid">
@@ -1294,7 +1330,21 @@ export default function Home() {
                     <span className="trackCode">{t.code}</span>
                     <span className="trackTitle">{t.title}</span>
                   </div>
-                  <div className="trackPath">{t.path}</div>
+                  <div className="trackPath">
+                    <span className="trackPathLabel">stages, in order</span>
+                    {t.path.split('→').map((n) => n.trim()).map((n, i) => (
+                      <span key={n}>
+                        {i > 0 && <span className="trackArrow" aria-hidden="true">→</span>}
+                        <button
+                          className="trackStage"
+                          onClick={() => showStage(n)}
+                          title={`Stage ${n}: ${stages.find((st) => st.number === n)?.title ?? ''}`}
+                        >
+                          {n}
+                        </button>
+                      </span>
+                    ))}
+                  </div>
                   <div className="trackNote">{t.note}</div>
                 </article>
               ))}
