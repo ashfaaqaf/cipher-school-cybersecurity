@@ -1990,5 +1990,8 @@ export const cardIdsByLesson: Record<string, string[]> = {
   ]
 };
 
+/** Lessons carrying a hands-on exercise, so the roadmap can say which. */
+export const practiceLessons: string[] = ["03-2","05-3","04-6","12-4","05-2"];
+
 export const glossaryCount = 414;
 export const totalQuestions = 220;

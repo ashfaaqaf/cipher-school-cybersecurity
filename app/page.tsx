@@ -12,6 +12,7 @@ import {
 import {
   allLessons,
   cardIdsByLesson,
+  practiceLessons,
   filters,
   glossaryCount,
   sources,
@@ -32,6 +33,7 @@ import dynamic from 'next/dynamic';
 const LessonQuiz = dynamic(() => import('./Review').then((m) => m.LessonQuiz), { ssr: false });
 const ReviewView = dynamic(() => import('./Review').then((m) => m.ReviewView), { ssr: false });
 const RolesSection = dynamic(() => import('./Roles').then((m) => m.RolesSection), { ssr: false });
+const PracticeBlock = dynamic(() => import('./Practice').then((m) => m.PracticeBlock), { ssr: false });
 const CompanionSection = dynamic(() => import('./Roles').then((m) => m.CompanionSection), { ssr: false });
 import { deckStats, schedule, today, type Deck, type Grade } from './srs';
 import { useSpeaker } from './voice';
@@ -59,6 +61,8 @@ const STORE = 'cipher-school-progress';
 const THEME = 'cipher-school-theme';
 const DECK = 'cipher-school-srs';
 const UPDATED = 'cipher-school-updated';
+/** What one hands-on exercise is worth to the daily plan. */
+const PRACTICE_MINS = 10;
 const PLAN = 'cipher-school-plan';
 
 type View = 'learn' | 'review' | 'paths' | 'words' | 'sources';
@@ -850,6 +854,12 @@ export default function Home() {
                     activeLabel={speaker.speaking ? speaker.chunks[speaker.index]?.label : undefined}
                   />
                   <LessonQuiz lessonId={current.lesson.id} onGrade={gradeCard} />
+                  {practiceLessons.includes(current.lesson.id) && (
+                    <PracticeBlock
+                      lessonId={current.lesson.id}
+                      onWorked={() => logWork({ mins: PRACTICE_MINS })}
+                    />
+                  )}
                 </>
               ) : (
                 <p className="readWait">{current.lesson.oneLine}</p>
@@ -1014,7 +1024,9 @@ export default function Home() {
               <h2>{stages.length} stages, in order</h2>
               <p className="sectionNote">
                 Do them in sequence if you are new. Each stage recolours the app — a different colour per stage helps
-                your memory keep them separate. Tap any lesson to read it.
+                your memory keep them separate. Tap any lesson to read it — the ones marked{' '}
+                <span className="lessonLab">exercise</span> end with a real artefact to work on rather than a question
+                to answer.
               </p>
             </div>
 
@@ -1179,6 +1191,11 @@ export default function Home() {
                                     ✓
                                   </button>
                                   <div className="lessonMain">
+                                    {practiceLessons.includes(lesson.id) && (
+                                      <span className="lessonLab" title="Has a hands-on exercise">
+                                        exercise
+                                      </span>
+                                    )}
                                     <div className="lessonTitle">{lesson.title}</div>
                                     <div className="lessonOne">{lesson.oneLine}</div>
                                   </div>

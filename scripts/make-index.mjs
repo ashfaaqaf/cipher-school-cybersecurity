@@ -40,6 +40,8 @@ const stageFiles = (await readdir(DIR)).filter((f) => /^s\d\d\.ts$/.test(f)).sor
 const stages = [];
 for (const file of stageFiles) stages.push(await load(file.slice(0, -3)));
 
+const { exercises } = await import(pathToFileURL(path.join(DIR, 'practice.ts')).href);
+
 const quizFiles = (await readdir(DIR)).filter((f) => /^quiz-[a-z]\.ts$/.test(f)).sort();
 const questions = [];
 for (const file of quizFiles) {
@@ -134,6 +136,9 @@ export const stages: LightStage[] = ${JSON.stringify(light, null, 2)};
 
 /** Review card ids per lesson, so unlocking does not need the cards themselves. */
 export const cardIdsByLesson: Record<string, string[]> = ${JSON.stringify(cardIds, null, 2)};
+
+/** Lessons carrying a hands-on exercise, so the roadmap can say which. */
+export const practiceLessons: string[] = ${JSON.stringify(exercises.map((e) => e.lesson))};
 
 export const glossaryCount = ${seen.size};
 export const totalQuestions = ${questions.length};

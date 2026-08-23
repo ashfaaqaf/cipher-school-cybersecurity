@@ -13,7 +13,7 @@
 
 import { stages } from './light';
 
-export { stages, cardIdsByLesson, glossaryCount, totalQuestions } from './light';
+export { stages, cardIdsByLesson, practiceLessons, glossaryCount, totalQuestions } from './light';
 
 /* Within the app, a Stage is what the roadmap draws. The full ones — the
    versions that carry prose — are named so it is obvious which you have. */

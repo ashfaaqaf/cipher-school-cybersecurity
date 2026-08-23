@@ -210,3 +210,140 @@
   .updateBar { bottom: 24px; left: auto; right: 32px; transform: none; }
   @keyframes updateIn { from { opacity: 0; transform: translateY(16px); } }
 }
+
+/* ---------- recall ---------- */
+
+.recallBox {
+  display: block; width: 100%; margin: 14px 0 16px; padding: 12px 14px;
+  border-radius: var(--r-md); border: 1px solid var(--rim);
+  background: transparent; color: var(--ink);
+  font-family: inherit; font-size: 15.5px; line-height: 1.55;
+  resize: vertical;
+  transition: border-color var(--fast) var(--ease);
+}
+.recallBox:focus { outline: 0; border-color: var(--ink); }
+.recallBox::placeholder { color: var(--ink-faint); }
+
+.recallBack {
+  margin: 4px 0 18px; padding-left: 14px; border-left: 1px solid var(--rim);
+  font-size: 15px; line-height: 1.6; color: var(--ink-mute); white-space: pre-wrap;
+}
+.recallLabel {
+  margin-bottom: 6px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-faint);
+}
+
+/* ---------- practice ---------- */
+
+/*
+ * The exercise at the end of a lesson. Colour is doing its usual job here and
+ * one psychological one: a wrong answer is amber, never red. Red in this design
+ * means genuinely critical, and being wrong on the first attempt at a judgement
+ * question is the ordinary route to being right — marking it in alarm colours
+ * teaches people to stop guessing, which is the opposite of what practice is.
+ */
+
+.practice { margin-top: 44px; padding-top: 26px; border-top: 1px solid var(--rim); }
+
+.exLabel {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--t-green);
+}
+.exLabel::before { content: '$ '; opacity: 0.7; }
+
+.exTitle { margin: 12px 0 0; font-size: 22px; font-weight: 500; letter-spacing: -0.024em; }
+.exBrief { margin: 10px 0 20px; font-size: 15.5px; line-height: 1.6; color: var(--ink-mute); max-width: 60ch; }
+
+/* The artefact reads the way it would in a terminal, line numbers and all. */
+.artefact { margin: 22px 0 26px; border: 1px solid var(--rim); border-radius: var(--r-md); overflow: hidden; }
+.artefactLabel {
+  padding: 9px 14px; border-bottom: 1px solid var(--rim);
+  font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--ink-faint);
+  background: var(--glass-2);
+}
+.artefactBody {
+  margin: 0; padding: 14px 0;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  font-family: var(--mono); font-size: 12px; line-height: 1.7;
+  color: var(--ink-soft); tab-size: 2;
+}
+.artefactLine { display: block; white-space: pre; padding: 0 14px; }
+.artefactNum {
+  display: inline-block; width: 2.4em; margin-right: 14px;
+  color: var(--ink-faint); opacity: 0.55; text-align: right; user-select: none;
+}
+
+.exStep { padding: 20px 0; border-top: 1px solid var(--rim-bright); }
+.exStep:first-of-type { border-top: 0; }
+
+.exAsk { font-size: 16.5px; line-height: 1.5; color: var(--ink); }
+.exNum {
+  display: inline-block; margin-right: 12px;
+  font-family: var(--mono); font-size: 11px; color: var(--t-cyan);
+}
+
+.exRow { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+.exInput {
+  flex: 1; min-width: min(100%, 220px); min-height: 44px; padding: 0 14px;
+  border-radius: var(--r-md); border: 1px solid var(--rim);
+  background: transparent; color: var(--ink);
+  font-family: var(--mono); font-size: 14px;
+  transition: border-color var(--fast) var(--ease);
+}
+.exInput:focus { outline: 0; border-color: var(--ink); }
+.exInput::placeholder { color: var(--ink-faint); }
+.exRow .btn { flex: none; }
+
+.exMiss {
+  margin-top: 12px; font-size: 14.5px; line-height: 1.55; color: var(--t-amber);
+}
+
+.exHint {
+  margin-top: 12px; padding-left: 14px; border-left: 1px solid var(--rim);
+  font-size: 14.5px; line-height: 1.6; color: var(--ink-mute);
+}
+.exHintTag {
+  display: block; margin-bottom: 4px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-faint);
+}
+
+.exTools { margin-top: 14px; }
+.exTool {
+  min-height: 36px; padding: 0; border: 0; background: transparent; cursor: pointer;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-faint); border-bottom: 1px solid var(--rim);
+  transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
+.exTool:hover { color: var(--ink); border-bottom-color: var(--ink); }
+
+.exResult { margin-top: 16px; padding-left: 14px; border-left: 2px solid var(--t-green); }
+.exResult.shown { border-left-color: var(--ink-faint); }
+.exVerdict {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--t-green);
+}
+.exResult.shown .exVerdict { color: var(--ink-faint); }
+.exAnswer { margin-top: 8px; font-size: 16px; font-weight: 500; color: var(--ink); }
+.exWhy { margin-top: 10px; font-size: 15.5px; line-height: 1.65; color: var(--ink-mute); }
+
+.exDebrief { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--rim); }
+.exDebriefLabel {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--t-blue); margin-bottom: 10px;
+}
+.exDebrief { font-size: 15.5px; line-height: 1.65; color: var(--ink-mute); }
+
+/* The marker on a lesson row that carries one. */
+.lessonLab {
+  display: inline-block; margin-right: 8px;
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--t-green);
+  vertical-align: 1px;
+}
+
+@media (min-width: 1024px) {
+  .exBrief { font-size: 16px; }
+  .artefactBody { font-size: 12.5px; }
+}

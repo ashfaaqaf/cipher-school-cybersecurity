@@ -16,6 +16,8 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **8 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research, fastest-to-hired) with stage order
 - **Nine real job adverts**, all but one Sri Lankan, broken into individual requirements and mapped to the lessons covering each — plus sourced market context
 - **220 quiz questions**, two per lesson, with an explanation on every answer
+- **Hands-on exercises** on a real log, a real code review, a real scan and a real patch
+  decision — typed answers, hints that fade, and an explanation worth more than the mark
 - **Spaced repetition** over all questions and terms, so what you read actually stays
 - **A daily plan** built from your weekly hour budget, with a streak and a week strip
 - **A weekly review** naming what you actually learned, against last week
@@ -38,6 +40,35 @@ Every lesson follows the same shape, because that shape is what makes an idea st
 | Why this matters | The real-world consequence |
 | Go and do this | Something to actually do today, safely |
 | Check yourself | A question you should be able to answer |
+
+## Practice, and why it is shaped like this
+
+Two things are consistently true of learning security online. Platforms that explain
+everything and never ask you to act produce people who have read about security; platforms
+that drop you on a machine with no explanation lose beginners entirely — the common report
+is eight hours on an "easy" box and nothing to show for it. The complaint about the gentle
+ones is the mirror image: candidates who cannot solve anything once the hints stop.
+
+So the exercises here sit in the middle deliberately. Each one gives you a real artefact —
+an SSH log, a code review, a proxy history, an nmap scan, two advisories — and asks what
+you would actually do. You type the answer rather than pick it. The scaffold fades on
+request: a nudge, then a narrower nudge, then the answer, and asking costs nothing and is
+not recorded, because a learner who is afraid to ask stops trying.
+
+None of them can be answered by remembering a definition, and one of them is answered
+correctly by deciding that nothing is wrong. That is on purpose: the expensive mistake in
+this job is not missing an attack, it is raising six false alarms a week until nobody reads
+your alerts.
+
+A wrong answer is marked amber, never red. Red in this design means genuinely critical, and
+being wrong on the first attempt at a judgement question is the ordinary route to being
+right — marking it in alarm colours teaches people to stop guessing.
+
+The review deck asks you to **write** what a term means before it shows you. The evidence on
+retrieval practice is consistent that generating an answer beats recognising one for
+long-term retention, because recognition can run on familiarity alone. Nothing marks what
+you wrote; it is put beside the real definition and graded by the only judge who knows
+whether you meant it.
 
 ## Stage 12 and the job mapping
 

@@ -28,6 +28,7 @@ function CardFace({
 }) {
   const [picked, setPicked] = useState<number | null>(null);
   const [shown, setShown] = useState(false);
+  const [attempt, setAttempt] = useState('');
   const day = today();
 
   const answered = card.kind === 'quiz' ? picked !== null : shown;
@@ -88,13 +89,36 @@ function CardFace({
       <div className="cardTerm">{card.term}</div>
       {!shown ? (
         <>
-          <div className="cardPrompt">Say what it means, out loud, before you look.</div>
+          {/*
+            * Typing the answer rather than thinking it is the whole point. The
+            * evidence on retrieval practice is consistent that generating an
+            * answer — free recall or short answer — produces markedly better
+            * long-term retention than recognising one, because recognition can
+            * be done on familiarity alone. Nothing marks this: it is compared
+            * against the real definition by the only judge who knows whether
+            * you meant it, which is you.
+            */}
+          <div className="cardPrompt">Write what it means, in your own words. Typing it is what makes it stick.</div>
+          <textarea
+            className="recallBox"
+            value={attempt}
+            onChange={(e) => setAttempt(e.target.value)}
+            placeholder="in your own words…"
+            rows={3}
+            aria-label={`What does ${card.term} mean?`}
+          />
           <button className="btn primary wide" onClick={() => setShown(true)}>
-            Show the meaning
+            {attempt.trim() ? 'Check it' : 'Show the meaning'}
           </button>
         </>
       ) : (
         <>
+          {attempt.trim() && (
+            <div className="recallBack">
+              <div className="recallLabel">what you wrote</div>
+              {attempt}
+            </div>
+          )}
           <div className="cardWhy big">{card.means}</div>
           {speak && (
             <button className="btn ghost wide" onClick={() => speak(`${card.term}. ${card.means}`)}>
