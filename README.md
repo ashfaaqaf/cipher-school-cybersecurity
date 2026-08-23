@@ -16,8 +16,10 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **8 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research, fastest-to-hired) with stage order
 - **Nine real job adverts**, all but one Sri Lankan, broken into individual requirements and mapped to the lessons covering each — plus sourced market context
 - **220 quiz questions**, two per lesson, with an explanation on every answer
-- **Hands-on exercises** on a real log, a real code review, a real scan and a real patch
-  decision — typed answers, hints that fade, and an explanation worth more than the mark
+- **15 hands-on exercises, one in every stage** — an SSH log, a permission set, a code
+  review, a proxy history, an nmap scan, an IAM policy, a phishing header, a disclosure
+  timeline and more. Typed answers, hints that fade, and an explanation worth more than
+  the mark
 - **Spaced repetition** over all questions and terms, so what you read actually stays
 - **A daily plan** built from your weekly hour budget, with a streak and a week strip
 - **A weekly review** naming what you actually learned, against last week
@@ -49,14 +51,15 @@ that drop you on a machine with no explanation lose beginners entirely — the c
 is eight hours on an "easy" box and nothing to show for it. The complaint about the gentle
 ones is the mirror image: candidates who cannot solve anything once the hints stop.
 
-So the exercises here sit in the middle deliberately. Each one gives you a real artefact —
-an SSH log, a code review, a proxy history, an nmap scan, two advisories — and asks what
-you would actually do. You type the answer rather than pick it. The scaffold fades on
+So the exercises here sit in the middle deliberately. There are fifteen of them, one in
+every stage, and each gives you a real artefact — an SSH log, a permission set, a code
+review, a proxy history, an nmap scan, an IAM policy, a phishing header, two advisories —
+and asks what you would actually do. You type the answer rather than pick it. The scaffold fades on
 request: a nudge, then a narrower nudge, then the answer, and asking costs nothing and is
 not recorded, because a learner who is afraid to ask stops trying.
 
-None of them can be answered by remembering a definition, and one of them is answered
-correctly by deciding that nothing is wrong. That is on purpose: the expensive mistake in
+None of them can be answered by remembering a definition, and several are answered
+correctly by deciding that nothing is wrong, or that you are not allowed to act at all. That is on purpose: the expensive mistake in
 this job is not missing an attack, it is raising six false alarms a week until nobody reads
 your alerts.
 
