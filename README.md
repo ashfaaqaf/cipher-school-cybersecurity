@@ -43,6 +43,17 @@ Every lesson follows the same shape, because that shape is what makes an idea st
 | Go and do this | Something to actually do today, safely |
 | Check yourself | A question you should be able to answer |
 
+## What you can show for it
+
+Every free course ends with a completion percentage, which is worth nothing to anyone
+hiring. Under Paths there is an evidence sheet generated from your actual progress: the
+stages you have covered and what each one means you can do, the hands-on exercises you
+finished, and your readiness against each of the nine real adverts. It copies as plain text,
+because it is going into a CV, a covering email or a README and none of those want markup.
+
+It is generated rather than written, so it cannot overstate anything — every line traces to
+a lesson marked understood or an exercise completed.
+
 ## Practice, and why it is shaped like this
 
 Two things are consistently true of learning security online. Platforms that explain
@@ -66,6 +77,11 @@ your alerts.
 A wrong answer is marked amber, never red. Red in this design means genuinely critical, and
 being wrong on the first attempt at a judgement question is the ordinary route to being
 right — marking it in alarm colours teaches people to stop guessing.
+
+Every question now asks you to **answer it from memory before the options appear**. Multiple
+choice measures recognition, which runs on familiarity: the right answer looks right once it
+is in front of you, and the feeling of knowing is not knowing. Skipping the box is one press,
+because a gate that punishes people teaches them to stop rather than to try.
 
 The review deck asks you to **write** what a term means before it shows you. The evidence on
 retrieval practice is consistent that generating an answer beats recognising one for
