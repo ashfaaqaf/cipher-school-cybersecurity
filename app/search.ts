@@ -39,11 +39,16 @@ export type Entry = {
 
 /**
  * The corpus is passed in rather than imported, so this module stays pure and
- * can be exercised without pulling in the whole curriculum. Build it once at
- * module scope in the app — the curriculum is static, so nothing invalidates.
+ * can be exercised without pulling in the whole curriculum.
+ *
+ * `exercises` is optional and keyed by lesson id. Without it the corpus is
+ * exactly what it always was; with it, searching "nmap" or "spraying" also
+ * finds the exercise that makes you do the thing, which was previously the one
+ * part of the app search could not reach.
  */
 export function buildCorpus(
   lessons: { lesson: { id: string; title: string; oneLine: string; like: string; why: string; doThis: string; check: string; body: string[]; words: { term: string; means: string }[] }; stage: { number: string; title: string; hue: number } }[],
+  exercises?: Map<string, { title: string; brief: string; artefact: { lines: string[] }; steps: { ask: string }[] }>,
 ): Entry[] {
   return lessons.map(({ lesson, stage }) => ({
     lessonId: lesson.id,
@@ -60,6 +65,20 @@ export function buildCorpus(
       { name: 'go and do this', weight: 2, text: lesson.doThis },
       { name: 'check yourself', weight: 2, text: lesson.check },
       { name: 'explanation', weight: 1, text: lesson.body.join(' ') },
+      ...(exercises?.has(lesson.id)
+        ? [
+            {
+              name: 'exercise',
+              weight: 6,
+              text: [
+                exercises.get(lesson.id)!.title,
+                exercises.get(lesson.id)!.brief,
+                exercises.get(lesson.id)!.steps.map((s) => s.ask).join(' '),
+                exercises.get(lesson.id)!.artefact.lines.join(' '),
+              ].join(' '),
+            },
+          ]
+        : []),
     ],
   }));
 }

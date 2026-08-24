@@ -49,11 +49,45 @@ export function prefetchCurriculum(): void {
   const warm = () => {
     void loadFull();
     void loadRoles();
+    void loadPractice();
   };
   const idle = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => void })
     .requestIdleCallback;
   if (idle) idle.call(window, warm, { timeout: 2500 });
   else window.setTimeout(warm, 1200);
+}
+
+let practicePromise: Promise<typeof import('./practice')> | null = null;
+let practiceValue: typeof import('./practice') | null = null;
+
+export function loadPractice(): Promise<typeof import('./practice')> {
+  if (!practicePromise) {
+    practicePromise = import('./practice').then((m) => {
+      practiceValue = m;
+      return m;
+    });
+  }
+  return practicePromise;
+}
+
+/**
+ * The exercises, for search. Returns null until the module lands, at which
+ * point the corpus is rebuilt to include them — the results simply get better
+ * a moment after the page does.
+ */
+export function usePractice(): Map<string, import('./practice').Exercise> | null {
+  const [index, setIndex] = useState(practiceValue?.exerciseByLesson ?? null);
+  useEffect(() => {
+    if (index) return;
+    let live = true;
+    void loadPractice().then((m) => {
+      if (live) setIndex(m.exerciseByLesson);
+    });
+    return () => {
+      live = false;
+    };
+  }, [index]);
+  return index;
 }
 
 /** Subscribe to the full curriculum; re-renders once when it arrives. */

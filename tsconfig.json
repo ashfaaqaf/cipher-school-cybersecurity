@@ -47,6 +47,7 @@
     "plan.test.ts",
     "search.test.ts",
     "keys.test.ts",
-    "routing.test.ts"
+    "routing.test.ts",
+    "practice.test.ts"
   ]
 }

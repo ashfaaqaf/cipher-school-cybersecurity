@@ -864,10 +864,17 @@ export const exerciseByLesson = new Map(exercises.map((e) => [e.lesson, e]));
 
 /** Loose but not sloppy: case, spacing and trailing punctuation do not count. */
 export function normalise(text: string): string {
+  /*
+   * Whitespace first, punctuation second. The other order looks equivalent and
+   * is not: "9. " has its full stop in the middle of the string as far as a $
+   * anchor is concerned, so the punctuation survived and the answer was
+   * rejected for a trailing space nobody can see.
+   */
   return text
     .toLowerCase()
-    .replace(/[.,;:!?]+$/g, '')
     .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[.,;:!?]+$/g, '')
     .trim();
 }
 

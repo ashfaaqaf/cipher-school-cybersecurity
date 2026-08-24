@@ -347,3 +347,27 @@
   .exBrief { font-size: 16px; }
   .artefactBody { font-size: 12.5px; }
 }
+
+/* ---------- recall before recognition ---------- */
+
+.recallFirst { margin: 16px 0 4px; }
+.recallAsk { font-size: 14.5px; line-height: 1.55; color: var(--ink-mute); margin-bottom: 10px; }
+
+/* ---------- evidence ---------- */
+
+.evidence { margin-top: 8px; }
+.evidenceBar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.evidenceNote { flex: 1; min-width: 240px; font-size: 14px; line-height: 1.55; color: var(--ink-mute); }
+.evidenceSheet {
+  margin: 0; padding: 22px;
+  border: 1px solid var(--rim); border-radius: var(--r-md);
+  background: transparent;
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.75;
+  color: var(--ink-soft);
+  white-space: pre-wrap; word-break: break-word;
+  overflow-x: auto;
+}
+
+@media (min-width: 1024px) {
+  .evidenceSheet { font-size: 13px; padding: 26px 28px; }
+}

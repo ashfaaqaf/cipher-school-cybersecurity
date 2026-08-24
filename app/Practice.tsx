@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { exerciseByLesson, isCorrect, type Exercise } from './curriculum/practice';
 
 /**
@@ -107,14 +107,30 @@ function Step({
   );
 }
 
-export function PracticeBlock({ lessonId, onWorked }: { lessonId: string; onWorked: () => void }) {
+export function PracticeBlock({
+  lessonId,
+  onWorked,
+  onSolved,
+}: {
+  lessonId: string;
+  onWorked: () => void;
+  /** Fired once, when the last step is finished — this is what the evidence sheet counts. */
+  onSolved: () => void;
+}) {
   const exercise = exerciseByLesson.get(lessonId);
   const [reached, setReached] = useState(0);
   const [started, setStarted] = useState(false);
+  const [reported, setReported] = useState(false);
+
+  const done = exercise ? reached >= exercise.steps.length : false;
+
+  useEffect(() => {
+    if (!done || reported) return;
+    setReported(true);
+    onSolved();
+  }, [done, reported, onSolved]);
 
   if (!exercise) return null;
-
-  const done = reached >= exercise.steps.length;
 
   return (
     <section className="practice" aria-label="Practice">

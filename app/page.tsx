@@ -27,13 +27,14 @@ import {
   type FullStage,
   type Stage,
 } from './curriculum';
-import { loadFull, prefetchCurriculum, useFull } from './curriculum/load';
+import { loadFull, prefetchCurriculum, useFull, usePractice } from './curriculum/load';
 import dynamic from 'next/dynamic';
 
 const LessonQuiz = dynamic(() => import('./Review').then((m) => m.LessonQuiz), { ssr: false });
 const ReviewView = dynamic(() => import('./Review').then((m) => m.ReviewView), { ssr: false });
 const RolesSection = dynamic(() => import('./Roles').then((m) => m.RolesSection), { ssr: false });
 const PracticeBlock = dynamic(() => import('./Practice').then((m) => m.PracticeBlock), { ssr: false });
+const EvidenceSheet = dynamic(() => import('./Evidence').then((m) => m.EvidenceSheet), { ssr: false });
 const CompanionSection = dynamic(() => import('./Roles').then((m) => m.CompanionSection), { ssr: false });
 import { deckStats, schedule, today, type Deck, type Grade } from './srs';
 import { useSpeaker } from './voice';
@@ -61,6 +62,7 @@ const STORE = 'cipher-school-progress';
 const THEME = 'cipher-school-theme';
 const DECK = 'cipher-school-srs';
 const UPDATED = 'cipher-school-updated';
+const PRACTISED = 'cipher-school-practised';
 /** What one hands-on exercise is worth to the daily plan. */
 const PRACTICE_MINS = 10;
 const PLAN = 'cipher-school-plan';
@@ -113,14 +115,32 @@ export default function Home() {
   const search = useDeferredValue(query);
   const [filter, setFilter] = useState('ALL');
   const [theme, setTheme] = useState<'night' | 'day'>('night');
+  /*
+   * First visit follows the operating system. It cannot be read during the
+   * first render — this page is prerendered to static HTML at build time, and a
+   * machine that has no idea what your display settings are would bake the
+   * wrong answer in and mismatch on hydration. A stored choice always wins.
+   */
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem(THEME)) return;
+    } catch {
+      /* unreadable storage just means no stored preference */
+    }
+    if (window.matchMedia?.('(prefers-color-scheme: light)').matches) setTheme('day');
+  }, []);
   const headerRef = useRef<HTMLElement | null>(null);
   /* The prose, the questions and the definitions. Null only until the idle
      prefetch lands, which is well before anyone has clicked into a lesson. */
   const full = useFull();
+  /* The exercises, once their module has landed, so search can reach them. */
+  const practiceIndex = usePractice();
   const [popped, setPopped] = useState<string | null>(null);
   const [installOpen, setInstallOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [deck, setDeck] = useState<Deck>({});
+  /** Lessons whose hands-on exercise has been finished. Feeds the evidence sheet. */
+  const [practised, setPractised] = useState<Set<string>>(new Set());
   const [offlineReady, setOfflineReady] = useState(false);
   const [updateReady, setUpdateReady] = useState(false);
   const [restore, setRestore] = useState<RestoreResult | null>(null);
@@ -189,6 +209,28 @@ export default function Home() {
     },
     [history, savePlan],
   );
+
+  const markPractised = useCallback((lessonId: string) => {
+    setPractised((prev) => {
+      if (prev.has(lessonId)) return prev;
+      const next = new Set(prev).add(lessonId);
+      try {
+        window.localStorage.setItem(PRACTISED, JSON.stringify([...next]));
+      } catch {
+        /* the session still works without persistence */
+      }
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(PRACTISED);
+      if (raw) setPractised(new Set(JSON.parse(raw)));
+    } catch {
+      /* an unreadable store simply starts empty */
+    }
+  }, []);
 
   /* ---------- spaced repetition ---------- */
 
@@ -604,9 +646,9 @@ export default function Home() {
   /** Full-text hits, used instead of the stage list whenever there is a query. */
   const hits = useMemo(() => {
     if (view !== 'learn' || !full) return [];
-    CORPUS ??= buildCorpus(full.allLessons);
+    CORPUS ??= buildCorpus(full.allLessons, practiceIndex ?? undefined);
     return searchIn(CORPUS, search);
-  }, [search, view, full]);
+  }, [search, view, full, practiceIndex]);
 
   const visibleWords = useMemo(() => {
     if (!full) return [];
@@ -893,6 +935,7 @@ export default function Home() {
                     <PracticeBlock
                       lessonId={current.lesson.id}
                       onWorked={() => logWork({ mins: PRACTICE_MINS })}
+                      onSolved={() => markPractised(current.lesson.id)}
                     />
                   )}
                 </>
@@ -1351,6 +1394,17 @@ export default function Home() {
             </div>
 
             <CompanionSection />
+
+            <div className="sectionHead reveal" style={{ marginTop: 72 }}>
+              <div className="kicker">Evidence</div>
+              <h2>What you can show for it</h2>
+              <p className="sectionNote">
+                A completion percentage is worth nothing to anyone hiring. This is the same progress written as
+                specific, checkable claims, in the vocabulary the adverts use — generated from what you actually
+                finished, so it cannot claim more than that.
+              </p>
+            </div>
+            <EvidenceSheet completed={completed} practised={practised} />
           </section>
         )}
 

@@ -11,6 +11,38 @@ const GRADES: { g: Grade; label: string; tone: string }[] = [
   { g: 3, label: 'Easy', tone: 'easy' },
 ];
 
+/**
+ * Answer it before you can see the options.
+ *
+ * Multiple choice measures recognition, which runs on familiarity: the right
+ * answer looks right once it is in front of you, and the feeling of knowing it
+ * is not the same as knowing it. Generating the answer first — writing it, with
+ * nothing to choose from — is what the retrieval-practice evidence consistently
+ * favours for long-term retention.
+ *
+ * Nothing is marked here and skipping is one press, because a gate that punishes
+ * people teaches them to stop rather than to try.
+ */
+function RecallFirst({ onDone }: { onDone: () => void }) {
+  const [attempt, setAttempt] = useState('');
+  return (
+    <div className="recallFirst">
+      <div className="recallAsk">Answer it from memory first — then the options appear.</div>
+      <textarea
+        className="recallBox"
+        value={attempt}
+        onChange={(e) => setAttempt(e.target.value)}
+        placeholder="what do you think, and why?"
+        rows={2}
+        aria-label="Your answer from memory"
+      />
+      <button className="btn primary wide" onClick={onDone}>
+        {attempt.trim() ? 'Show the options' : 'Skip — show the options'}
+      </button>
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ *
  * One card, either a question or a term. Reveal, then grade.
  * ------------------------------------------------------------------ */
@@ -29,6 +61,7 @@ function CardFace({
   const [picked, setPicked] = useState<number | null>(null);
   const [shown, setShown] = useState(false);
   const [attempt, setAttempt] = useState('');
+  const [recalled, setRecalled] = useState(false);
   const day = today();
 
   const answered = card.kind === 'quiz' ? picked !== null : shown;
@@ -44,6 +77,9 @@ function CardFace({
         <div className="cardKind">Question</div>
         <div className="cardAsk">{q.ask}</div>
 
+        {!recalled && <RecallFirst onDone={() => setRecalled(true)} />}
+
+        {recalled && (
         <div className="options">
           {q.options.map((opt, i) => {
             let cls = 'option';
@@ -62,6 +98,7 @@ function CardFace({
             );
           })}
         </div>
+        )}
 
         {answered && (
           <>
@@ -291,6 +328,8 @@ export function ReviewView({
 export function LessonQuiz({ lessonId, onGrade }: { lessonId: string; onGrade: (id: string, grade: Grade) => void }) {
   const qs = questionsByLesson.get(lessonId) ?? [];
   const [picks, setPicks] = useState<Record<string, number>>({});
+  /* Which questions have had their options revealed. See RecallFirst. */
+  const [opened, setOpened] = useState<Record<string, boolean>>({});
 
   if (qs.length === 0) return null;
   const answered = qs.filter((q) => picks[q.id] !== undefined).length;
@@ -315,6 +354,8 @@ export function LessonQuiz({ lessonId, onGrade }: { lessonId: string; onGrade: (
         return (
           <div className="card inline" key={q.id}>
             <div className="cardAsk">{q.ask}</div>
+            {!opened[q.id] && <RecallFirst onDone={() => setOpened((o) => ({ ...o, [q.id]: true }))} />}
+            {opened[q.id] && (
             <div className="options">
               {q.options.map((opt, i) => {
                 let cls = 'option';
@@ -342,6 +383,7 @@ export function LessonQuiz({ lessonId, onGrade }: { lessonId: string; onGrade: (
                 );
               })}
             </div>
+            )}
             {isAnswered && <div className="cardWhy">{q.why}</div>}
           </div>
         );
