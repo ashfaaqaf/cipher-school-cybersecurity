@@ -17,11 +17,13 @@ function sourceFiles(dir: string): string[] {
 const sources = sourceFiles(root).map((file) => readFileSync(file, 'utf8')).join('\n');
 const roles = readFileSync(path.join(root, 'curriculum', 'roles.ts'), 'utf8');
 const roleView = readFileSync(path.join(root, 'Roles.tsx'), 'utf8');
+const manifest = readFileSync(path.join(path.dirname(root), 'public', 'manifest.webmanifest'), 'utf8');
+const publicCopy = `${sources}\n${manifest}`;
 
-assert.doesNotMatch(sources, /[—–]/, 'course copy must not use long dash punctuation');
+assert.doesNotMatch(publicCopy, /[—–]/, 'public copy must not use long dash punctuation');
 assert.doesNotMatch(
-  sources,
-  /\b(?:honest(?:ly)?|simply|crucial|robust|leverage|delve|tapestry|realm|game-changing|seamless|transformative|ever-evolving|comprehensive|ultimately)\b/i,
+  publicCopy,
+  /\b(?:honest(?:ly|y)?|simply|crucial|robust|leverage|delve|tapestry|realm|game-changing|seamless|transformative|ever-evolving|comprehensive|ultimately|moreover|furthermore|groundbreaking|revolutionary)\b/i,
   'course copy must avoid the blocked filler-word list',
 );
 
@@ -37,5 +39,9 @@ for (const requirement of [
 assert.match(roleView, /Internship skill sprint/, 'the advert requirements need a visible guided path');
 assert.match(roleView, /Open next lesson/, 'the guided path needs a direct continuation action');
 assert.match(roleView, /Practise a case/, 'the guided path needs an applied practice action');
+for (const tool of ['Burp Suite', 'OWASP ZAP', 'Nmap']) {
+  assert.match(roleView, new RegExp(tool), `${tool} needs a visible lab checklist`);
+}
+assert.match(roleView, /cipher-school-tool-labs/, 'tool lab progress needs device-local persistence');
 
 console.log('copy: all checks passed');

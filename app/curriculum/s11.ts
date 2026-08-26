@@ -23,7 +23,7 @@ export const s11: Stage = {
       id: '11-1',
       title: 'Doing research that holds up',
       mins: 8,
-      oneLine: 'Research is a question narrow enough to answer, a method someone else could repeat, and honesty about what you did not prove.',
+      oneLine: 'Research is a question narrow enough to answer, a method someone else could repeat, and a clear account of what you did not prove.',
       like: 'A recipe rather than a review. Anyone following your steps should get your result, or find out precisely where they diverged.',
       body: [
         'Start with a specific question. "Is this protocol secure?" is unanswerable. "Does this implementation validate the certificate chain when the hostname does not match?" can be tested this afternoon. Narrow questions produce real answers; broad questions produce essays.',
@@ -190,7 +190,7 @@ export const s11: Stage = {
         'Teaching exposes the gaps in your own understanding immediately and mercilessly. The moment you try to explain something clearly, you discover which parts you had only memorised. This is the fastest known way to convert familiarity into genuine knowledge.',
         'Start where you are. You do not need to be an expert to help someone one step behind you: in fact you are better placed than an expert, because you still remember what was confusing and why.',
         'Contribute concretely: write documentation, answer questions properly, create a lab exercise, give an internal talk, mentor one person consistently. Small consistent contributions compound into a reputation far more reliably than occasional grand gestures.',
-        'Be the kind of colleague this field needs. Blameless investigation, credit given generously, patience with beginners, and honesty about your own mistakes. Security has a real problem with gatekeeping and performed superiority, and every person who refuses to participate in it makes the field slightly better.',
+        'Be the kind of colleague this field needs. Investigate without blame, give credit, help beginners, and admit your own mistakes. Security has a gatekeeping problem. Refusing to join in makes the field better.',
         'Finally: you will never finish this course, and that is the correct outcome. Cybersecurity is a practice, not a body of knowledge to complete. Keep a lab, keep a notebook, keep asking how things actually work, and keep teaching what you learn. That is the whole job, for the rest of your career.',
       ],
       words: [

@@ -116,7 +116,7 @@
   .pWords dl { margin: 0; }
   .pWords div { margin: 0 0 2mm; }
   .pWords dt { font-weight: 700; display: inline; }
-  .pWords dt::after { content: ' — '; font-weight: 400; }
+  .pWords dt::after { content: ': '; font-weight: 400; }
   .pWords dd { display: inline; margin: 0; }
 
   /* ---------- footer ---------- */

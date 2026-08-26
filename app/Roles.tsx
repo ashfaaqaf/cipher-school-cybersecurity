@@ -1,12 +1,56 @@
 'use client';
 
-import { useState, type CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { allLessons } from './curriculum';
 import { companions, marketNote, roleLessons, roles, type Requirement, type Role } from './curriculum/roles';
 
 /** Find a lesson by id so a requirement can link straight into the reader. */
 const byId = new Map(allLessons.map(({ lesson, stage }) => [lesson.id, { lesson, stage }]));
 const internshipRole = roles.find((role) => role.id === 'vapt-intern')!;
+const TOOL_LAB_STORE = 'cipher-school-tool-labs';
+
+const toolLabs = [
+  {
+    id: 'burp',
+    name: 'Burp Suite',
+    lessonId: '12-2',
+    target: 'PortSwigger Web Security Academy',
+    tasks: [
+      'Open Burp\'s built-in browser and load a Web Security Academy lab.',
+      'Turn Intercept on, capture one request, then forward it.',
+      'Send the request to Repeater and change one safe input.',
+      'Compare both responses and write down what changed.',
+      'Save a screenshot and a five-line finding for your proof folder.',
+    ],
+  },
+  {
+    id: 'zap',
+    name: 'OWASP ZAP',
+    lessonId: '12-3',
+    target: 'A local OWASP Juice Shop or WebGoat lab',
+    tasks: [
+      'Start a legal local target and open it through ZAP\'s browser.',
+      'Browse the target normally so ZAP can perform passive checks.',
+      'Choose one alert and read its risk, confidence and evidence.',
+      'Check the alert by hand before deciding whether it is real.',
+      'Export the report and explain one useful alert or false positive.',
+    ],
+  },
+  {
+    id: 'nmap',
+    name: 'Nmap',
+    lessonId: '12-4',
+    target: 'A machine you own inside an isolated lab network',
+    tasks: [
+      'Write down the authorised target IP before scanning anything.',
+      'Confirm the target is reachable inside the lab.',
+      'Run service detection with nmap -sV <lab-IP>.',
+      'Label every open port with its service, version and likely purpose.',
+      'Save the scan and add one sensible next check for each service.',
+    ],
+  },
+] as const;
+const toolLabTaskIds = new Set(toolLabs.flatMap((lab) => lab.tasks.map((_, index) => `${lab.id}-${index}`)));
 
 function ReqRow({
   req,
@@ -229,6 +273,89 @@ function JobAdSprint({
   );
 }
 
+function ToolLabChecklist({ onOpen }: { onOpen: (lessonId: string) => void }) {
+  const [checked, setChecked] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    try {
+      const saved = window.localStorage.getItem(TOOL_LAB_STORE);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) setChecked(new Set(parsed.filter((id) => typeof id === 'string' && toolLabTaskIds.has(id))));
+      }
+    } catch {
+      /* A blocked or damaged store starts with a clean checklist. */
+    }
+  }, []);
+
+  const total = toolLabs.reduce((sum, lab) => sum + lab.tasks.length, 0);
+  const done = checked.size;
+  const percentage = Math.round((done / total) * 100);
+
+  const toggleTask = (id: string) => {
+    setChecked((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      try {
+        window.localStorage.setItem(TOOL_LAB_STORE, JSON.stringify([...next]));
+      } catch {
+        /* The checklist remains usable for this session. */
+      }
+      return next;
+    });
+  };
+
+  return (
+    <article className="toolLabs reveal">
+      <div className="toolLabsHead">
+        <div>
+          <div className="kicker">Tool practice</div>
+          <h3>Burp, ZAP and Nmap lab checklist</h3>
+          <p>Use only the named training sites or systems you own. Each checklist ends with evidence you can keep.</p>
+        </div>
+        <div className="toolLabsScore" aria-label={`${done} of ${total} lab tasks complete`}>
+          <strong>{percentage}%</strong>
+          <span>{done}/{total} tasks</span>
+        </div>
+      </div>
+
+      <div className="toolLabsBar" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}>
+        <i style={{ width: `${percentage}%` }} />
+      </div>
+
+      <div className="toolLabGrid">
+        {toolLabs.map((lab, labIndex) => {
+          const labDone = lab.tasks.filter((_, taskIndex) => checked.has(`${lab.id}-${taskIndex}`)).length;
+          return (
+            <section className="toolLab" key={lab.id}>
+              <div className="toolLabTop">
+                <span>0{labIndex + 1}</span>
+                <small>{labDone}/{lab.tasks.length}</small>
+              </div>
+              <h4>{lab.name}</h4>
+              <p className="toolLabTarget"><b>Legal target:</b> {lab.target}</p>
+              <div className="toolLabTasks">
+                {lab.tasks.map((task, taskIndex) => {
+                  const id = `${lab.id}-${taskIndex}`;
+                  return (
+                    <label className={checked.has(id) ? 'checked' : ''} key={id}>
+                      <input type="checkbox" checked={checked.has(id)} onChange={() => toggleTask(id)} />
+                      <span aria-hidden="true">{checked.has(id) ? '✓' : taskIndex + 1}</span>
+                      <em>{task}</em>
+                    </label>
+                  );
+                })}
+              </div>
+              <button className="toolLabLesson" onClick={() => onOpen(lab.lessonId)}>Open {lab.name} lesson</button>
+            </section>
+          );
+        })}
+      </div>
+    </article>
+  );
+}
+
 export function RolesSection({
   completed,
   onOpen,
@@ -251,6 +378,8 @@ export function RolesSection({
       </div>
 
       <JobAdSprint completed={completed} onOpen={onOpen} onMissions={onMissions} />
+
+      <ToolLabChecklist onOpen={onOpen} />
 
       <div className="roleGrid">
         {roles.map((role) => (

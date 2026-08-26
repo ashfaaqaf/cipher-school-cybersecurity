@@ -44,6 +44,35 @@
 .jobSprintFinish p { max-width: 680px; margin: 8px 0 0; color: var(--ink-soft); font-size: 13.5px; line-height: 1.6; }
 .jobSprintActions { display: flex; flex-wrap: wrap; gap: 10px; }
 
+.toolLabs { margin: 0 0 48px; padding: 28px 0 0; border-top: 1px solid var(--rim); border-bottom: 1px solid var(--rim); }
+.toolLabsHead { display: flex; align-items: flex-start; justify-content: space-between; gap: 22px; }
+.toolLabsHead h3 { margin: 7px 0 0; font-size: clamp(25px, 5.5vw, 38px); font-weight: 430; letter-spacing: -0.04em; }
+.toolLabsHead p { max-width: 660px; margin: 12px 0 0; color: var(--ink-mute); line-height: 1.6; }
+.toolLabsScore { flex: none; display: grid; justify-items: end; gap: 3px; }
+.toolLabsScore strong { font-family: var(--mono); font-size: 28px; font-weight: 450; letter-spacing: -0.05em; }
+.toolLabsScore span { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; }
+.toolLabsBar { height: 2px; margin-top: 24px; background: var(--glass-3); overflow: hidden; }
+.toolLabsBar i { display: block; height: 100%; background: var(--grow); transition: width var(--slow) var(--sheet); }
+.toolLabGrid { display: grid; grid-template-columns: 1fr; }
+.toolLab { padding: 24px 0; border-top: 1px solid var(--rim-bright); }
+.toolLab:first-child { border-top: 0; }
+.toolLabTop { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 10px; }
+.toolLabTop span { color: var(--accent); letter-spacing: 0.12em; }
+.toolLabTop small { color: var(--ink-faint); }
+.toolLab h4 { margin: 10px 0 0; font-size: 20px; letter-spacing: -0.025em; }
+.toolLabTarget { min-height: 42px; margin: 8px 0 0; color: var(--ink-mute); font-size: 12.5px; line-height: 1.55; }
+.toolLabTarget b { color: var(--ink-soft); font-weight: 560; }
+.toolLabTasks { display: grid; margin-top: 16px; }
+.toolLabTasks label { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 10px; min-height: 48px; padding: 11px 0; border-top: 1px solid var(--rim-bright); cursor: pointer; }
+.toolLabTasks input { position: absolute; opacity: 0; pointer-events: none; }
+.toolLabTasks span { grid-row: 1; width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid var(--rim); color: var(--ink-faint); font-family: var(--mono); font-size: 10px; }
+.toolLabTasks em { grid-column: 2; color: var(--ink-soft); font-size: 12.5px; font-style: normal; line-height: 1.5; }
+.toolLabTasks label:focus-within span { outline: 2px solid var(--accent); outline-offset: 2px; }
+.toolLabTasks label.checked span { border-color: var(--grow); color: var(--grow); }
+.toolLabTasks label.checked em { color: var(--ink-mute); text-decoration: line-through; text-decoration-color: var(--rim-bright); }
+.toolLabLesson { min-height: 42px; margin-top: 16px; padding: 0; border: 0; border-bottom: 1px solid var(--accent-line); background: transparent; color: var(--accent); font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.05em; cursor: pointer; }
+.toolLabLesson:hover { border-color: var(--accent); }
+
 @media (min-width: 720px) {
   .jobSprintGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .jobSkill { padding: 26px 24px; border-top: 1px solid var(--rim-bright); border-left: 1px solid var(--rim-bright); }
@@ -52,6 +81,17 @@
   .jobSkill:nth-child(-n + 2) { border-top: 0; }
   .jobSprintFinish { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
   .jobSprintActions { justify-content: flex-end; }
+  .toolLabGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .toolLab { padding: 26px 24px; border-top: 0; border-left: 1px solid var(--rim-bright); }
+  .toolLab:first-child { padding-left: 0; border-left: 0; }
+  .toolLab:last-child { padding-right: 0; }
+}
+
+@media (max-width: 520px) {
+  .jobSprintHead,
+  .toolLabsHead { display: grid; }
+  .jobSprintScore,
+  .toolLabsScore { justify-items: start; }
 }
 
 .role { border-radius: 0; border-top: 1px solid var(--rim); }

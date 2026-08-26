@@ -956,7 +956,7 @@ export const stages: LightStage[] = [
       {
         "id": "11-1",
         "title": "Doing research that holds up",
-        "oneLine": "Research is a question narrow enough to answer, a method someone else could repeat, and honesty about what you did not prove.",
+        "oneLine": "Research is a question narrow enough to answer, a method someone else could repeat, and a clear account of what you did not prove.",
         "mins": 8
       },
       {

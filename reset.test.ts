@@ -9,5 +9,6 @@ assert.equal(new Set(removed).size, removed.length, 'no storage key is cleared t
 assert.ok(removed.includes('cipher-school-progress'), 'lesson progress is included');
 assert.ok(removed.includes('cipher-school-srs'), 'review history is included');
 assert.ok(removed.includes('cipher-school-academy'), 'missions and capstones are included');
+assert.ok(removed.includes('cipher-school-tool-labs'), 'tool lab checklist is included');
 
 console.log('reset: all checks passed');

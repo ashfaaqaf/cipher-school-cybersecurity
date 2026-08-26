@@ -21,10 +21,11 @@ const KEYS = {
   practised: 'cipher-school-practised',
   academy: 'cipher-school-academy',
   accessibility: 'cipher-school-accessibility',
+  toolLabs: 'cipher-school-tool-labs',
 } as const;
 
 const FORMAT = 'cipher-school-backup';
-const VERSION = 4;
+const VERSION = 5;
 
 /** Guards against a hostile or corrupt file eating memory or the UI. */
 const LIMITS = { lessons: 5000, cards: 20000, fileBytes: 2_000_000 };
@@ -46,6 +47,8 @@ export type Backup = {
     academy?: unknown;
     /** Added in version 4: reading comfort, motion and contrast preferences. */
     accessibility?: unknown;
+    /** Added in version 5: progress through the Burp, ZAP and Nmap labs. */
+    toolLabs?: string[];
   };
 };
 
@@ -82,6 +85,7 @@ export function buildBackup(): Backup {
       practised: Array.isArray(read(KEYS.practised)) ? (read(KEYS.practised) as string[]) : [],
       academy: read(KEYS.academy),
       accessibility: read(KEYS.accessibility),
+      toolLabs: Array.isArray(read(KEYS.toolLabs)) ? (read(KEYS.toolLabs) as string[]) : [],
     },
   };
 }
@@ -192,6 +196,10 @@ export function applyBackup(text: string): RestoreResult {
         reduceMotion: access.reduceMotion === true,
         strongContrast: access.strongContrast === true,
       }));
+    }
+    if (Array.isArray(b.data.toolLabs)) {
+      const toolLabs = [...new Set(b.data.toolLabs.filter((x): x is string => typeof x === 'string'))].slice(0, 100);
+      window.localStorage.setItem(KEYS.toolLabs, JSON.stringify(toolLabs));
     }
   } catch {
     return { ok: false, error: 'This browser would not let the app save the restored data.' };
