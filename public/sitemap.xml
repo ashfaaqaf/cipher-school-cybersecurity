@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Static rather than generated: Next route handlers are not exportable without
-  force-static, and there are only five addresses. Lessons live behind hash
-  routes, which crawlers do not index separately, so listing them here would be
-  a sitemap of URLs that all return the same document.
--->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ashfaaqaf.github.io/cipher-school-cybersecurity/</loc>
