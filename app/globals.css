@@ -927,8 +927,12 @@ h2 {
 
 /* ---------- content visibility ---------- */
 
-/* Progressive enhancement must never be allowed to hide course content. */
-.reveal, .reveal.in { opacity: 1; transform: none; }
+/* Reveal animations are progressive enhancement: content starts visible. */
+.reveal,
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
 
 /* ---------- footer ---------- */
 

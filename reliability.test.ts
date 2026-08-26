@@ -7,11 +7,28 @@ const globals = readFileSync(new URL('./app/globals.css', import.meta.url), 'utf
 const shell = readFileSync(new URL('./app/shell.css', import.meta.url), 'utf8');
 const workerBuilder = readFileSync(new URL('./scripts/make-sw.mjs', import.meta.url), 'utf8');
 
-assert.doesNotMatch(page, /querySelectorAll\(['"]\.reveal/, 'visibility must not depend on a one-shot DOM scan');
+assert.match(page, /new IntersectionObserver/, 'scroll reveals need an intersection observer');
+assert.match(page, /new MutationObserver/, 'late-rendered sections need a mutation observer');
+assert.match(page, /dataset\.reveal\s*=\s*['"]ready['"]/, 'CSS must only hide reveals after observers are ready');
+assert.match(
+  page,
+  /querySelectorAll<HTMLElement>\(['"]\.reveal:not\(\.in\)['"]\)/,
+  'newly mounted reveal elements must be registered',
+);
+assert.match(
+  page,
+  /querySelectorAll<HTMLElement>\(['"]\.reveal['"]\)[\s\S]*classList\.add\(['"]in['"]\)/,
+  'observer cleanup must leave all content visible',
+);
 assert.doesNotMatch(
   `${globals}\n${shell}`,
-  /\.reveal\s*\{[\s\S]*?opacity:\s*0/,
+  /^\s*\.reveal\s*\{[^}]*opacity:\s*0/gm,
   'course sections must be visible by default',
+);
+assert.match(
+  shell,
+  /:root\[data-reveal='ready'\]:not\(\[data-motion='reduce'\]\) \.reveal:not\(\.in\)/,
+  'hidden reveal state must require ready JavaScript and allow reduced-motion opt-out',
 );
 assert.match(workerBuilder, /cache\.addAll\(PRECACHE\)/, 'a service worker update must cache one complete build');
 assert.doesNotMatch(

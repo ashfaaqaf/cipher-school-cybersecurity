@@ -632,6 +632,78 @@ export default function Home() {
     return () => window.removeEventListener('keydown', onKey);
   });
 
+  /* ---------- reliable scroll reveals ---------- */
+
+  /*
+   * Some sections are rendered after hydration (career roles, route results,
+   * and whole views). A MutationObserver feeds those late arrivals into the
+   * same IntersectionObserver as the initial page, so an animation can never
+   * leave real content permanently transparent.
+   */
+  useEffect(() => {
+    const root = document.documentElement;
+    let intersection: IntersectionObserver | null = null;
+
+    const show = (node: HTMLElement) => {
+      node.classList.add('in');
+      intersection?.unobserve(node);
+    };
+
+    const watch = (node: Element) => {
+      if (!(node instanceof HTMLElement) || !node.classList.contains('reveal') || node.classList.contains('in')) {
+        return;
+      }
+
+      if (!intersection) {
+        show(node);
+        return;
+      }
+
+      const rect = node.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 1.04 && rect.bottom > -32) {
+        show(node);
+        return;
+      }
+
+      intersection.observe(node);
+    };
+
+    if ('IntersectionObserver' in window) {
+      intersection = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) show(entry.target as HTMLElement);
+          });
+        },
+        { rootMargin: '0px 0px -8% 0px', threshold: 0.06 },
+      );
+    }
+
+    document.querySelectorAll<HTMLElement>('.reveal:not(.in)').forEach(watch);
+
+    const additions = new MutationObserver((records) => {
+      records.forEach((record) => {
+        record.addedNodes.forEach((node) => {
+          if (!(node instanceof Element)) return;
+          watch(node);
+          node.querySelectorAll<HTMLElement>('.reveal:not(.in)').forEach(watch);
+        });
+      });
+    });
+    additions.observe(document.body, { childList: true, subtree: true });
+
+    // CSS only hides pending elements after JavaScript confirms both observers
+    // are installed. Without JavaScript, every lesson stays visible.
+    root.dataset.reveal = 'ready';
+
+    return () => {
+      additions.disconnect();
+      intersection?.disconnect();
+      delete root.dataset.reveal;
+      document.querySelectorAll<HTMLElement>('.reveal').forEach((node) => node.classList.add('in'));
+    };
+  }, []);
+
   /* ---------- body lock while a dialog is open ---------- */
 
   /* The lesson is a page now, not a sheet, so only the remaining dialogs lock. */

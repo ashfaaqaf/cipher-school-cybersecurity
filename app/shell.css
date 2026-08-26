@@ -14,16 +14,20 @@
 /* ---------- reliable content visibility ---------- */
 
 /*
- * `.reveal` used to start transparent and depended on one IntersectionObserver
- * pass to make it visible. Client-only sections can arrive after that pass,
- * leaving a full-height, permanently invisible block that looks like the page
- * never loaded. Content is now visible by default; reliability matters more
- * than a decorative entrance effect.
+ * Only hide a pending reveal after the client has installed both observers.
+ * Late-rendered sections are registered by a MutationObserver, while no-JS and
+ * reduced-motion visitors always receive immediately visible content.
  */
-.reveal,
-.reveal.in {
-  opacity: 1;
-  transform: none;
+@media (prefers-reduced-motion: no-preference) {
+  :root[data-reveal='ready']:not([data-motion='reduce']) .reveal {
+    transition: opacity 620ms var(--ease), transform 620ms var(--ease);
+  }
+
+  :root[data-reveal='ready']:not([data-motion='reduce']) .reveal:not(.in) {
+    opacity: 0;
+    transform: translateY(22px);
+    will-change: opacity, transform;
+  }
 }
 
 /* ---------- desktop: use the width ---------- */
