@@ -12,7 +12,7 @@ export const CIPHER_STORAGE_KEYS = [
 
 export type RemovableStorage = Pick<Storage, 'removeItem'>;
 
-/** Clear only this app's records—never unrelated data belonging to the browser. */
+/** Clear only this app's records: never unrelated data belonging to the browser. */
 export function clearCipherSchoolStorage(storage: RemovableStorage): void {
   for (const key of CIPHER_STORAGE_KEYS) storage.removeItem(key);
 }

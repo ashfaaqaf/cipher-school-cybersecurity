@@ -1,13 +1,13 @@
 import type { Question } from './types';
 
-/** Questions for stages 00–03. Distractors are plausible on purpose: a quiz you can pass by elimination teaches nothing. */
+/** Questions for stages 00-03. Distractors are plausible on purpose: a quiz you can pass by elimination teaches nothing. */
 export const quizA: Question[] = [
   // ---------- 00 Start here, stay legal ----------
   {
     id: '00-1-a', lesson: '00-1',
     ask: 'Which statement best describes what security work actually is?',
     options: [
-      'Managing risk — making harm harder, noticing it, and recovering from it',
+      'Managing risk: making harm harder, noticing it, and recovering from it',
       'Making systems impossible to break into',
       'Finding and exploiting vulnerabilities in software',
       'Installing and configuring security products',
@@ -32,7 +32,7 @@ export const quizA: Question[] = [
     ask: 'Ransomware encrypts a hospital\'s files. Which promise breaks first?',
     options: ['Availability', 'Confidentiality', 'Integrity', 'Non-repudiation'],
     answer: 0,
-    why: 'The files are still secret and still correct — you just cannot reach them. Ransomware is primarily an availability attack, though modern strains steal data too, which then breaks confidentiality.',
+    why: 'The files are still secret and still correct: you just cannot reach them. Ransomware is primarily an availability attack, though modern strains steal data too, which then breaks confidentiality.',
   },
   {
     id: '00-2-b', lesson: '00-2',
@@ -45,7 +45,7 @@ export const quizA: Question[] = [
     id: '00-3-a', lesson: '00-3',
     ask: 'A vulnerability exists but no threat actor has any reason to use it. What does that tell you?',
     options: [
-      'It is often not urgent — risk needs both a weakness and someone motivated to use it',
+      'It is often not urgent: risk needs both a weakness and someone motivated to use it',
       'It must still be fixed immediately, before anything else',
       'It is not a vulnerability at all',
       'It automatically becomes a critical finding',
@@ -64,7 +64,7 @@ export const quizA: Question[] = [
     id: '00-4-a', lesson: '00-4',
     ask: 'A company\'s website is publicly reachable. What does that permit you to do?',
     options: [
-      'Nothing beyond using it normally — public reachability is not permission to test',
+      'Nothing beyond using it normally: public reachability is not permission to test',
       'Run a port scan, since scanning causes no damage',
       'Test it as long as you report anything you find',
       'Anything non-destructive',
@@ -82,7 +82,7 @@ export const quizA: Question[] = [
       'Contact the company asking for a reward before disclosing',
     ],
     answer: 0,
-    why: 'Do not exploit it further, do not go public, and never ask for money in exchange for silence — that is extortion regardless of phrasing.',
+    why: 'Do not exploit it further, do not go public, and never ask for money in exchange for silence: that is extortion regardless of phrasing.',
   },
   {
     id: '00-5-a', lesson: '00-5',
@@ -118,7 +118,7 @@ export const quizA: Question[] = [
       'Watching a complete video course start to finish',
     ],
     answer: 0,
-    why: 'Active recall and spaced repetition build durable memory. Re-reading and highlighting feel productive and teach very little — which is exactly what the Review tab in this app is for.',
+    why: 'Active recall and spaced repetition build durable memory. Re-reading and highlighting feel productive and teach very little, which is exactly what the Review tab in this app is for.',
   },
   {
     id: '00-6-b', lesson: '00-6',
@@ -149,7 +149,7 @@ export const quizA: Question[] = [
     ask: 'Which role reconstructs what happened after a compromise?',
     options: ['DFIR', 'GRC', 'AppSec', 'Detection engineering'],
     answer: 0,
-    why: 'Digital forensics and incident response is the detective work — timelines, evidence, and working out how far the intruder reached.',
+    why: 'Digital forensics and incident response is the detective work: timelines, evidence, and working out how far the intruder reached.',
   },
   {
     id: '00-8-a', lesson: '00-8',
@@ -181,7 +181,7 @@ export const quizA: Question[] = [
     id: '01-1-a', lesson: '01-1',
     ask: 'Why is Base64 not a way to protect a password?',
     options: [
-      'It is encoding, not encryption — anyone can reverse it instantly',
+      'It is encoding, not encryption: anyone can reverse it instantly',
       'It uses a key that is published publicly',
       'It only works on text, not on binary data',
       'It was broken by researchers in the 2010s',
@@ -194,7 +194,7 @@ export const quizA: Question[] = [
     ask: 'How many hexadecimal characters represent one byte?',
     options: ['Two', 'One', 'Four', 'Eight'],
     answer: 0,
-    why: 'One hex digit covers four bits, so a byte — eight bits — is always exactly two hex characters.',
+    why: 'One hex digit covers four bits, so a byte: eight bits: is always exactly two hex characters.',
   },
   {
     id: '01-2-a', lesson: '01-2',
@@ -212,7 +212,7 @@ export const quizA: Question[] = [
     id: '01-2-b', lesson: '01-2',
     ask: 'Why does the operating system give each process its own memory space?',
     options: [
-      'So one process cannot read or corrupt another\'s data — it is a security boundary',
+      'So one process cannot read or corrupt another\'s data: it is a security boundary',
       'To let each process use the full amount of physical RAM',
       'To make context switching between processes faster',
       'Because the CPU can only address one process at a time',
@@ -285,7 +285,7 @@ export const quizA: Question[] = [
       'Tokens grant kernel mode execution directly',
     ],
     answer: 0,
-    why: 'The token is the badge Windows checks. Stealing or duplicating one sidesteps authentication entirely — which is why password policy alone is not the control people assume.',
+    why: 'The token is the badge Windows checks. Stealing or duplicating one sidesteps authentication entirely, which is why password policy alone is not the control people assume.',
   },
   {
     id: '01-6-a', lesson: '01-6',
@@ -321,7 +321,7 @@ export const quizA: Question[] = [
       'Python encrypts memory regions at runtime',
     ],
     answer: 0,
-    why: 'C refuses to spend the time on checking, which is why it is fast — and why forgetting a boundary check becomes a security hole.',
+    why: 'C refuses to spend the time on checking, which is why it is fast, and why forgetting a boundary check becomes a security hole.',
   },
   {
     id: '01-7-b', lesson: '01-7',
@@ -333,7 +333,7 @@ export const quizA: Question[] = [
       'Testing software by working backwards from its output',
     ],
     answer: 0,
-    why: 'A binary is not a black box. strings, file, objdump and a debugger let you read what is inside — it just takes patience.',
+    why: 'A binary is not a black box. strings, file, objdump and a debugger let you read what is inside: it just takes patience.',
   },
   {
     id: '01-8-a', lesson: '01-8',
@@ -384,7 +384,7 @@ export const quizA: Question[] = [
     id: '02-2-a', lesson: '02-2',
     ask: 'Why is ARP spoofing possible?',
     options: [
-      'ARP has no authentication — any machine can answer, and the asker believes it',
+      'ARP has no authentication: any machine can answer, and the asker believes it',
       'ARP packets are encrypted with a key shared across the subnet',
       'Switches forward ARP replies to every port by design',
       'ARP relies on DNS, which can be poisoned',
@@ -409,7 +409,7 @@ export const quizA: Question[] = [
     ask: 'Which of these is a private address range that is never routed on the internet?',
     options: ['10.0.0.0/8', '11.0.0.0/8', '100.0.0.0/8', '1.1.1.0/24'],
     answer: 0,
-    why: 'The private ranges are 10.x.x.x, 172.16–31.x.x and 192.168.x.x. Recognising them instantly tells you whether an address is internal or external.',
+    why: 'The private ranges are 10.x.x.x, 172.16-31.x.x and 192.168.x.x. Recognising them instantly tells you whether an address is internal or external.',
   },
   {
     id: '02-3-b', lesson: '02-3',
@@ -427,9 +427,9 @@ export const quizA: Question[] = [
     id: '02-4-a', lesson: '02-4',
     ask: 'Which firewall default is the correct one?',
     options: [
-      'Default-deny — block everything unless a rule explicitly allows it',
-      'Default-allow — pass everything unless a rule blocks it',
-      'Default-log — permit everything but record it for review',
+      'Default-deny: block everything unless a rule explicitly allows it',
+      'Default-allow: pass everything unless a rule blocks it',
+      'Default-log: permit everything but record it for review',
       'It depends entirely on the vendor\'s recommendation',
     ],
     answer: 0,
@@ -451,7 +451,7 @@ export const quizA: Question[] = [
     id: '02-5-a', lesson: '02-5',
     ask: 'A host makes a burst of DNS queries to long random subdomains of one domain. What does this suggest?',
     options: [
-      'DNS tunnelling — data being smuggled out inside lookups',
+      'DNS tunnelling: data being smuggled out inside lookups',
       'A misconfigured DNS resolver retrying failed queries',
       'Normal behaviour for a content delivery network',
       'The host\'s DNS cache has expired',
@@ -490,7 +490,7 @@ export const quizA: Question[] = [
       'The site does not collect personal data',
     ],
     answer: 0,
-    why: 'It says nothing about whether the site is honest. Phishing sites have valid certificates too — they are just phishing sites with encryption.',
+    why: 'It says nothing about whether the site is legitimate. Phishing sites have valid certificates too. They are phishing sites with encryption.',
   },
   {
     id: '02-7-b', lesson: '02-7',
@@ -552,7 +552,7 @@ export const quizA: Question[] = [
       'Relational tables',
     ],
     answer: 0,
-    why: 'JSON from APIs, parsed log lines, configuration files — being comfortable walking nested structures is most of the practical skill.',
+    why: 'JSON from APIs, parsed log lines, configuration files: being comfortable walking nested structures is most of the practical skill.',
   },
   {
     id: '03-2-a', lesson: '03-2',
@@ -637,7 +637,7 @@ export const quizA: Question[] = [
     id: '03-5-b', lesson: '03-5',
     ask: 'Are NoSQL databases immune to injection?',
     options: [
-      'No — raw input in a query object can inject operators that always match',
+      'No: raw input in a query object can inject operators that always match',
       'Yes, because they do not use SQL syntax',
       'Yes, provided the driver is up to date',
       'Only document stores are vulnerable, not key-value stores',
@@ -697,7 +697,7 @@ export const quizA: Question[] = [
     id: '03-8-a', lesson: '03-8',
     ask: 'You pushed an API key to a repository and deleted it in the next commit. What must you do?',
     options: [
-      'Rotate the key — it is still in history and scanners find leaked keys within minutes',
+      'Rotate the key: it is still in history and scanners find leaked keys within minutes',
       'Nothing, since the current code no longer contains it',
       'Force-push to rewrite history, which fully resolves it',
       'Make the repository private, which prevents any exposure',

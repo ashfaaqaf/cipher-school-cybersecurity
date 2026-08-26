@@ -1,6 +1,6 @@
 import type { Question } from './types';
 
-/** Questions for stages 08–11. */
+/** Questions for stages 08-11. */
 export const quizC: Question[] = [
   // ---------- 08 When it goes wrong ----------
   {
@@ -13,7 +13,7 @@ export const quizC: Question[] = [
       'Early containment voids most cyber insurance policies',
     ],
     answer: 0,
-    why: 'The most common failure is declaring scope too early — announcing containment while the attacker still holds access somewhere nobody looked.',
+    why: 'The most common failure is declaring scope too early: announcing containment while the attacker still holds access somewhere nobody looked.',
   },
   {
     id: '08-1-b', lesson: '08-1',
@@ -26,7 +26,7 @@ export const quizC: Question[] = [
     id: '08-2-a', lesson: '08-2',
     ask: 'Why is immediately powering off a suspected compromised machine usually wrong?',
     options: [
-      'It destroys memory, running processes and network state — the most volatile evidence',
+      'It destroys memory, running processes and network state: the most volatile evidence',
       'It triggers the attacker\'s dead-man switch',
       'It invalidates the chain of custody',
       'It prevents the disk from being imaged afterwards',
@@ -95,7 +95,7 @@ export const quizC: Question[] = [
     options: [
       'The app holds its own durable token, independent of the user\'s password',
       'Password resets do not apply to federated accounts',
-      'The attacker will simply phish the new password',
+      'The attacker will phish the new password',
       'OAuth consent is stored on the endpoint, not in the directory',
     ],
     answer: 0,
@@ -105,7 +105,7 @@ export const quizC: Question[] = [
     id: '08-5-b', lesson: '08-5',
     ask: 'You find a gap in the audit trail during an investigation. What is that?',
     options: [
-      'Evidence — attackers frequently disable or reconfigure logging early',
+      'Evidence: attackers frequently disable or reconfigure logging early',
       'A collection error that should be excluded from the timeline',
       'Proof that the system was not compromised during that window',
       'A normal consequence of log rotation',
@@ -165,13 +165,13 @@ export const quizC: Question[] = [
     id: '08-8-a', lesson: '08-8',
     ask: 'Why is restoring from backup insufficient after ransomware?',
     options: [
-      'Restoring a compromised system restores the compromise — you must rebuild and rotate credentials',
+      'Restoring a compromised system restores the compromise: you must rebuild and rotate credentials',
       'Backups are always encrypted by the same attacker',
       'Restored systems lose their security patches',
       'Insurance requires a full rebuild regardless',
     ],
     answer: 0,
-    why: 'Rebuild from known-good images, restore data after scanning, rotate every credential, and monitor intensively — return visits are common.',
+    why: 'Rebuild from known-good images, restore data after scanning, rotate every credential, and monitor intensively: return visits are common.',
   },
   {
     id: '08-8-b', lesson: '08-8',
@@ -203,7 +203,7 @@ export const quizC: Question[] = [
     id: '09-1-b', lesson: '09-1',
     ask: 'Why is a stolen cloud credential often more dangerous than a compromised virtual machine?',
     options: [
-      'The attacker uses the provider\'s own API — no malware, just administrative-looking calls',
+      'The attacker uses the provider\'s own API: no malware, just administrative-looking calls',
       'Credentials cannot be revoked once issued',
       'Cloud APIs are not logged by default',
       'A credential grants access to every account in the organisation',
@@ -233,7 +233,7 @@ export const quizC: Question[] = [
       'Keys passed as command line arguments at startup',
     ],
     answer: 0,
-    why: 'Long-lived keys get committed to repositories and never expire. Also enforce IMDSv2 so an SSRF bug cannot simply read them.',
+    why: 'Long-lived keys get committed to repositories and never expire. Also enforce IMDSv2 so an SSRF bug cannot read them.',
   },
   {
     id: '09-3-a', lesson: '09-3',
@@ -275,7 +275,7 @@ export const quizC: Question[] = [
     id: '09-4-b', lesson: '09-4',
     ask: 'An unexplained increase in cloud spend should be treated as what?',
     options: [
-      'A security alert — often cryptojacking, and the first sign a credential leaked',
+      'A security alert: often cryptojacking, and the first sign a credential leaked',
       'A billing anomaly for the finance team to investigate',
       'Normal variance in autoscaling behaviour',
       'A sign of misconfigured reserved instance pricing',
@@ -475,7 +475,7 @@ export const quizC: Question[] = [
       'Intercepting traffic on an unencrypted management channel',
     ],
     answer: 0,
-    why: 'This is why constant-time cryptographic implementations exist — the logic is correct, but the physics leaks.',
+    why: 'This is why constant-time cryptographic implementations exist: the logic is correct, but the physics leaks.',
   },
   {
     id: '10-5-a', lesson: '10-5',
@@ -517,13 +517,13 @@ export const quizC: Question[] = [
     id: '10-6-b', lesson: '10-6',
     ask: 'Why is post-quantum migration urgent before quantum computers exist?',
     options: [
-      'Harvest-now-decrypt-later — traffic captured today can be decrypted once machines arrive',
+      'Harvest-now-decrypt-later: traffic captured today can be decrypted once machines arrive',
       'Current algorithms are already broken by classical computers',
       'Certificate authorities have stopped issuing classical certificates',
       'Regulators have banned RSA for new deployments',
     ],
     answer: 0,
-    why: 'Anything needing secrecy for a decade should already be moving to hybrid key exchange — and you need a cryptographic inventory before you can migrate anything.',
+    why: 'Anything needing secrecy for a decade should already be moving to hybrid key exchange, and you need a cryptographic inventory before you can migrate anything.',
   },
   {
     id: '10-7-a', lesson: '10-7',
@@ -579,7 +579,7 @@ export const quizC: Question[] = [
     id: '11-1-a', lesson: '11-1',
     ask: 'What makes a research question answerable?',
     options: [
-      'It is narrow and specific enough to test — "does this implementation validate the hostname?"',
+      'It is narrow and specific enough to test: "does this implementation validate the hostname?"',
       'It has not been published on before',
       'It concerns a widely deployed product',
       'It can be answered without building a lab',
@@ -663,7 +663,7 @@ export const quizC: Question[] = [
     id: '11-4-b', lesson: '11-4',
     ask: 'Where should the conclusion go in a security report?',
     options: [
-      'First — executives may read the opening paragraph and nothing else',
+      'First: executives may read the opening paragraph and nothing else',
       'Last, after the evidence has been presented',
       'In a separate appendix for decision-makers',
       'Distributed through the document alongside each finding',
@@ -699,7 +699,7 @@ export const quizC: Question[] = [
     id: '11-6-a', lesson: '11-6',
     ask: 'Why does calling too many findings critical make an organisation less safe?',
     options: [
-      'Credibility is spent once — people stop believing you when it genuinely matters',
+      'Credibility is spent once: people stop believing you when it genuinely matters',
       'Critical findings must be reported to regulators',
       'It overloads the patching pipeline and delays real fixes',
       'It triggers unnecessary incident response activity',
@@ -735,7 +735,7 @@ export const quizC: Question[] = [
     id: '11-7-b', lesson: '11-7',
     ask: 'What is a realistic view of your responsibility as a defender?',
     options: [
-      'Reduce likelihood, limit impact and respond well — not guarantee no incidents',
+      'Reduce likelihood, limit impact and respond well, not guarantee no incidents',
       'Prevent every incident within your area of control',
       'Ensure the organisation passes every audit',
       'Detect every intrusion within a defined time window',
@@ -747,19 +747,19 @@ export const quizC: Question[] = [
     id: '11-8-a', lesson: '11-8',
     ask: 'Why is teaching one of the fastest ways to learn?',
     options: [
-      'Explaining something simply exposes the parts you had only memorised',
+      'Explaining something clearly exposes the parts you had only memorised',
       'It forces you to read more source material',
       'Students ask questions that reveal new vulnerabilities',
       'It builds a professional network that shares knowledge',
     ],
     answer: 0,
-    why: 'You do not need to be an expert to help someone one step behind you — you are better placed, because you still remember what was confusing.',
+    why: 'You do not need to be an expert to help someone one step behind you: you are better placed, because you still remember what was confusing.',
   },
   {
     id: '11-8-b', lesson: '11-8',
     ask: 'What is the correct expectation about finishing this course?',
     options: [
-      'You will not finish — security is a practice, not a body of knowledge to complete',
+      'You will not finish: security is a practice, not a body of knowledge to complete',
       'Completion takes roughly two years of consistent study',
       'You finish when you can pass the associated certifications',
       'You finish when you have completed one specialisation capstone',

@@ -12,7 +12,7 @@ import { roles, roleLessons } from './curriculum/roles';
  * junior applicant is short of: specific, checkable claims about what they have
  * done, in the vocabulary the adverts themselves use.
  *
- * It is generated, not written, so it cannot overstate anything — every line
+ * It is generated, not written, so it cannot overstate anything: every line
  * comes from a lesson that was marked understood or an exercise that was
  * finished. The output is plain text on purpose: it goes into a CV, a covering
  * email or a GitHub README, and none of those want markup.
@@ -55,13 +55,13 @@ export function EvidenceSheet({
 
   const text = useMemo(() => {
     const lines: string[] = [];
-    lines.push('CYBERSECURITY — WHAT I HAVE COVERED');
+    lines.push('CYBERSECURITY: WHAT I HAVE COVERED');
     lines.push('');
     lines.push(`${completed.size} lessons completed across ${covered.length} of ${stages.length} stages.`);
     if (solved.length) lines.push(`${solved.length} hands-on exercises completed on real artefacts.`);
     lines.push('');
     for (const { stage, done } of covered) {
-      lines.push(`Stage ${stage.number} — ${stage.title} (${done.length}/${stage.lessons.length})`);
+      lines.push(`Stage ${stage.number}: ${stage.title} (${done.length}/${stage.lessons.length})`);
       lines.push(`  ${stage.outcome}`);
       lines.push('');
     }
@@ -81,7 +81,7 @@ export function EvidenceSheet({
       }
       lines.push('');
     }
-    lines.push('Studied with Cipher School — every claim above is a lesson completed, not a course enrolled in.');
+    lines.push('Studied with Cipher School: every claim above is a lesson completed, not a course enrolled in.');
     return lines.join('\n');
   }, [completed, covered, solved, readiness]);
 
@@ -100,7 +100,7 @@ export function EvidenceSheet({
       <div className="empty">
         <div className="emptyTitle">Nothing to show yet</div>
         <div className="emptyText">
-          Finish a lesson and this becomes a sheet you can paste into a CV, a covering email or a README — generated
+          Finish a lesson and this becomes a sheet you can paste into a CV, a covering email or a README: generated
           from what you actually did, so it cannot claim more than that.
         </div>
       </div>

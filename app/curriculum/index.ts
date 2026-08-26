@@ -2,7 +2,7 @@
  * What the app needs before anyone has clicked anything.
  *
  * The roadmap is drawn from `light.ts`, which is generated from the stage files
- * and carries a stage's metadata plus each lesson's title, one line and length —
+ * and carries a stage's metadata plus each lesson's title, one line and length.
  * and nothing else. The prose, the questions, the definitions and the job
  * adverts live in `./full` and `./roles`, both reached by dynamic import.
  *
@@ -15,8 +15,8 @@ import { stages } from './light';
 
 export { stages, cardIdsByLesson, practiceLessons, glossaryCount, totalQuestions } from './light';
 
-/* Within the app, a Stage is what the roadmap draws. The full ones — the
-   versions that carry prose — are named so it is obvious which you have. */
+/* Within the app, a Stage is what the roadmap draws. The full ones: the
+   versions that carry prose: are named so it is obvious which you have. */
 export type { LightStage as Stage, LightLesson as Lesson } from './light';
 export type { Lesson as FullLesson, Stage as FullStage, Word, Level, Question } from './types';
 
@@ -96,9 +96,9 @@ export const sources = [
   { name: 'Kubernetes checklist', kind: 'CLOUD', href: 'https://kubernetes.io/docs/concepts/security/security-checklist/', why: 'The official baseline for cluster security decisions.' },
   { name: 'CS50 Cybersecurity', kind: 'COURSE', href: 'https://cs50.harvard.edu/cybersecurity/', why: 'Harvard’s free five-lecture introduction, mapped stage by stage under Paths.' },
   { name: 'MITRE ATLAS', kind: 'AI', href: 'https://atlas.mitre.org/', why: 'Adversarial techniques against AI-enabled systems.' },
-  { name: 'CISA KEV catalogue', kind: 'VULNS', href: 'https://www.cisa.gov/known-exploited-vulnerabilities-catalog', why: 'What is actually being exploited right now — better than severity alone.' },
+  { name: 'CISA KEV catalogue', kind: 'VULNS', href: 'https://www.cisa.gov/known-exploited-vulnerabilities-catalog', why: 'What is actually being exploited right now: better than severity alone.' },
   { name: 'CVSS v4.0', kind: 'VULNS', href: 'https://www.first.org/cvss/v4.0/', why: 'The standard way to communicate vulnerability severity.' },
-  { name: 'NIST PQC standards', kind: 'CRYPTO', href: 'https://csrc.nist.gov/projects/post-quantum-cryptography', why: 'FIPS 203, 204 and 205 — the post-quantum migration you will live through.' },
+  { name: 'NIST PQC standards', kind: 'CRYPTO', href: 'https://csrc.nist.gov/projects/post-quantum-cryptography', why: 'FIPS 203, 204 and 205: the post-quantum migration you will live through.' },
 ];
 
 export const allLessons = stages.flatMap((stage) => stage.lessons.map((lesson) => ({ lesson, stage })));

@@ -2,7 +2,7 @@
  * Full-text search across everything a lesson contains.
  *
  * The old search only looked at titles and one-liners, which meant most of the
- * 22,000 words of explanation were unreachable — you could not find the lesson
+ * 22,000 words of explanation were unreachable: you could not find the lesson
  * that explains password spraying by searching "spraying", because the phrase
  * only appears in the body.
  *
@@ -59,7 +59,7 @@ export function buildCorpus(
     fields: [
       { name: 'title', weight: 10, text: lesson.title },
       { name: 'the whole idea', weight: 6, text: lesson.oneLine },
-      { name: 'jargon', weight: 5, text: lesson.words.map((w) => `${w.term} — ${w.means}`).join(' · ') },
+      { name: 'jargon', weight: 5, text: lesson.words.map((w) => `${w.term}: ${w.means}`).join(' · ') },
       { name: 'analogy', weight: 3, text: lesson.like },
       { name: 'why it matters', weight: 2, text: lesson.why },
       { name: 'go and do this', weight: 2, text: lesson.doThis },
@@ -169,7 +169,7 @@ export function searchIn(corpus: Entry[], query: string, limit = 40): Hit[] {
 
     if (!matchedAll || !best) continue;
 
-    /* Prefer the richest field that actually contains a term for the snippet —
+    /* Prefer the richest field that actually contains a term for the snippet.
        a title match is a poor snippet, since the title is already shown. */
     const source =
       best.name === 'title'

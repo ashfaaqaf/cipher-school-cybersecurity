@@ -1,13 +1,13 @@
 import type { Question } from './types';
 
-/** Questions for stages 04–07. */
+/** Questions for stages 04-07. */
 export const quizB: Question[] = [
   // ---------- 04 Security thinking ----------
   {
     id: '04-1-a', lesson: '04-1',
     ask: 'What separates accepting a risk from ignoring it?',
     options: [
-      'Documentation — a deliberate, recorded decision by someone with the authority to make it',
+      'Documentation: a deliberate, recorded decision by someone with the authority to make it',
       'Whether the risk later turns out to cause an incident',
       'Whether a compensating control was also applied',
       'Whether the risk scored below a defined threshold',
@@ -61,19 +61,19 @@ export const quizB: Question[] = [
       'Password hashes must be reversible, and fast hashes are not',
     ],
     answer: 0,
-    why: 'For passwords use a deliberately slow hash — Argon2, bcrypt or scrypt — with a unique salt per user.',
+    why: 'For passwords use a deliberately slow hash such as Argon2, bcrypt or scrypt, with a unique salt per user.',
   },
   {
     id: '04-3-b', lesson: '04-3',
     ask: 'What is the single most important rule about cryptography in production?',
     options: [
-      'Never write your own — use vetted libraries at a high level',
+      'Never write your own: use vetted libraries at a high level',
       'Always use the largest key size available',
       'Rotate every key at least once per month',
       'Prefer symmetric encryption over asymmetric wherever possible',
     ],
     answer: 0,
-    why: 'Almost every catastrophic crypto failure came from someone assembling primitives themselves — reusing a nonce, choosing ECB, comparing secrets in non-constant time.',
+    why: 'Almost every catastrophic crypto failure came from someone assembling primitives themselves: reusing a nonce, choosing ECB, comparing secrets in non-constant time.',
   },
   {
     id: '04-4-a', lesson: '04-4',
@@ -181,7 +181,7 @@ export const quizB: Question[] = [
       'Compliance frameworks deliberately exclude technical requirements',
     ],
     answer: 0,
-    why: 'The reverse also happens: a genuinely secure organisation can fail an audit for lacking evidence. You need both, and you should be honest about which you are doing.',
+    why: 'The reverse also happens: a secure organisation can fail an audit for lacking evidence. You need both, and you must name which one you are measuring.',
   },
   {
     id: '04-8-b', lesson: '04-8',
@@ -214,7 +214,7 @@ export const quizB: Question[] = [
     ask: 'What sits at A01 in the OWASP Top 10 2025?',
     options: ['Broken Access Control', 'Injection', 'Cryptographic Failures', 'Security Misconfiguration'],
     answer: 0,
-    why: 'It stayed at number one. The most common serious web vulnerability is not clever — it is a page that forgets to check whether this user may see this thing.',
+    why: 'It stayed at number one. The most common serious web vulnerability is not clever: it is a page that forgets to check whether this user may see this thing.',
   },
   {
     id: '05-2-a', lesson: '05-2',
@@ -268,7 +268,7 @@ export const quizB: Question[] = [
     id: '05-4-a', lesson: '05-4',
     ask: 'Why does an XSS vulnerability make your CSRF token protection irrelevant?',
     options: [
-      'The injected script runs in your origin and can simply read the token',
+      'The injected script runs in your origin and can read the token',
       'CSRF tokens are stored in cookies that XSS deletes',
       'XSS disables the SameSite attribute on all cookies',
       'The browser stops sending tokens once a script error occurs',
@@ -304,7 +304,7 @@ export const quizB: Question[] = [
     id: '05-5-b', lesson: '05-5',
     ask: 'What is the correct fix for insecure deserialisation of untrusted data?',
     options: [
-      'Do not deserialise untrusted data with a format that can carry code — use JSON with a schema',
+      'Do not deserialise untrusted data with a format that can carry code: use JSON with a schema',
       'Sign the serialised payload and verify the signature',
       'Deserialise inside a try/catch and discard malformed objects',
       'Limit the size of the serialised payload',
@@ -316,7 +316,7 @@ export const quizB: Question[] = [
     id: '05-6-a', lesson: '05-6',
     ask: 'What is BOLA in API security?',
     options: [
-      'Broken Object Level Authorisation — the API version of IDOR, and number one on the API Top 10',
+      'Broken Object Level Authorisation: the API version of IDOR, and number one on the API Top 10',
       'A denial of service caused by deeply nested queries',
       'Binary object leakage in API responses',
       'A GraphQL-specific batching vulnerability',
@@ -346,7 +346,7 @@ export const quizB: Question[] = [
       'Critical vulnerabilities should be embargoed for longer',
     ],
     answer: 0,
-    why: 'A library used almost everywhere, a feature nobody knew was there, and organisations unable to answer "are we affected?" — which is what SBOMs exist to fix.',
+    why: 'A library used almost everywhere, a feature nobody knew was there, and organisations unable to answer "are we affected?", which is what SBOMs exist to fix.',
   },
   {
     id: '05-7-b', lesson: '05-7',
@@ -382,7 +382,7 @@ export const quizB: Question[] = [
       'SCA, because it inspects every dependency',
     ],
     answer: 0,
-    why: 'Each method has a defined blind spot. Logic — "should this user be able to do this?" — needs a human who knows what the application is for.',
+    why: 'Each method has a defined blind spot. Logic: "should this user be able to do this?": needs a human who knows what the application is for.',
   },
 
   // ---------- 06 Attacking, with permission ----------
@@ -402,7 +402,7 @@ export const quizB: Question[] = [
     id: '06-1-b', lesson: '06-1',
     ask: 'What does minimising impact look like when proving a vulnerability?',
     options: [
-      'Read one record, not the whole table — evidence sufficient to convince and nothing more',
+      'Read one record, not the whole table: evidence sufficient to convince and nothing more',
       'Test outside business hours regardless of the agreement',
       'Take a full database copy so the finding cannot be disputed',
       'Disable monitoring so the client\'s alerts are not flooded',
@@ -534,7 +534,7 @@ export const quizB: Question[] = [
     id: '06-7-a', lesson: '06-7',
     ask: 'Why can three medium-severity findings justify a critical rating together?',
     options: [
-      'Chained, they produce impact none of them has alone — which is what an attacker will do',
+      'Chained, they produce impact none of them has alone, which is what an attacker will do',
       'Because severity scores are additive by definition',
       'Because three findings indicate systemic process failure',
       'Because CVSS requires escalation when findings share an asset',
@@ -590,7 +590,7 @@ export const quizB: Question[] = [
       'Logs older than thirty days compress poorly',
     ],
     answer: 0,
-    why: 'Balance cost against the practical minimum, and keep the highest-value sources — endpoint and identity — longest.',
+    why: 'Balance cost against the practical minimum, and keep the highest-value sources: endpoint and identity: longest.',
   },
   {
     id: '07-1-b', lesson: '07-1',
@@ -602,7 +602,7 @@ export const quizB: Question[] = [
       'Web server access logs and DHCP leases',
     ],
     answer: 0,
-    why: 'Together they cover the intrusion lifecycle from first foothold to final theft — which is why Sysmon and audit logging are such high-value settings.',
+    why: 'Together they cover the intrusion lifecycle from first foothold to final theft, which is why Sysmon and audit logging are such high-value settings.',
   },
   {
     id: '07-2-a', lesson: '07-2',
@@ -638,7 +638,7 @@ export const quizB: Question[] = [
       'Automatic mapping from CVEs to techniques',
     ],
     answer: 0,
-    why: 'Released October 2025, it substantially restructured detection guidance — which means older coverage mappings need revisiting.',
+    why: 'Released October 2025, it substantially restructured detection guidance, which means older coverage mappings need revisiting.',
   },
   {
     id: '07-3-b', lesson: '07-3',
@@ -675,7 +675,7 @@ export const quizB: Question[] = [
     id: '07-5-a', lesson: '07-5',
     ask: 'Why is business email compromise often invisible to endpoint tooling?',
     options: [
-      'Nothing is installed — the attacker uses stolen credentials through legitimate services',
+      'Nothing is installed: the attacker uses stolen credentials through legitimate services',
       'Email clients do not generate endpoint telemetry',
       'EDR agents exclude mail processes by default',
       'The activity happens entirely inside encrypted TLS sessions',
@@ -699,7 +699,7 @@ export const quizB: Question[] = [
     id: '07-6-a', lesson: '07-6',
     ask: 'How can you detect command and control inside encrypted traffic without decrypting it?',
     options: [
-      'Beaconing patterns — regular intervals and consistent payload sizes remain visible',
+      'Beaconing patterns: regular intervals and consistent payload sizes remain visible',
       'By reading the TLS certificate\'s subject field',
       'By inspecting the HTTP host header',
       'Encrypted traffic cannot be analysed without decryption',
@@ -733,7 +733,7 @@ export const quizB: Question[] = [
   },
   {
     id: '07-7-b', lesson: '07-7',
-    ask: 'What is the honest position on attribution?',
+    ask: 'What is the defensible position on attribution?',
     options: [
       'It is difficult, politically loaded, and frequently wrong in early reporting',
       'It is reliable once malware samples are matched to a known family',
@@ -741,7 +741,7 @@ export const quizB: Question[] = [
       'It is a solved problem given sufficient telemetry',
     ],
     answer: 0,
-    why: 'Separate what was observed from what was inferred, and label your own confidence honestly.',
+    why: 'Separate what was observed from what was inferred, and state your confidence level.',
   },
   {
     id: '07-8-a', lesson: '07-8',

@@ -2,8 +2,8 @@
  * The daily plan.
  *
  * 110 lessons is a backlog, not a habit. This turns a weekly hour budget into
- * one concrete answer to "what do I do today" — a named list of lessons plus
- * whatever review is due — and keeps a streak so returning is visible.
+ * one concrete answer to "what do I do today": a named list of lessons plus
+ * whatever review is due, and keeps a streak so returning is visible.
  *
  * Pure functions with the date passed in, so the whole thing is testable
  * without waiting for tomorrow.
@@ -39,7 +39,7 @@ export const MAX_LESSONS_PER_DAY = 4;
 /**
  * How long a lesson really takes.
  *
- * Lesson.mins is reading time — six to ten minutes. The stage's own hour
+ * Lesson.mins is reading time: six to ten minutes. The stage's own hour
  * estimate covers the reading plus the lab, the notes and the exercise, and
  * that is the number a study plan has to budget against. Planning on reading
  * time alone produces a cheerful list of twelve lessons a day and a course
@@ -59,7 +59,7 @@ export function humanMins(mins: number): string {
 
 /**
  * Local date, not UTC. toISOString would roll the day over at the wrong moment
- * for anyone not on GMT — in Colombo that is 5:30am, which would silently break
+ * for anyone not on GMT: in Colombo that is 5:30am, which would silently break
  * the streak of anyone studying late.
  */
 export function dayKey(d: Date = new Date()): string {
@@ -138,7 +138,7 @@ export type Plan = {
  *
  * Review comes before new reading, always. Cards are scheduled to arrive just
  * before they would be forgotten, so a skipped review costs more than a skipped
- * lesson — and nothing is more discouraging than a review backlog nobody
+ * lesson, and nothing is more discouraging than a review backlog nobody
  * cleared because there was always a new chapter to start.
  */
 export function buildPlan({ budgetMins, dueCards, nextLessons, doneToday }: PlanInput): Plan {
@@ -227,7 +227,7 @@ export function summariseWeek(history: History, today: string = dayKey()): WeekS
   return { mins, lessons, cards, activeDays, lessonIds, prevMins };
 }
 
-/** Keep the history from growing without bound — a year is plenty. */
+/** Keep the history from growing without bound: a year is plenty. */
 export function prune(history: History, today: string = dayKey()): History {
   const cutoff = shiftDay(today, -365);
   return Object.fromEntries(Object.entries(history).filter(([k]) => k >= cutoff));

@@ -7,8 +7,8 @@ import type { FullStage } from './curriculum';
  *
  * Rendered off-screen and revealed only by the print stylesheet, so the on-screen
  * app never has to expand every accordion to produce a printable page. Glass,
- * gradients and dark backgrounds all vanish here — they cost ink and read badly
- * in monochrome — leaving plain black-on-white typography.
+ * gradients and dark backgrounds all vanish here: they cost ink and read badly
+ * in monochrome: leaving plain black-on-white typography.
  */
 export function PrintSheet({ stage }: { stage: FullStage }) {
   return (
@@ -91,7 +91,7 @@ export function PrintSheet({ stage }: { stage: FullStage }) {
         <ul>
           {stage.resources.map((r) => (
             <li key={r.href}>
-              {r.label} — <span className="pUrl">{r.href}</span>
+              {r.label}: <span className="pUrl">{r.href}</span>
             </li>
           ))}
         </ul>

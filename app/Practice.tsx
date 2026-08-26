@@ -73,7 +73,7 @@ function Step({
             </button>
           </div>
 
-          {missed && <div className="exMiss">Not that one. Read it again — or take a hint, they are free.</div>}
+          {missed && <div className="exMiss">Not that one. Read it again, or take a hint, they are free.</div>}
 
           {step.hints.slice(0, hints).map((h, i) => (
             <div className="exHint" key={i}>
@@ -114,7 +114,7 @@ export function PracticeBlock({
 }: {
   lessonId: string;
   onWorked: () => void;
-  /** Fired once, when the last step is finished — this is what the evidence sheet counts. */
+  /** Fired once, when the last step is finished: this is what the evidence sheet counts. */
   onSolved: () => void;
 }) {
   const exercise = exerciseByLesson.get(lessonId);

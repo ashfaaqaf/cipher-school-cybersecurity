@@ -97,7 +97,7 @@ const views: { id: View; icon: string; label: string }[] = [
 
 /*
  * The corpus needs every word of every lesson, so it is built the first time
- * the heavy half of the curriculum is in memory — once, not per render, and
+ * the heavy half of the curriculum is in memory, once, not per render, and
  * not before anyone has typed anything.
  */
 let CORPUS: ReturnType<typeof buildCorpus> | null = null;
@@ -135,7 +135,7 @@ export default function Home() {
   const [theme, setTheme] = useState<'night' | 'day'>('night');
   /*
    * First visit follows the operating system. It cannot be read during the
-   * first render — this page is prerendered to static HTML at build time, and a
+   * first render: this page is prerendered to static HTML at build time, and a
    * machine that has no idea what your display settings are would bake the
    * wrong answer in and mismatch on hydration. A stored choice always wins.
    */
@@ -197,7 +197,7 @@ export default function Home() {
       const access = window.localStorage.getItem(ACCESSIBILITY);
       if (access) setAccessibility(safeAccessibility(JSON.parse(access)));
     } catch {
-      /* progress simply starts clean when storage is unavailable */
+      /* progress starts clean when storage is unavailable */
     }
   }, []);
 
@@ -260,7 +260,7 @@ export default function Home() {
       const raw = window.localStorage.getItem(PRACTISED);
       if (raw) setPractised(new Set(JSON.parse(raw)));
     } catch {
-      /* an unreadable store simply starts empty */
+      /* an unreadable store starts empty */
     }
   }, []);
 
@@ -268,7 +268,7 @@ export default function Home() {
 
   /*
    * A card is only in play once you have read the lesson it came from. Only the
-   * ids are needed to work that out, and the ids are in the light index — so
+   * ids are needed to work that out, and the ids are in the light index, so
    * the review count on the dock does not drag two hundred questions and four
    * hundred definitions into the first bundle to display a number.
    */
@@ -355,7 +355,7 @@ export default function Home() {
    * enough: the symptom is clicking something and appearing to get the old
    * behaviour, which reads as the app being broken.
    *
-   * So a new version is taken automatically when taking it costs nothing — the
+   * So a new version is taken automatically when taking it costs nothing: the
    * page has only just loaded, or the tab has just come back, and no lesson is
    * open. Mid-read, the banner asks instead. The timestamp guard means a build
    * that somehow reinstalls itself cannot put the page in a reload loop.
@@ -489,7 +489,7 @@ export default function Home() {
   const applyRoute = useCallback((route: Route) => {
     setView(route.view);
     if (!route.lessonId) {
-      /* No lesson in the URL means no lesson open — otherwise pressing back
+      /* No lesson in the URL means no lesson open: otherwise pressing back
          out of a lesson clears the address bar and leaves the reader sitting
          there, which reads as the back button being broken. */
       setReader(null);
@@ -521,7 +521,7 @@ export default function Home() {
   /* ---------- print ---------- */
 
   /*
-   * Render the sheet first, then print — calling window.print() in the same tick
+   * Render the sheet first, then print: calling window.print() in the same tick
    * prints the previous frame, which is a blank page.
    *
    * A timeout rather than requestAnimationFrame on purpose: rAF is throttled to
@@ -542,7 +542,7 @@ export default function Home() {
   /*
    * All that is left for scroll to drive is the hairline under the header. It
    * was React state once, which meant a setState on every animation frame of
-   * every scroll — a full re-render of thirteen stages and a hundred and ten
+   * every scroll: a full re-render of thirteen stages and a hundred and ten
    * lesson rows, sixty times a second, to draw one line. It is a class toggle
    * written straight to the DOM, and only when the answer actually changes.
    */
@@ -850,7 +850,7 @@ export default function Home() {
     setPendingStage(null);
   }, [pendingStage, view]);
 
-  /** Jump straight to a lesson by id — the role requirement chips use this. */
+  /** Jump straight to a lesson by id: the role requirement chips use this. */
   const openById = useCallback(
     (lessonId: string) => {
       const si = stages.findIndex((st) => st.lessons.some((x) => x.id === lessonId));
@@ -896,7 +896,7 @@ export default function Home() {
   const rootStyle = { '--hue': String(activeHue ?? 210) } as CSSProperties;
 
   const goto = (id: View) => {
-    /* Changing section is not going back — it starts at the top of the new one. */
+    /* Changing section is not going back: it starts at the top of the new one. */
     cameFrom.current = 0;
     setReader(null);
     setView(id);
@@ -981,7 +981,7 @@ export default function Home() {
             <span className="pulse" aria-hidden="true" />
             <div className="islandText">
               {doneCount === 0 ? (
-                <>Ready when you are — <b>start with stage 00</b></>
+                <>Ready when you are. <b>Start with stage 00</b></>
               ) : nextUp ? (
                 <>
                   <b>{doneCount}</b> of {totalLessons} done · next: {nextUp.lesson.title}
@@ -1087,7 +1087,7 @@ export default function Home() {
                   }
                 }}
               >
-                {completed.has(current.lesson.id) ? '✓ Done — tap to undo' : 'Mark as understood'}
+                {completed.has(current.lesson.id) ? '✓ Done. Tap to undo' : 'Mark as understood'}
               </button>
               <button
                 className="navBtn"
@@ -1226,7 +1226,7 @@ export default function Home() {
               {restore && (
                 <p className={restore.ok ? 'dataNote ok' : 'dataNote bad'}>
                   {restore.ok
-                    ? `Saved — ${restore.lessons} lesson${restore.lessons === 1 ? '' : 's'}, ${
+                    ? `Saved: ${restore.lessons} lesson${restore.lessons === 1 ? '' : 's'}, ${
                         restore.cards
                       } review card${restore.cards === 1 ? '' : 's'}.${
                         restore.skipped.length ? ` Skipped: ${restore.skipped.join('; ')}.` : ''
@@ -1265,8 +1265,8 @@ export default function Home() {
               <div className="kicker">The roadmap</div>
               <h2>{stages.length} stages, in order</h2>
               <p className="sectionNote">
-                Do them in sequence if you are new. Each stage recolours the app — a different colour per stage helps
-                your memory keep them separate. Tap any lesson to read it — the ones marked{' '}
+                Do them in sequence if you are new. Each stage uses a different colour to help your memory keep them
+                separate. Tap any lesson to read it. Lessons marked{' '}
                 <span className="lessonLab">exercise</span> end with a real artefact to work on rather than a question
                 to answer.
               </p>
@@ -1279,7 +1279,7 @@ export default function Home() {
                   ref={searchRef}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search every word — press /"
+                  placeholder="Search every word. Press /"
                   aria-label="Search the curriculum"
                   type="search"
                 />
@@ -1492,8 +1492,8 @@ export default function Home() {
               <div className="safetyText">
                 Only test systems you own, systems you have written permission to test, or labs built for practice.
                 Scanning or accessing anything else is a crime in most countries, even with good intentions and even if
-                nothing breaks. Every offensive technique in this course has a free, legal place to practise it — those
-                links are inside each stage.
+                nothing breaks. Every offensive technique in this course has a free, legal place to practise it. You
+                will find those links inside each stage.
               </div>
             </div>
           </section>
@@ -1512,7 +1512,7 @@ export default function Home() {
               <h2>Lock it in</h2>
               <p className="sectionNote">
                 Reading a lesson once teaches you almost nothing. {totalQuestions} questions and {glossaryCount} terms
-                come back at growing intervals — just before you would have forgotten them, which is exactly when
+                come back at growing intervals, just before you would have forgotten them. That is exactly when
                 recalling something makes it permanent.
               </p>
             </div>
@@ -1525,14 +1525,14 @@ export default function Home() {
         {/* ---------------- paths ---------------- */}
         {!reader && view === 'paths' && (
           <section id="paths" className="band">
-            <RolesSection completed={completed} onOpen={openById} />
+            <RolesSection completed={completed} onOpen={openById} onMissions={() => goto('missions')} />
 
             <div className="sectionHead reveal" style={{ marginTop: 40 }}>
               <div className="kicker">Career paths</div>
               <h2>Eight ways through</h2>
               <p className="sectionNote">
                 Security is not one job. These are the real role families and the stage order that gets you to each one.
-                Stage 00 is compulsory for all of them. The numbers are stages — press one to open it.
+                Stage 00 is compulsory for all of them. The numbers are stages. Press one to open it.
               </p>
             </div>
             <div className="trackGrid">
@@ -1568,9 +1568,8 @@ export default function Home() {
               <div className="kicker">Evidence</div>
               <h2>What you can show for it</h2>
               <p className="sectionNote">
-                A completion percentage is worth nothing to anyone hiring. This is the same progress written as
-                specific, checkable claims, in the vocabulary the adverts use — generated from what you actually
-                finished, so it cannot claim more than that.
+                A completion percentage is worth nothing to anyone hiring. This turns your progress into specific,
+                checkable claims using the language from job adverts. It only includes work you finished.
               </p>
             </div>
             <EvidenceSheet completed={completed} practised={practised} />
@@ -1665,7 +1664,7 @@ export default function Home() {
               <div className="kicker">Where this comes from</div>
               <h2>Primary sources</h2>
               <p className="sectionNote">
-                This curriculum is built on published standards and free labs, not opinion. Go to the originals — they
+                This curriculum is built on published standards and free labs, not opinion. Go to the originals. They
                 are better than any summary, including this one.
               </p>
             </div>
@@ -1686,10 +1685,10 @@ export default function Home() {
 
             <div className="safety reveal" style={{ background: 'var(--glass)', borderColor: 'var(--rim)' }}>
               <div className="safetyTitle" style={{ color: 'var(--ink)' }}>
-                An honest limit
+                The practical limit
               </div>
               <div className="safetyText">
-                Nobody masters all of cybersecurity — the field is far too large, and anyone claiming otherwise is
+                Nobody masters all of cybersecurity. The field is far too large, and anyone claiming otherwise is
                 selling something. This course is built for broad foundations plus one deep speciality. That shape is
                 what actually gets hired, and it is what stage 10 is for.
               </div>
@@ -1804,7 +1803,7 @@ export default function Home() {
                 <div className="voiceList">
                   {speaker.voices.length === 0 && (
                     <div className="cardPrompt">
-                      No voices reported yet. On some browsers they appear only after the first playback — press Listen
+                      No voices reported yet. On some browsers they appear only after the first playback. Press Listen
                       once and come back.
                     </div>
                   )}
@@ -1827,8 +1826,8 @@ export default function Home() {
               <div className="readCard check">
                 <div className="readLabel">A note on the voice</div>
                 <div className="readText">
-                  The studio narrator is an original synthetic voice designed from a written brief — a calm, precise
-                  British narrator. It is not a clone of any performer, and no film audio was used to make it. Studio
+                  The studio narrator is an original synthetic voice designed from a written brief. It uses a calm,
+                  precise British style. It is not a clone of any performer, and no film audio was used to make it. Studio
                   audio is generated ahead of time and served as ordinary files, so no API key ever reaches your
                   browser and it keeps working offline.
                   {' '}
@@ -1865,9 +1864,9 @@ export default function Home() {
                   <div className="keyRow" key={i}>
                     <span className="keyCombo">
                       {s.keys.map((k, n) =>
-                        k === '–' ? (
+                        k === '-' ? (
                           <span className="keyDash" key={n}>
-                            –
+                            -
                           </span>
                         ) : (
                           <kbd key={n}>{k}</kbd>
@@ -1921,7 +1920,7 @@ export default function Home() {
                 <div className="readLabel">Offline</div>
                 <div className="readText">
                   {offlineReady
-                    ? 'Saved for offline use. Every lesson, question and term works with no signal — on a bus, on a plane, anywhere.'
+                    ? 'Saved for offline use. Every lesson, question and term works with no signal, including on a bus or plane.'
                     : 'Caching in the background. Once it finishes, the whole course works with no connection at all.'}
                 </div>
               </div>

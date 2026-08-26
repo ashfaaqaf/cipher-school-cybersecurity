@@ -112,7 +112,7 @@ export function useSpeaker() {
         if (!cancelled && m?.lessons && Object.keys(m.lessons).length > 0) setManifest(m);
       })
       .catch(() => {
-        /* no studio library published — the device voice covers everything */
+        /* no studio library published: the device voice covers everything */
       });
     return () => {
       cancelled = true;
@@ -302,7 +302,7 @@ export function useSpeaker() {
     [runDevice],
   );
 
-  /** Speak one short thing. Always the device voice — studio audio is pre-rendered. */
+  /** Speak one short thing. Always the device voice: studio audio is pre-rendered. */
   const say = useCallback((text: string) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
     window.speechSynthesis.cancel();

@@ -6,7 +6,7 @@
  * This module is only ever reached through `import('./curriculum/full')`, so
  * none of it is in the first bundle. The app starts prefetching it the moment
  * the browser goes idle, which means that by the time anyone opens a lesson,
- * searches, or starts a review, it is already in memory — the split buys a
+ * searches, or starts a review, it is already in memory: the split buys a
  * smaller first load without buying a spinner.
  */
 

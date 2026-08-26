@@ -4,7 +4,7 @@
  *
  * The point is to make a requirements list stop being intimidating. A line like
  * "Perform VAPT on web, API and infrastructure systems" is four lessons you have
- * either done or not — and the app can tell you which.
+ * either done or not, and the app can tell you which.
  */
 
 export type Requirement = {
@@ -26,9 +26,9 @@ export type Role = {
   source?: { name: string; href?: string; seen: string };
   /** Pay, only where an advert or a sourced guide actually states it. */
   pay?: string;
-  /** How far off this role is right now — the honest sort order. */
+  /** How far off this role is right now. */
   level: 'INTERN' | 'JUNIOR' | 'NEXT RUNG' | 'SENIOR';
-  /** An honest read of the role. */
+  /** A direct summary of the role. */
   summary: string;
   /** What to show an employer, beyond a CV line. */
   evidence: string[];
@@ -65,7 +65,7 @@ export const roles: Role[] = [
       },
       {
         text: 'API security testing',
-        means: 'Test the API directly rather than through the interface — that is where the flaws are.',
+        means: 'Test the API directly rather than through the interface: that is where the flaws are.',
         lessons: ['05-6', '12-2'],
       },
       {
@@ -109,14 +109,14 @@ export const roles: Role[] = [
   },
   {
     id: 'control-assurance',
-    title: 'Intern — Control Assurance',
+    title: 'Intern: Control Assurance',
     org: 'Audit / GRC-leaning',
     place: 'Audits, risk assessments and IT controls',
     hue: 45,
     level: 'INTERN',
-    source: { name: 'shared by you — the advert did not name the employer', seen: 'August 2026' },
+    source: { name: 'shared by you: the advert did not name the employer', seen: 'August 2026' },
     summary:
-      'No hacking required, and it is one of the most reliable ways into the industry. The work is establishing whether controls are real, operating, and evidenced — and writing that up clearly. Notice the advert asks for command of English before it asks for anything technical.',
+      'No hacking required, and it is one of the most reliable ways into the industry. The work is establishing whether controls are real, operating, and evidenced, and writing that up clearly. Notice the advert asks for command of English before it asks for anything technical.',
     evidence: [
       'A working paper testing one control end to end: test steps, sample, evidence, exceptions',
       'A five-row risk register with owners and review dates actually filled in',
@@ -157,12 +157,12 @@ export const roles: Role[] = [
       },
       {
         text: 'Familiarity with IT security controls',
-        means: 'Identity, layered defence, backups and patching — what the controls are and what they buy.',
+        means: 'Identity, layered defence, backups and patching: what the controls are and what they buy.',
         lessons: ['04-2', '04-4', '04-7', '12-6'],
       },
       {
         text: 'Excellent command of English, attention to detail and analytical skills',
-        means: 'Writing is the deliverable here. Lead with the conclusion, be specific, state confidence honestly.',
+        means: 'Writing is the deliverable here. Lead with the conclusion, be specific, and state your confidence level.',
         lessons: ['11-4', '12-5'],
       },
       {
@@ -182,17 +182,17 @@ export const roles: Role[] = [
 roles.push(
   {
     id: 'soc-analyst-l1',
-    title: 'Cyber Security Analyst — Level 1',
+    title: 'Cyber Security Analyst: Level 1',
     org: 'Marksmen Research · Colombo',
     place: 'SOC monitoring, 24/7 shifts',
     hue: 155,
     level: 'JUNIOR',
     source: { name: 'rooster.jobs', href: 'https://rooster.jobs/jobs/446912', seen: 'August 2026' },
     summary:
-      'The classic way into the industry: watch the alerts, decide what is real, escalate what is not yours to fix. It explicitly says 0–2 years preferred but not required, which is as open a door as this field offers. Read the shift requirement carefully — nights and weekends are part of the job, not a footnote.',
+      'The classic way into the industry: watch the alerts, decide what is real, escalate what is not yours to fix. It explicitly says 0-2 years preferred but not required, which is as open a door as this field offers. Read the shift requirement carefully: nights and weekends are part of the job, not a footnote.',
     evidence: [
       'A detection lab: logs shipped into Wazuh or Elastic, with five rules you wrote and tested',
-      'A written triage walkthrough of one alert — hypothesis, evidence checked, conclusion, what you ruled out',
+      'A written triage walkthrough of one alert: hypothesis, evidence checked, conclusion, what you ruled out',
       'An Atomic Red Team test you ran, with the alert it produced',
     ],
     duties: [
@@ -218,7 +218,7 @@ roles.push(
       },
       {
         text: 'Document incidents and generate detailed incident reports',
-        means: 'Write it so the next analyst — often you at 3am — can follow what you checked.',
+        means: 'Write it so the next analyst: often you at 3am: can follow what you checked.',
         lessons: ['12-5', '08-2', '11-4'],
       },
       {
@@ -229,7 +229,7 @@ roles.push(
     ],
     requirements: [
       {
-        text: '0–2 years SOC or cybersecurity experience preferred but not required',
+        text: '0-2 years SOC or cybersecurity experience preferred but not required',
         means: 'An explicit invitation to apply without experience. Bring evidence instead.',
         lessons: ['12-8'],
       },
@@ -255,7 +255,7 @@ roles.push(
       },
       {
         text: 'Availability for 24/7 shift work including nights, weekends and holidays',
-        means: 'A real cost worth weighing honestly. Shift work and alert fatigue are the two things that burn analysts out.',
+        means: 'A real cost to weigh before applying. Shift work and alert fatigue are the two things that burn analysts out.',
         lessons: ['11-7'],
       },
     ],
@@ -269,7 +269,7 @@ roles.push(
     level: 'JUNIOR',
     source: { name: 'lankapay.net', href: 'https://lankapay.net/en/vacancy-details/junior-information-security-analyst', seen: 'listing closed January 2025' },
     summary:
-      'A sector CSIRT: the team the banks call. Unusually broad for a junior role — incident response, vulnerability research, testing and awareness training in one job. That breadth is the appeal. This particular listing has closed, but FinCSIRT and roles shaped like it recur, and the requirement list is worth treating as a target.',
+      'A sector CSIRT: the team the banks call. Unusually broad for a junior role: incident response, vulnerability research, testing and awareness training in one job. That breadth is the appeal. This particular listing has closed, but FinCSIRT and roles shaped like it recur, and the requirement list is worth treating as a target.',
     evidence: [
       'A weekly threat brief you wrote for a sector, in plain language, over a month',
       'An incident timeline reconstructed from a public breach report',
@@ -283,7 +283,7 @@ roles.push(
       },
       {
         text: 'Conduct daily research on current vulnerabilities and new threats for the financial sector',
-        means: 'Triage the firehose by relevance, not novelty — CVSS, EPSS and the KEV list.',
+        means: 'Triage the firehose by relevance, not novelty: CVSS, EPSS and the KEV list.',
         lessons: ['04-6', '07-7', '11-7'],
       },
       {
@@ -298,7 +298,7 @@ roles.push(
       },
       {
         text: 'Testing, deployment and maintenance of information security systems',
-        means: 'Run the tooling as well as read its output — telemetry, hardening, backups.',
+        means: 'Run the tooling as well as read its output: telemetry, hardening, backups.',
         lessons: ['07-1', '01-8', '04-7'],
       },
       {
@@ -308,7 +308,7 @@ roles.push(
       },
       {
         text: 'Assist in research and development in emerging areas of information security',
-        means: 'Narrow questions, reproducible method, honest about what you did not prove.',
+        means: 'Narrow questions, reproducible method, and clear limits on what you proved.',
         lessons: ['11-1', '10-8'],
       },
     ],
@@ -320,7 +320,7 @@ roles.push(
       },
       {
         text: 'Information security certifications (CSX, CEH) advantageous',
-        means: 'Advantageous, not required — and worth choosing only once a role you want asks for one.',
+        means: 'Advantageous, not required, and worth choosing only once a role you want asks for one.',
         lessons: ['11-5'],
       },
       {
@@ -340,14 +340,14 @@ roles.push(
 roles.push(
   {
     id: 'innov8-intern',
-    title: 'Intern — Observability & Security',
+    title: 'Intern: Observability & Security',
     org: 'INNOV8 · Colombo',
     place: 'Cloud, DevOps and security, all at once',
     hue: 265,
     level: 'INTERN',
     source: { name: 'itpro.lk', href: 'https://itpro.lk/job/14721/intern-%e2%80%93-observability-security-at-innov8/', seen: 'August 2026' },
     summary:
-      'Read this one carefully, because it is the clearest statement in any of these adverts of what actually gets a beginner hired. It asks only for a foundation and basic exposure — and then its preferred list is personal projects, test labs, a GitHub repository, Python or Bash, and TryHackMe or Hack The Box. Every one of those is something you can produce yourself this month, without permission from anyone.',
+      'Read this one carefully, because it is the clearest statement in any of these adverts of what actually gets a beginner hired. It asks only for a foundation and basic exposure, and then its preferred list is personal projects, test labs, a GitHub repository, Python or Bash, and TryHackMe or Hack The Box. Every one of those is something you can produce yourself this month, without permission from anyone.',
     evidence: [
       'A GitHub repository with a small security tool you wrote and documented',
       'A home lab write-up: what you built, what broke, what you learned',
@@ -386,7 +386,7 @@ roles.push(
       },
       {
         text: 'AI security',
-        means: 'Prompt injection and excessive agency — the risks nobody has fully solved yet.',
+        means: 'Prompt injection and excessive agency: the risks nobody has fully solved yet.',
         lessons: ['10-7'],
       },
     ],
@@ -427,7 +427,7 @@ roles.push(
     level: 'NEXT RUNG',
     source: { name: 'itpro.lk', href: 'https://itpro.lk/job/14582/information-security-analyst-at-cms-pvt-ltd/', seen: 'August 2026' },
     summary:
-      'Not reachable yet — it asks for three years — but worth reading now, because it shows where the control assurance route leads. Notice how little of it is technical: frameworks, data protection law, documentation, and communicating with a US team. This is what the audit path pays off into, and the skills compound rather than expire.',
+      'Not reachable yet: it asks for three years, but worth reading now, because it shows where the control assurance route leads. Notice how little of it is technical: frameworks, data protection law, documentation, and communicating with a US team. This is what the audit path pays off into, and the skills compound rather than expire.',
     evidence: [
       'A completed ISO 27001 Annex A gap assessment for a small imagined company',
       'A filled-in vendor security questionnaire, with your reasoning for each answer',
@@ -473,7 +473,7 @@ roles.push(
       },
       {
         text: 'Schedule flexibility for partial overlap with APAC or US time zones',
-        means: 'A real cost of working with overseas clients. Worth weighing honestly.',
+        means: 'A real cost of working with overseas clients. Weigh it before applying.',
         lessons: ['11-7'],
       },
     ],
@@ -488,11 +488,11 @@ export const marketNote = {
   region: 'Sri Lanka',
   source: { name: 'Ceylon Open Campus careers guide', href: 'https://www.coccampus.lk/cyber-security-career-guide-sri-lanka', seen: 'August 2026' },
   points: [
-    'Banks and financial institutions are the largest employers, driven by Central Bank requirements for dedicated security functions — Commercial Bank, Sampath, HNB, Nations Trust and others.',
-    'Then telecommunications, BPO, insurers and the export IT firms — Virtusa, WSO2, IFS — plus the consultancies, Accenture, KPMG, PwC and Deloitte.',
+    'Banks and financial institutions are the largest employers, driven by Central Bank requirements for dedicated security functions: Commercial Bank, Sampath, HNB, Nations Trust and others.',
+    'Then telecommunications, BPO, insurers and the export IT firms: Virtusa, WSO2, IFS: plus the consultancies, Accenture, KPMG, PwC and Deloitte.',
     'Entry-level roles are usually titled SOC Analyst Tier 1, IT security assistant or junior network administrator.',
     'Most listings ask for a degree or HND in IT, computer science or cyber security, with CompTIA Security+ and CEH the certifications named most often.',
-    'Published entry-level bands run roughly LKR 50,000–80,000 a month, with SOC analyst roles around LKR 80,000–120,000, rising with two to three years and a certification.',
+    'Published entry-level bands run roughly LKR 50,000-80,000 a month, with SOC analyst roles around LKR 80,000-120,000, rising with two to three years and a certification.',
     'Most vacancies are in Colombo, though remote-friendly roles for overseas clients are increasingly common.',
   ],
 };
@@ -512,7 +512,7 @@ roles.push(
     level: 'NEXT RUNG',
     source: { name: 'itpro.lk', href: 'https://itpro.lk/job/14689/network-it-security-professional-at-jit-resourcing-consultancy-services/', seen: 'August 2026' },
     summary:
-      'The infrastructure route, and it looks nothing like the others — no Burp, no SIEM, no OWASP. It is routers, firewalls, VPNs, Active Directory and keeping things running when they break. Banking experience is preferred, which tells you who hires for this. If stage 02 was the part you enjoyed most, this is the shape of that career.',
+      'The infrastructure route, and it looks nothing like the others: no Burp, no SIEM, no OWASP. It is routers, firewalls, VPNs, Active Directory and keeping things running when they break. Banking experience is preferred, which tells you who hires for this. If stage 02 was the part you enjoyed most, this is the shape of that career.',
     evidence: [
       'A segmented home network with VLANs, documented, and a note on what each rule permits and why',
       'A VPN you configured yourself between two lab machines, with the handshake captured',
@@ -526,7 +526,7 @@ roles.push(
       },
       {
         text: 'Experience managing routers, switches, firewalls, Active Directory and NAS',
-        means: 'The devices themselves — plus AD, which is the crown jewel of any corporate network.',
+        means: 'The devices themselves: plus AD, which is the crown jewel of any corporate network.',
         lessons: ['02-2', '02-4', '01-5', '06-6'],
       },
       {
@@ -572,7 +572,7 @@ roles.push(
     level: 'NEXT RUNG',
     source: { name: 'itpro.lk', href: 'https://itpro.lk/job/14800/information-security-engineer-at-cms-pvt-ltd/', seen: 'August 2026' },
     summary:
-      'Where the cloud and detection paths converge, and a useful warning about tool names. It lists Rapid7, Wiz, Orca, Sophos, Bitdefender and Defender — but underneath, every one is vulnerability management, cloud posture or endpoint telemetry. Learn the category and the product becomes a week of onboarding. Chase the product names and you will always be behind.',
+      'Where the cloud and detection paths converge, and a useful warning about tool names. It lists Rapid7, Wiz, Orca, Sophos, Bitdefender and Defender, but underneath, every one is vulnerability management, cloud posture or endpoint telemetry. Learn the category and the product becomes a week of onboarding. Chase the product names and you will always be behind.',
     evidence: [
       'A cloud account with posture checking enabled and a written note on each finding it raised',
       'A detection rule you wrote, tested with Atomic Red Team, and tuned',
@@ -581,7 +581,7 @@ roles.push(
     duties: [
       {
         text: 'Monitor and investigate security alerts and incidents using SIEM/MDR platforms',
-        means: 'Query fluently, triage honestly, and know what the platform cannot see.',
+        means: 'Query fluently, record uncertainty in triage, and know what the platform cannot see.',
         lessons: ['07-2', '07-8'],
       },
       {
@@ -596,7 +596,7 @@ roles.push(
       },
       {
         text: 'Monitor Microsoft 365 and Entra ID security, including privileged access, authentication and MFA events',
-        means: 'Identity telemetry — where business email compromise is visible and nothing else is.',
+        means: 'Identity telemetry: where business email compromise is visible and nothing else is.',
         lessons: ['04-2', '07-5', '08-5'],
       },
       {
@@ -623,7 +623,7 @@ roles.push(
     requirements: [
       {
         text: '5+ years in information security, security operations or systems administration',
-        means: 'The gap. Note that systems administration counts — the route in is not only through security roles.',
+        means: 'The gap. Note that systems administration counts: the route in is not only through security roles.',
         lessons: [],
       },
       {
@@ -657,7 +657,7 @@ roles.push(
     level: 'SENIOR',
     source: { name: 'itpro.lk', href: 'https://itpro.lk/job/14700/senior-cybersecurity-engineer-l3-at-wia-systems-inc/', seen: 'August 2026' },
     summary:
-      'Eight years away, and included deliberately: this is the destination of the blue-team path, and it is remote from Sri Lanka, which matters. Read what it asks for — Sentinel, Defender, Entra ID, threat hunting, zero trust, NIST. Every one of those is a stage in this course. Nothing on that list is unreachable; it is just further along.',
+      'Eight years away, and included deliberately: this is the destination of the blue-team path, and it is remote from Sri Lanka, which matters. Read what it asks for: Sentinel, Defender, Entra ID, threat hunting, zero trust, NIST. Every one of those is a stage in this course. Nothing on that list is unreachable; it is just further along.',
     evidence: [
       'A detection lab with rules mapped to ATT&CK techniques and tested against them',
       'A documented threat hunt: hypothesis, query, result, and the rule it produced',
@@ -693,7 +693,7 @@ roles.push(
     requirements: [
       {
         text: '8+ years of cybersecurity experience',
-        means: 'A long way off — which is exactly why it is worth seeing now.',
+        means: 'A long way off, which is exactly why it is worth seeing now.',
         lessons: [],
       },
       {

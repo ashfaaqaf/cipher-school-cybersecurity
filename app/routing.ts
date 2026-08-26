@@ -3,7 +3,7 @@
  *
  * The app had none: every view and every lesson lived at the same address, so
  * a lesson could not be bookmarked, shared, or reached with the back button.
- * For something meant to be studied over months, that is a real omission —
+ * For something meant to be studied over months, that is a real omission.
  * "the one about SSRF" should be a link you can send someone.
  *
  * Hash routing rather than paths, because this is a static export on GitHub
@@ -28,7 +28,7 @@ export function isLessonId(value: string): boolean {
 
 /**
  * Read a route out of a location hash. Unknown input falls back to the default
- * rather than throwing — a hand-edited URL should land somewhere sensible.
+ * rather than throwing: a hand-edited URL should land somewhere sensible.
  */
 export function parseHash(hash: string): Route {
   const raw = decodeURIComponent((hash || '').replace(/^#\/?/, '')).trim();

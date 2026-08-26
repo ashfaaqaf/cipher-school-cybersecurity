@@ -11,12 +11,12 @@ export const s11: Stage = {
   hue: 45,
   plain: 'The final stage is about becoming someone the field trusts: doing original work, disclosing it responsibly, explaining it clearly, and helping others.',
   outcome: 'You can turn curiosity into reproducible research, disclose it responsibly, write about it convincingly, and be trusted with judgement calls.',
-  project: 'Publish a sanitised capstone portfolio: the problem, your method, your evidence, its limitations, the fix, a talk, and an honest retrospective.',
+  project: 'Publish a sanitised capstone portfolio: the problem, your method, your evidence, its limitations, the fix, a talk, and a clear retrospective.',
   checkpoint: 'Your work survives peer review, helps a real audience, and clearly labels what is evidence, what is inference, and what is still unknown.',
   resources: [
     { label: 'CVE Program', href: 'https://www.cve.org/' },
     { label: 'NICE Framework work roles', href: 'https://niccs.cisa.gov/workforce-development/nice-framework' },
-    { label: 'disclose.io — disclosure policy templates', href: 'https://disclose.io/' },
+    { label: 'disclose.io: disclosure policy templates', href: 'https://disclose.io/' },
   ],
   lessons: [
     {
@@ -51,8 +51,8 @@ export const s11: Stage = {
       body: [
         'Coverage-guided fuzzing changed the field. AFL++ and libFuzzer instrument the target, observe which code paths each input reaches, and mutate inputs that discover new paths. This turns blind random testing into a guided search, and it finds bugs humans consistently miss.',
         'A good harness matters more than the fuzzer. You want a small, fast entry point that takes a byte buffer and exercises the interesting logic without unnecessary setup. Fuzzing a whole application through its user interface is thousands of times slower than fuzzing the parser directly.',
-        'Sanitizers make crashes visible. AddressSanitizer catches memory errors at the moment they occur rather than whenever they eventually corrupt something. Without them, most memory bugs simply do not crash, and your fuzzer reports nothing while quietly finding plenty.',
-        'Triage is the real work. Thousands of crashes usually collapse into a handful of unique bugs. Deduplicate by stack trace, minimise each input to the smallest reproducer, and determine exploitability honestly — many crashes are genuine bugs that are not usefully exploitable.',
+        'Sanitizers make crashes visible. AddressSanitizer catches memory errors at the moment they occur rather than whenever they eventually corrupt something. Without them, most memory bugs do not crash, and your fuzzer reports nothing while quietly finding plenty.',
+        'Triage is the real work. Thousands of crashes usually collapse into a handful of unique bugs. Deduplicate by stack trace, minimise each input to the smallest reproducer, and state what the evidence proves about exploitability. Many crashes are real bugs that are not usefully exploitable.',
         'Variant analysis is the highest-return habit. When you find a bug, look for the same mistake elsewhere in the codebase and in similar projects. Developers repeat patterns, and one finding frequently becomes five.',
       ],
       words: [
@@ -73,7 +73,7 @@ export const s11: Stage = {
       like: 'Noticing a structural crack in a public building. You tell the owner and the authorities, you do not post the address online.',
       body: [
         'Report privately first. Look for a security.txt file, a security contact page, or a bug bounty programme. If none exists, try the standard security address, then a national CERT, which can often make contact where you cannot.',
-        'Give a reasonable timeline. Ninety days is the widely accepted norm, with flexibility for genuinely complex fixes and urgency for actively exploited issues. Agree it explicitly, and hold to it — deadlines exist because indefinite silence protects nobody except the vendor’s reputation.',
+        'Give a reasonable timeline. Ninety days is the widely accepted norm, with flexibility for genuinely complex fixes and urgency for actively exploited issues. Agree it explicitly, and hold to it: deadlines exist because indefinite silence protects nobody except the vendor’s reputation.',
         'Write the report the way you would want to receive it: clear summary, affected versions, reproduction steps, impact, and a suggested fix. Vendors respond far better to reports that reduce their work, and a hostile tone reliably slows everything down.',
         'Request a CVE so the issue has a stable public identifier that defenders can track. Many vendors are CNAs and can assign one directly; otherwise MITRE can. Publish an advisory once the fix ships, and make sure it explains impact in terms defenders can act on.',
         'Never demand payment for silence. Bug bounties are a legitimate framework with rules agreed in advance; asking for money outside one to withhold disclosure is extortion, regardless of how it is phrased. Stay inside the programme’s scope, and expect that going outside it removes your legal protection.',
@@ -81,7 +81,7 @@ export const s11: Stage = {
       words: [
         { term: 'Coordinated disclosure', means: 'Working with the vendor on a timeline before going public.' },
         { term: 'security.txt', means: 'A standard file listing an organisation’s security contact.' },
-        { term: 'CNA', means: 'CVE Numbering Authority — an organisation that can assign CVE IDs.' },
+        { term: 'CNA', means: 'CVE Numbering Authority: an organisation that can assign CVE IDs.' },
         { term: 'Embargo', means: 'An agreed period before details are made public.' },
       ],
       why: 'How you disclose determines whether you are seen as a professional or a liability, and it determines whether users actually get protected.',
@@ -98,16 +98,16 @@ export const s11: Stage = {
         'Lead with the conclusion. Executives read the first paragraph and may read no further, so it must contain what happened, what it means, and what you want them to do. Building suspense is for fiction.',
         'Write for one audience per document. An executive summary states business impact in plain language with no jargon. A technical report gives reproduction, evidence and root cause. Trying to serve both in one document produces something that satisfies neither.',
         'Impact must be concrete. "SQL injection in the login form" is a fact. "An unauthenticated attacker can read all customer records, including payment details, in under a minute" is a decision. The second one gets funded.',
-        'Diagrams carry weight text cannot. A simple attack chain diagram — five boxes and four arrows — communicates more than three paragraphs. Keep them minimal; a diagram people have to decode is worse than none.',
+        'Diagrams carry weight text cannot. A simple attack chain diagram: five boxes and four arrows: communicates more than three paragraphs. Keep them minimal; a diagram people have to decode is worse than none.',
         'Edit ruthlessly. Cut hedging, cut jargon that adds nothing, cut sentences that only demonstrate effort. And be explicit about uncertainty where it exists: "we assess with moderate confidence" is more credible, and more useful, than false precision.',
       ],
       words: [
         { term: 'Executive summary', means: 'The business-level explanation, first and jargon-free.' },
-        { term: 'BLUF', means: 'Bottom Line Up Front — state the conclusion immediately.' },
-        { term: 'Confidence level', means: 'An honest statement of how sure you are.' },
+        { term: 'BLUF', means: 'Bottom Line Up Front: state the conclusion immediately.' },
+        { term: 'Confidence level', means: 'A stated estimate of how sure you are.' },
         { term: 'Actionable', means: 'The reader knows exactly what to do next.' },
       ],
-      why: 'Every finding, incident and recommendation reaches decision-makers as writing. It is the highest-leverage skill in the entire course.',
+      why: 'Every finding, incident and recommendation reaches decision-makers as writing. It is one of the most useful skills in the course.',
       doThis: 'Take any technical finding you have written and rewrite it twice: one paragraph for a chief executive, one page for a developer. Show both to someone outside the field.',
       check: 'Why does stating impact in business terms change the outcome of a report?',
     },
@@ -119,9 +119,9 @@ export const s11: Stage = {
       like: 'An architect’s portfolio. Nobody hires from a list of buildings you have read about.',
       body: [
         'A strong portfolio has a small number of substantial pieces rather than many trivial ones: a detection lab with rules you wrote and tested, a tool that solves a real problem, a documented investigation, a research write-up, a disclosed vulnerability. Depth signals capability; volume signals activity.',
-        'Write up everything, including failures. A post explaining what you tried, why it did not work, and what you learned is more convincing than a polished success, because it shows how you think — which is what interviewers are actually assessing.',
+        'Write up everything, including failures. A post explaining what you tried, why it did not work, and what you learned is more convincing than a polished success, because it shows how you think, which is what interviewers are actually assessing.',
         'Contribute where it is visible: open-source security tools, Sigma rule repositories, documentation, or a well-written answer to a hard question. Contributions carry an implicit reference from the maintainers who accepted them.',
-        'Interviews test reasoning more than recall. Expect "walk me through what happens when you type a URL", "how would you investigate this alert", and "explain a time you were wrong". Say what you do not know, then say how you would find out — that answer beats a confident guess every time.',
+        'Interviews test reasoning more than recall. Expect "walk me through what happens when you type a URL", "how would you investigate this alert", and "explain a time you were wrong". Say what you do not know, then say how you would find out: that answer beats a confident guess every time.',
         'Certifications validate; they do not educate. Security+ demonstrates fundamentals, OSCP demonstrates hands-on offensive capability, CISSP demonstrates breadth and management context, and cloud certifications map to real platform work. Choose them because a job you want requires one, not as a substitute for building things.',
       ],
       words: [
@@ -143,7 +143,7 @@ export const s11: Stage = {
       body: [
         'Understand what your audience is measured on. Engineering leaders care about delivery and reliability. Finance cares about cost and exposure. Legal cares about obligation. Frame the same risk in the terms each of them already uses, and you go from obstacle to ally.',
         'Quantify where you can. Comparing potential loss against the cost of a control turns an argument about fear into a business decision. Even rough ranges beat adjectives, and executives are entirely comfortable with ranges and confidence levels.',
-        'Do not overstate. Calling everything critical destroys your credibility permanently, and the loss is asymmetric — you spend it once and never get it back. Reserve your strongest language for the situations that genuinely warrant it, and people will believe you when it counts.',
+        'Do not overstate. Calling everything critical destroys your credibility permanently, and the loss is asymmetric: you spend it once and never get it back. Reserve your strongest language for the situations that genuinely warrant it, and people will believe you when it counts.',
         'Offer options rather than ultimatums. "We can fix it properly in six weeks, mitigate it this week with this trade-off, or accept it with these conditions" respects that the decision is theirs. It also documents the choice, which protects everyone including you.',
         'Say no well when you must. Explain the risk, propose the safest achievable alternative, document the decision if you are overruled, and move on. Security professionals who cannot do this become the department everyone routes around.',
       ],
@@ -168,7 +168,7 @@ export const s11: Stage = {
         'Filter by relevance, not by novelty. Most published research will never touch your systems. Ask "does this affect what I am responsible for?" and let the rest go without guilt. The compulsion to read everything is the beginning of burnout.',
         'Learn in projects rather than in feeds. A weekend building something with a new technology teaches more than three months of reading about it, and it produces evidence you can show.',
         'Burnout in security is common and has specific causes: constant alerting, on-call, adversarial work, the sense that you can never be finished, and the belief that a breach would be your personal failure. Take the leave, keep the boundaries, and treat rest as operational capacity rather than weakness.',
-        'And keep perspective. You cannot prevent every incident, and a mature organisation does not expect you to. Your job is to reduce likelihood, limit impact, and respond well — not to guarantee an outcome nobody can guarantee.',
+        'And keep perspective. You cannot prevent every incident, and a mature organisation does not expect you to. Your job is to reduce likelihood, limit impact, and respond well, not to guarantee an outcome nobody can guarantee.',
       ],
       words: [
         { term: 'Information diet', means: 'The deliberate set of sources you follow.' },
@@ -187,8 +187,8 @@ export const s11: Stage = {
       oneLine: 'Explaining what you know makes you better at it, and it is how the field replaces itself.',
       like: 'A craft passed down through apprenticeships. Every master was somebody’s beginner, and the craft survives only because they taught.',
       body: [
-        'Teaching exposes the gaps in your own understanding immediately and mercilessly. The moment you try to explain something simply, you discover which parts you had only memorised. This is the fastest known way to convert familiarity into genuine knowledge.',
-        'Start where you are. You do not need to be an expert to help someone one step behind you — in fact you are better placed than an expert, because you still remember what was confusing and why.',
+        'Teaching exposes the gaps in your own understanding immediately and mercilessly. The moment you try to explain something clearly, you discover which parts you had only memorised. This is the fastest known way to convert familiarity into genuine knowledge.',
+        'Start where you are. You do not need to be an expert to help someone one step behind you: in fact you are better placed than an expert, because you still remember what was confusing and why.',
         'Contribute concretely: write documentation, answer questions properly, create a lab exercise, give an internal talk, mentor one person consistently. Small consistent contributions compound into a reputation far more reliably than occasional grand gestures.',
         'Be the kind of colleague this field needs. Blameless investigation, credit given generously, patience with beginners, and honesty about your own mistakes. Security has a real problem with gatekeeping and performed superiority, and every person who refuses to participate in it makes the field slightly better.',
         'Finally: you will never finish this course, and that is the correct outcome. Cybersecurity is a practice, not a body of knowledge to complete. Keep a lab, keep a notebook, keep asking how things actually work, and keep teaching what you learn. That is the whole job, for the rest of your career.',

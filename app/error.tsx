@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 /**
  * Last line of defence. Without this, one bad render replaces the whole app
- * with a blank white page and no explanation — which for an offline-capable
+ * with a blank white page and no explanation, which for an offline-capable
  * study app could look permanent.
  *
  * Progress lives in localStorage and is untouched by a render failure, so the
@@ -21,7 +21,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
         <div className="crashMark">!</div>
         <h1>Something broke.</h1>
         <p>
-          Your progress is safe — it is stored in this browser and a display error cannot touch it. Reloading almost
+          Your progress is safe: it is stored in this browser and a display error cannot touch it. Reloading almost
           always fixes this.
         </p>
         <div className="crashActions">

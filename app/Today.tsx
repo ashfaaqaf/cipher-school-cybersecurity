@@ -16,7 +16,7 @@ import {
 } from './plan';
 
 /* Study time per lesson comes from the stage's own hour estimate, which covers
-   the lab and the exercise — not the few minutes it takes to read the page. */
+   the lab and the exercise, not the few minutes it takes to read the page. */
 const byId = new Map(
   allLessons.map(({ lesson, stage }) => [
     lesson.id,
@@ -98,7 +98,7 @@ export function TodayCard({
           <span className="todayIcon" aria-hidden="true">↻</span>
           <span className="todayItemMain">
             <span className="todayItemTitle">Review {plan.cards} card{plan.cards === 1 ? '' : 's'}</span>
-            <span className="todayItemNote">Due now — do this before new reading</span>
+            <span className="todayItemNote">Due now: do this before new reading</span>
           </span>
           <span className="todayMins">{Math.max(1, Math.round(plan.cards * 0.25))}m</span>
         </button>
@@ -124,7 +124,7 @@ export function TodayCard({
       {plan.complete && plan.doneMins > 0 && (
         <div className="todayDone">
           {done?.lessons ?? 0} lesson{(done?.lessons ?? 0) === 1 ? '' : 's'} and {done?.cards ?? 0} card
-          {(done?.cards ?? 0) === 1 ? '' : 's'}. Stopping when you hit the target is the habit — the streak matters
+          {(done?.cards ?? 0) === 1 ? '' : 's'}. Stopping when you hit the target is the habit: the streak matters
           more than any single long day.
         </div>
       )}
@@ -178,7 +178,7 @@ export function TodayCard({
           </label>
           <p className="tuneNote">
             That is {humanMins(dailyBudget(settings))} a study day, against roughly two and a half hours per lesson
-            including the lab and the notes. Be honest rather than ambitious — a plan you actually
+            including the lab and the notes. Choose a target you can keep. A plan you actually
             keep beats one you abandon in week two.
           </p>
         </div>
@@ -191,5 +191,5 @@ function describePlan(lessons: number, cards: number, mins: number): string {
   const parts: string[] = [];
   if (lessons) parts.push(`${lessons} lesson${lessons === 1 ? '' : 's'}`);
   if (cards) parts.push(`${cards} review card${cards === 1 ? '' : 's'}`);
-  return `${parts.join(' and ')} — about ${humanMins(mins)}.`;
+  return `${parts.join(' and ')}: about ${humanMins(mins)}.`;
 }

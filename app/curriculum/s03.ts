@@ -3,20 +3,20 @@ import type { Stage } from './types';
 export const s03: Stage = {
   number: '03',
   title: 'Code enough to be dangerous',
-  subtitle: 'Python, Bash, PowerShell, SQL and a little C — automate the boring, understand the rest',
+  subtitle: 'Python, Bash, PowerShell, SQL and a little C: automate the boring, understand the rest',
   level: 'EASY',
   tags: ['BUILD', 'FOUNDATIONS'],
   weeks: 5,
   hours: 65,
   hue: 265,
   plain: 'You do not need to be a software engineer. You need to read code without fear and write small programs that do your repetitive work for you.',
-  outcome: 'You can write scripts that parse logs, call APIs, test inputs and produce reports — and read unfamiliar code well enough to spot its assumptions.',
+  outcome: 'You can write scripts that parse logs, call APIs, test inputs and produce reports, and read unfamiliar code well enough to spot its assumptions.',
   project: 'Build a command-line tool that reads security logs, pulls out indicators, enriches them, and exports a clean report with tests.',
   checkpoint: 'Given a script you did not write, you can explain what it does, what could go wrong, and what it trusts that it should not.',
   resources: [
     { label: 'Official Python tutorial', href: 'https://docs.python.org/3/tutorial/' },
     { label: 'Automate the Boring Stuff (free online)', href: 'https://automatetheboringstuff.com/' },
-    { label: 'SQL practice — SQLBolt', href: 'https://sqlbolt.com/' },
+    { label: 'SQL practice: SQLBolt', href: 'https://sqlbolt.com/' },
   ],
   lessons: [
     {
@@ -27,13 +27,13 @@ export const s03: Stage = {
       like: 'A Swiss Army knife. Not the best tool for any single job, but the one you actually carry.',
       body: [
         'You need surprisingly little: variables, strings, lists, dictionaries, loops, conditions, functions, and reading a file. That is perhaps two weeks of evenings and it covers the overwhelming majority of scripts you will ever write in this field.',
-        'Dictionaries deserve special attention. Almost every security data format — JSON from an API, a parsed log line, a configuration file — arrives as nested dictionaries and lists. Getting comfortable walking those structures is most of the practical skill.',
+        'Dictionaries deserve special attention. Almost every security data format: JSON from an API, a parsed log line, a configuration file: arrives as nested dictionaries and lists. Getting comfortable walking those structures is most of the practical skill.',
         'Three libraries carry you a long way. "requests" talks to web APIs. "json" reads and writes the format everything speaks. "argparse" turns your script into a real command-line tool with proper options instead of hard-coded values.',
         'Write functions early. A script that is one long block cannot be tested, reused, or debugged when it breaks at 2am. Small named functions that each do one thing is not academic advice; it is what makes tools survive contact with reality.',
         'Handle errors on purpose. Network calls fail, files are missing, data is malformed. A tool that crashes on the first bad line of a million-line log is a tool you will not trust. Decide what should stop everything and what should be logged and skipped.',
       ],
       words: [
-        { term: 'Dictionary', means: 'A lookup table of keys and values — the shape most data arrives in.' },
+        { term: 'Dictionary', means: 'A lookup table of keys and values: the shape most data arrives in.' },
         { term: 'Library / module', means: 'Someone else’s code you import instead of writing.' },
         { term: 'JSON', means: 'A common text format for structured data.' },
         { term: 'Virtual environment', means: 'A per-project sandbox for Python packages, so projects do not break each other.' },
@@ -75,7 +75,7 @@ export const s03: Stage = {
         'Everything in PowerShell is an object with properties, not text. "Get-Process" returns process objects, so "Get-Process | Where-Object { $_.CPU -gt 100 }" filters on an actual number. No parsing, no regular expressions, no fragile string matching.',
         'Command names follow Verb-Noun, which makes them guessable: Get-Service, Stop-Process, New-Item, Set-ExecutionPolicy. When you do not know a command, "Get-Command *event*" and "Get-Help" will usually find it.',
         'For security work specifically, learn Get-WinEvent for reading event logs, Get-NetTCPConnection for live connections, Get-LocalUser and Get-ADUser for accounts, and Invoke-Command for running something across many machines at once.',
-        'PowerShell is also the attacker’s favourite Windows tool, because it is present everywhere, signed, and can run code entirely in memory without touching disk. That is exactly why script block logging, module logging and transcription matter — they turn an invisible tool into a recorded one.',
+        'PowerShell is also the attacker’s favourite Windows tool, because it is present everywhere, signed, and can run code entirely in memory without touching disk. That is exactly why script block logging, module logging and transcription matter: they turn an invisible tool into a recorded one.',
         'Execution policy is not a security boundary and never was. It stops accidents, not attackers, since it can be bypassed by anyone who can run PowerShell at all. Treat it as a guardrail, not a wall.',
       ],
       words: [
@@ -97,7 +97,7 @@ export const s03: Stage = {
       body: [
         'A page is a tree of elements called the DOM. JavaScript can read and rewrite any part of it, react to clicks, and make network requests in the background. That is what makes modern web applications feel like applications.',
         'The rule keeping this safe is the same-origin policy: code from one site cannot read data from another. Origin means scheme, host and port together, all three matching. Nearly every browser security feature is either enforcing this rule or carefully making an exception to it.',
-        'CORS is the official exception mechanism. A server can say "this other origin may read my responses". Misconfigured CORS — especially reflecting any origin while allowing credentials — hands attackers exactly the cross-site read the policy was designed to prevent.',
+        'CORS is the official exception mechanism. A server can say "this other origin may read my responses". Misconfigured CORS: especially reflecting any origin while allowing credentials: hands attackers exactly the cross-site read the policy was designed to prevent.',
         'Cross-site scripting is what happens when attacker-controlled text is treated as code by the page. Their script then runs with your site’s origin and your user’s session, which means it can do anything the user could. Understanding the DOM is what makes this bug make sense rather than feel like magic.',
         'You do not need to be a front-end developer. You need to read JavaScript, follow where user input travels, and recognise dangerous sinks like innerHTML, eval and document.write.',
       ],
@@ -131,7 +131,7 @@ export const s03: Stage = {
         { term: 'ORM', means: 'A library that writes SQL for you from normal code.' },
       ],
       why: 'Injection is still in the OWASP Top 10 after twenty years. Understanding it properly once means recognising the whole family of "data became instruction" bugs.',
-      doThis: 'Install SQLite, create a small table, and write five queries. Then write the same lookup twice — once with string concatenation, once parameterised — and compare.',
+      doThis: 'Install SQLite, create a small table, and write five queries. Then write the same lookup twice, once with string concatenation, once parameterised, and compare.',
       check: 'Why does escaping quotes fail as a defence where parameterisation succeeds?',
     },
     {
@@ -142,7 +142,7 @@ export const s03: Stage = {
       like: 'Writing on a shared whiteboard with no edges marked. Write past your section and you overwrite someone else’s notes.',
       body: [
         'In C, you manage memory yourself. You ask for a block, you use it, you free it. There is no automatic checking that you stayed inside what you asked for, because that checking costs time the language refuses to spend.',
-        'A buffer overflow happens when a program writes more data into a space than it can hold. The extra spills into whatever sits next in memory — other variables, or the record of where the function should return to. Control that return address and you control what the CPU does next.',
+        'A buffer overflow happens when a program writes more data into a space than it can hold. The extra spills into whatever sits next in memory: other variables, or the record of where the function should return to. Control that return address and you control what the CPU does next.',
         'Related bugs come from the same freedom: use-after-free (using memory you already released), double-free, integer overflow (a number wrapping around and defeating a size check), and off-by-one errors at the boundary of an array.',
         'Modern systems fight back with defences you should know by name: stack canaries detect overwritten return addresses, DEP or NX makes data areas non-executable, and ASLR randomises where things live so the attacker cannot predict addresses. Exploitation today is mostly the art of defeating these one at a time.',
         'You do not need to write C professionally. You need to read it, recognise the dangerous functions like strcpy, gets and sprintf, and understand why memory-safe languages such as Rust and Go remove this entire category of bug by design.',
@@ -153,7 +153,7 @@ export const s03: Stage = {
         { term: 'ASLR', means: 'Randomising memory layout so attackers cannot guess addresses.' },
         { term: 'Memory-safe language', means: 'One that prevents these bugs automatically.' },
       ],
-      why: 'The most severe vulnerabilities — the ones that give full remote control — still overwhelmingly come from memory bugs in C and C++.',
+      why: 'The most severe vulnerabilities: the ones that give full remote control: still overwhelmingly come from memory bugs in C and C++.',
       doThis: 'Write a tiny C program with a fixed 16-byte buffer and copy a longer string into it. Watch it crash. That crash is the entire idea.',
       check: 'Why does an attacker care specifically about overwriting a function’s return address?',
     },
@@ -164,7 +164,7 @@ export const s03: Stage = {
       oneLine: 'Regular expressions find patterns in text, and the mistakes people make with them cause both missed detections and outages.',
       like: 'A fishing net. Holes too big and things slip through; too small and you catch everything including the seaweed.',
       body: [
-        'Learn a working subset: character classes, quantifiers, anchors, groups, and alternation. That covers nearly all practical use. Anchoring matters more than beginners expect — a pattern without a start and end anchor can match in the middle of something else entirely.',
+        'Learn a working subset: character classes, quantifiers, anchors, groups, and alternation. That covers nearly all practical use. Anchoring matters more than beginners expect: a pattern without a start and end anchor can match in the middle of something else entirely.',
         'Regex is excellent for extracting known shapes: IP addresses, hashes, timestamps, domain names. It is bad for parsing structured formats. Do not parse HTML, JSON or CSV with regex; use a real parser that understands nesting and quoting, because the edge cases will find you.',
         'There is a security bug specific to regex: catastrophic backtracking, where a badly written pattern takes exponential time on a crafted input. Sending one short string can pin a CPU at 100% and take a service down. This is ReDoS, and it hides in innocuous-looking validation code.',
         'Encoding is where detections quietly fail. The same payload can appear as plain text, URL-encoded, double-encoded, Base64, HTML entities, or unicode-escaped. If your rule matches only one form, an attacker will send another. Normalise first, then match.',
@@ -185,13 +185,13 @@ export const s03: Stage = {
       title: 'APIs, Git and not shipping secrets',
       mins: 8,
       oneLine: 'Tools talk to each other over APIs, your work lives in Git, and both are places credentials leak constantly.',
-      like: 'A shared workshop with a logbook. Everything you do is recorded — including the day you left your keys on the bench.',
+      like: 'A shared workshop with a logbook. Everything you do is recorded: including the day you left your keys on the bench.',
       body: [
         'A REST API is just HTTP with structure: a URL identifies a thing, a method says what to do with it, JSON carries the data, and a token proves who you are. Once you can read HTTP, you can use almost any security product’s API to automate the boring parts.',
         'Rate limits and pagination are the two practical realities. Ask too fast and you get blocked; assume one response contains everything and you will silently miss results. Both bite beginners writing their first enrichment script.',
-        'Git tracks every change forever, which is exactly the problem. Committing an API key and deleting it in the next commit does not remove it — it is still in history, and automated scanners find leaked keys on public repositories within minutes. Rotate the secret, do not just delete the line.',
+        'Git tracks every change forever, which is exactly the problem. Committing an API key and deleting it in the next commit does not remove it: it is still in history, and automated scanners find leaked keys on public repositories within minutes. Rotate the secret, do not just delete the line.',
         'Keep secrets out of code entirely: environment variables, a secrets manager, or an ignored local file. Add a pre-commit scanner such as gitleaks so the mistake is caught before it becomes permanent. This one habit prevents a genuinely common cause of breaches.',
-        'Finally, write tests for anything you will rely on. Not a full suite — one test that fails if the parsing breaks. Security tooling that silently stops working is worse than no tooling, because you believe you are covered.',
+        'Finally, write tests for anything you will rely on. Not a full suite: one test that fails if the parsing breaks. Security tooling that silently stops working is worse than no tooling, because you believe you are covered.',
       ],
       words: [
         { term: 'REST API', means: 'A web interface programs use to talk to a service.' },

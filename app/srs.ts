@@ -2,7 +2,7 @@
  * Spaced repetition, SM-2 with the two adjustments everyone ends up making:
  * "hard" shrinks the interval instead of merely slowing its growth, and "easy"
  * gets a bonus multiplier. Intervals are whole days, which is all a study app
- * needs — sub-day scheduling is a feature for people cramming, and cramming is
+ * needs: sub-day scheduling is a feature for people cramming, and cramming is
  * the thing spaced repetition exists to replace.
  */
 
@@ -37,13 +37,13 @@ export function freshState(day: number): CardState {
 }
 
 /**
- * Grade a card and return its next state. Pure — the caller owns persistence,
+ * Grade a card and return its next state. Pure: the caller owns persistence,
  * which keeps this testable without a browser.
  */
 export function schedule(prev: CardState | undefined, grade: Grade, day: number = today()): CardState {
   const state = prev ?? freshState(day);
 
-  // SM-2 quality is 0–5; our four buttons map onto the top four.
+  // SM-2 quality is 0-5; our four buttons map onto the top four.
   const q = grade + 2;
   const ease = Math.max(MIN_EASE, state.ease + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)));
 
@@ -84,7 +84,7 @@ export type DeckStats = {
   fresh: number;
   /** Reviewed, next review within a week. */
   learning: number;
-  /** Interval of three weeks or more — this is the "locked in" number. */
+  /** Interval of three weeks or more: this is the "locked in" number. */
   known: number;
   due: number;
   /** Epoch day of the soonest upcoming review, when nothing is due now. */

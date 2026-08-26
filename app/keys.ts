@@ -2,7 +2,7 @@
  * Keyboard shortcuts.
  *
  * The decision of what a keypress means is separated from the wiring, because
- * the fiddly part is not binding keys — it is refusing to act. A shortcut that
+ * the fiddly part is not binding keys: it is refusing to act. A shortcut that
  * fires while someone is typing their search query, or that steals the browser's
  * own Ctrl+F, is worse than having no shortcut at all.
  */
@@ -64,7 +64,7 @@ export function actionFor(e: KeyEvent, ctx: Context): Action | null {
   if (ctx.typing) return null;
 
   /*
-   * Inside a review session the number row grades rather than switching tabs —
+   * Inside a review session the number row grades rather than switching tabs.
    * and 1 to 4 are swallowed even before the answer is shown, because falling
    * through to tab switching there would throw you out of the session you are
    * halfway through.
@@ -101,12 +101,12 @@ export function actionFor(e: KeyEvent, ctx: Context): Action | null {
 /** The list rendered in the help sheet. Kept beside the logic so they cannot drift. */
 export const SHORTCUTS: { keys: string[]; what: string; when?: string }[] = [
   { keys: ['/'], what: 'Search every word of every lesson' },
-  { keys: ['1', '–', '5'], what: 'Switch between Learn, Missions, Review, Paths and Proof' },
+  { keys: ['1', '-', '5'], what: 'Switch between Learn, Missions, Review, Paths and Proof' },
   { keys: ['j', 'k'], what: 'Next and previous lesson', when: 'reading' },
   { keys: ['Space'], what: 'Mark understood and move on', when: 'reading' },
   { keys: ['l'], what: 'Listen to the lesson', when: 'reading' },
   { keys: ['Space'], what: 'Show the answer', when: 'reviewing' },
-  { keys: ['1', '–', '4'], what: 'Grade it: again, hard, good, easy', when: 'reviewing' },
+  { keys: ['1', '-', '4'], what: 'Grade it: again, hard, good, easy', when: 'reviewing' },
   { keys: ['Esc'], what: 'Close whatever is open' },
   { keys: ['?'], what: 'Show this list' },
 ];

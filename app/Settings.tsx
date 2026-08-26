@@ -110,7 +110,7 @@ export function SettingsView({
         <div className="settingsHeroCopy">
           <div className="kicker">Your control room</div>
           <h1>Settings, without the scavenger hunt.</h1>
-          <p>Shape how Cipher School looks, teaches, speaks and saves—everything important lives on this page.</p>
+          <p>Shape how Cipher School looks, teaches, speaks and saves: everything important lives on this page.</p>
           <button className="settingsBack" type="button" onClick={onLearn}>← Back to learning</button>
         </div>
         <aside className="settingsConsole" aria-label="Current settings summary">
@@ -227,9 +227,9 @@ export function SettingsView({
             <label className="settingsField">
               <span>Learning pace</span>
               <select value={profile?.pace ?? 'steady'} onChange={(event) => patchProfile({ pace: event.target.value as Pace })}>
-                <option value="sprint">Sprint — essentials first</option>
-                <option value="steady">Steady — balanced</option>
-                <option value="deep">Deep — maximum practice</option>
+                <option value="sprint">Sprint: essentials first</option>
+                <option value="steady">Steady: balanced</option>
+                <option value="deep">Deep: maximum practice</option>
               </select>
             </label>
             <label className="settingsField">
@@ -308,7 +308,7 @@ export function SettingsView({
           {restore && (
             <p className={restore.ok ? 'settingsResult ok' : 'settingsResult bad'} role="status">
               {restore.ok
-                ? `Backup ready — ${restore.lessons} lessons and ${restore.cards} review cards included.${restore.skipped.length ? ` Skipped: ${restore.skipped.join('; ')}.` : ''}`
+                ? `Backup ready: ${restore.lessons} lessons and ${restore.cards} review cards included.${restore.skipped.length ? ` Skipped: ${restore.skipped.join('; ')}.` : ''}`
                 : restore.error}
             </p>
           )}

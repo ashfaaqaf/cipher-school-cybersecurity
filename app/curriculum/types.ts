@@ -1,6 +1,6 @@
 /**
  * Everything in Cipher School is one of these shapes. Lessons are written in
- * plain language on purpose: an idea you cannot explain simply is an idea you
+ * plain language on purpose: if you cannot explain an idea clearly, you
  * have not learned yet.
  */
 
@@ -28,7 +28,7 @@ export type Lesson = {
   doThis: string;
   /** Ask yourself this. If you cannot answer it, read again. */
   check: string;
-  /** Honest reading time in minutes. */
+  /** Realistic reading time in minutes. */
   mins: number;
 };
 

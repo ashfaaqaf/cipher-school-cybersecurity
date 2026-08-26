@@ -3,7 +3,7 @@ import type { Stage } from './types';
 export const s06: Stage = {
   number: '06',
   title: 'Attacking, with permission',
-  subtitle: 'Penetration testing from scope to report — recon, exploitation, Active Directory, cleanup',
+  subtitle: 'Penetration testing from scope to report: recon, exploitation, Active Directory, cleanup',
   level: 'HARD',
   tags: ['OFFENSE', 'RESEARCH'],
   weeks: 6,
@@ -29,13 +29,13 @@ export const s06: Stage = {
         'Rules of engagement fix the boundaries: exactly which systems and addresses are in scope, which techniques are permitted, which are forbidden, when testing may run, who to contact immediately if something breaks, and how findings will be handled. Get it signed by someone with actual authority over those systems.',
         'Some things are almost always excluded and you should raise them explicitly: denial of service, social engineering against staff, physical entry, and anything touching production data or safety systems. Ambiguity here is how testers end up in genuine legal trouble.',
         'Follow a methodology so your coverage is defensible rather than lucky. PTES, the OWASP Testing Guide, and the OSSTMM all give you a repeatable structure: reconnaissance, enumeration, vulnerability analysis, exploitation, post-exploitation, reporting. Ad-hoc testing finds what you happened to think of.',
-        'Take notes continuously — every command, every timestamp, every finding. When a client asks "did you cause this outage at 14:20?", your log is the only answer that helps. Tools like a simple timestamped terminal log are enough; discipline matters more than tooling.',
+        'Take notes continuously: every command, every timestamp, every finding. When a client asks "did you cause this outage at 14:20?", your log is the only answer that helps. Tools like a simple timestamped terminal log are enough; discipline matters more than tooling.',
         'Minimise impact deliberately. Prove a vulnerability exists without exhausting it: read one record, not the table. Take a screenshot, not a copy of the database. The goal is evidence sufficient to convince, and nothing beyond it.',
       ],
       words: [
         { term: 'Rules of engagement', means: 'The signed agreement defining what you may do.' },
         { term: 'Scope creep', means: 'Testing drifting into systems that were never authorised.' },
-        { term: 'PTES', means: 'Penetration Testing Execution Standard — a common methodology.' },
+        { term: 'PTES', means: 'Penetration Testing Execution Standard: a common methodology.' },
         { term: 'Proof of concept', means: 'The minimum demonstration that a flaw is real.' },
       ],
       why: 'The difference between a respected professional and a liability is almost never skill. It is discipline about boundaries and evidence.',
@@ -49,14 +49,14 @@ export const s06: Stage = {
       oneLine: 'Before touching anything, you learn everything about the target that is already public.',
       like: 'A film crew scouting a location for weeks before a single camera arrives.',
       body: [
-        'Passive reconnaissance never touches the target. Certificate transparency logs reveal subdomains, because every issued certificate is published. DNS records, WHOIS data, public code repositories, job adverts describing internal technology, LinkedIn profiles listing tools — all of it is free intelligence.',
+        'Passive reconnaissance never touches the target. Certificate transparency logs reveal subdomains, because every issued certificate is published. DNS records, WHOIS data, public code repositories, job adverts describing internal technology, LinkedIn profiles listing tools: all of it is free intelligence.',
         'Attack surface mapping is the practical output: every domain, subdomain, IP range, cloud bucket, exposed service and third-party integration that belongs to the target. Organisations are consistently surprised by this list, because nobody owns the inventory.',
         'Shodan and Censys index internet-facing devices continuously. Searching for an organisation’s name or address range often reveals forgotten servers, exposed admin panels and industrial equipment that was never meant to be reachable.',
         'Breach data matters. Credentials leaked from unrelated services get reused, and a single valid password in an exposed corporate account can be worth more than every technical vulnerability you might find. Handle this material carefully and only within scope.',
         'Active reconnaissance touches the target directly and generates logs. It is louder, so it comes after passive work, and only once you are certain you are inside scope. Confusing the two is how testers accidentally scan someone else’s network.',
       ],
       words: [
-        { term: 'OSINT', means: 'Open source intelligence — information gathered from public sources.' },
+        { term: 'OSINT', means: 'Open source intelligence: information gathered from public sources.' },
         { term: 'Certificate transparency', means: 'Public logs of issued certificates, useful for finding subdomains.' },
         { term: 'Attack surface', means: 'Everything belonging to the target that can be reached.' },
         { term: 'Passive vs active', means: 'Not touching the target versus interacting with it.' },
@@ -70,7 +70,7 @@ export const s06: Stage = {
       title: 'Scanning and enumeration',
       mins: 9,
       oneLine: 'Find what is listening, work out exactly what it is, and turn a list of ports into a list of possibilities.',
-      like: 'Walking the perimeter of a building noting every door, window and vent — then checking what each one is made of.',
+      like: 'Walking the perimeter of a building noting every door, window and vent, then checking what each one is made of.',
       body: [
         'Nmap is the standard tool. A basic sweep finds live hosts; a SYN scan finds open ports quickly; service detection identifies what is running and often the exact version. Full port scans matter because interesting things hide on unusual ports precisely to avoid casual scanning.',
         'Enumeration is the step beginners rush and professionals dwell on. An open port is a starting point, not a finding. What version? What configuration? What default credentials? What does it expose without authentication? Ninety percent of successful tests come from thorough enumeration, not clever exploitation.',
@@ -95,7 +95,7 @@ export const s06: Stage = {
       oneLine: 'Exploitation is proving a weakness is real; the discipline is proving it without causing damage.',
       like: 'A structural engineer demonstrating that a beam is unsafe, without dropping the building to make the point.',
       body: [
-        'Start by matching what you found to known vulnerabilities: version numbers to CVEs, default credentials to services, misconfigurations to known abuse paths. Public exploit code exists for much of it, and reading that code before running it is not optional — plenty of "exploits" online are backdoored.',
+        'Start by matching what you found to known vulnerabilities: version numbers to CVEs, default credentials to services, misconfigurations to known abuse paths. Public exploit code exists for much of it, and reading that code before running it is not optional: plenty of "exploits" online are backdoored.',
         'Metasploit is a framework of modules for exploitation and post-exploitation. It is efficient, and it teaches bad habits if it is all you know. Understand what the module actually does, because in a real test you will meet things no module covers.',
         'Password attacks are frequently the shortest path. Credential stuffing with breach data, password spraying one common password across many accounts to avoid lockouts, and cracking captured hashes offline with Hashcat. Spraying in particular defeats naive lockout policies and is a favourite in real intrusions.',
         'Impact must be validated, not assumed. "Port 445 is open" is not a finding. "Using these credentials I obtained domain administrator and could read this file" is. Business impact is what makes a report actionable, and it is what the client is actually paying for.',
@@ -122,7 +122,7 @@ export const s06: Stage = {
         'Sudo misconfiguration is the most common quick win. A user allowed to run a specific program as root often escalates trivially, because many programs can spawn a shell or read arbitrary files. GTFOBins catalogues exactly which binaries can be abused and how.',
         'Weak file permissions come next: a world-writable script that root executes on a schedule, a configuration file containing credentials, a service binary you can replace. Also check PATH manipulation, where a script calls a command without a full path and you control an earlier directory in PATH.',
         'Credentials are everywhere once you look: shell history files, configuration files, environment variables, backup files, and the .git directory of a deployed application. This is usually faster than any kernel exploit.',
-        'Kernel exploits are the last resort. They are version-specific, often unstable, and can crash the machine — which in a real engagement means an outage you caused. Prefer configuration paths, and if you must use a kernel exploit, get explicit agreement first.',
+        'Kernel exploits are the last resort. They are version-specific, often unstable, and can crash the machine, which in a real engagement means an outage you caused. Prefer configuration paths, and if you must use a kernel exploit, get explicit agreement first.',
       ],
       words: [
         { term: 'Privilege escalation', means: 'Moving from limited access to full control.' },
@@ -141,11 +141,11 @@ export const s06: Stage = {
       oneLine: 'Corporate networks run on Active Directory, and attacking identity relationships beats attacking machines.',
       like: 'A company where everyone’s keycard permissions were set up over fifteen years and nobody kept the map. Somewhere, an intern can open the vault.',
       body: [
-        'AD stores users, computers, groups and policies, and Kerberos authenticates them with tickets. The security problem is not usually a single vulnerability — it is the accumulated graph of who can control what, which nobody has ever fully reviewed.',
+        'AD stores users, computers, groups and policies, and Kerberos authenticates them with tickets. The security problem is not usually a single vulnerability: it is the accumulated graph of who can control what, which nobody has ever fully reviewed.',
         'Kerberoasting is the signature technique: any authenticated user can request a service ticket for an account that has a service principal name, then crack it offline. Service accounts frequently have weak, never-rotated passwords and excessive privileges, which makes this remarkably reliable.',
         'AS-REP roasting targets accounts with pre-authentication disabled, yielding crackable material without any credentials at all. Both techniques are quiet, both are old, and both still work in a large share of real environments.',
-        'Credential theft drives lateral movement. Tools can extract hashes and tickets from memory on a compromised machine. Pass-the-hash and pass-the-ticket let you authenticate as that user without ever knowing the password — which is why the password policy is not the control you thought it was.',
-        'BloodHound is the tool that changed this discipline. It maps the relationships and computes attack paths — "this ordinary user can reset that password, whose owner can write to that group, which administers the domain controller". Defenders should run it too, and most of the findings are permissions granted years ago for a reason nobody remembers.',
+        'Credential theft drives lateral movement. Tools can extract hashes and tickets from memory on a compromised machine. Pass-the-hash and pass-the-ticket let you authenticate as that user without ever knowing the password, which is why the password policy is not the control you thought it was.',
+        'BloodHound is the tool that changed this discipline. It maps the relationships and computes attack paths: "this ordinary user can reset that password, whose owner can write to that group, which administers the domain controller". Defenders should run it too, and most of the findings are permissions granted years ago for a reason nobody remembers.',
         'The defensive counterparts are worth learning at the same time: tiered administration, dedicated admin workstations, group Managed Service Accounts with automatic long passwords, LAPS for unique local administrator passwords, and removing the standing privileges that make these paths exist.',
       ],
       words: [
@@ -189,9 +189,9 @@ export const s06: Stage = {
       like: 'A surgeon who operates brilliantly and writes no notes has helped one patient once, and taught nobody anything.',
       body: [
         'Clean up completely and verifiably. Remove every account, tool, shell, scheduled task and configuration change you made. Keep a checklist as you go, because you will not remember at the end of a two-week engagement, and leftover access is a genuine liability for both sides.',
-        'The report has two audiences. Executives need the business risk, what it would cost, and what to do first — one page, no jargon. Technical staff need reproduction steps, evidence, affected systems, root cause and specific remediation. Writing one document for both audiences serves neither.',
+        'The report has two audiences. Executives need the business risk, what it would cost, and what to do first: one page, no jargon. Technical staff need reproduction steps, evidence, affected systems, root cause and specific remediation. Writing one document for both audiences serves neither.',
         'Each finding should carry: a clear title, severity with reasoning, affected assets, reproduction steps someone else can follow, evidence such as screenshots or output, actual impact, and a fix that is specific enough to implement. "Improve input validation" is not a fix.',
-        'Retesting closes the loop. A finding is not resolved because a ticket was closed; it is resolved when you verify the fix and confirm it did not simply move the problem elsewhere.',
+        'Retesting closes the loop. A finding is not resolved because a ticket was closed; it is resolved when you verify the fix and confirm it did not move the problem elsewhere.',
         'Purple teaming is where the field is heading. Rather than an adversarial exercise with a report at the end, attackers and defenders work together: run a technique, check whether it was detected, tune the detection, run it again. It produces measurable defensive improvement instead of an annual document that gets filed.',
       ],
       words: [

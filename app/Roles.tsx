@@ -6,6 +6,7 @@ import { companions, marketNote, roleLessons, roles, type Requirement, type Role
 
 /** Find a lesson by id so a requirement can link straight into the reader. */
 const byId = new Map(allLessons.map(({ lesson, stage }) => [lesson.id, { lesson, stage }]));
+const internshipRole = roles.find((role) => role.id === 'vapt-intern')!;
 
 function ReqRow({
   req,
@@ -105,7 +106,7 @@ function RoleCard({
         <div className="roleBodyInner">
           <div className="rolePad">
             <p className="plain">
-              <b>Honest read: </b>
+              <b>Role summary: </b>
               {role.summary}
             </p>
 
@@ -152,12 +153,90 @@ function RoleCard({
   );
 }
 
-export function RolesSection({
+function JobAdSprint({
   completed,
   onOpen,
+  onMissions,
 }: {
   completed: Set<string>;
   onOpen: (lessonId: string) => void;
+  onMissions: () => void;
+}) {
+  const skills = internshipRole.requirements.filter((requirement) => requirement.lessons.length > 0);
+  const lessonIds = [...new Set(skills.flatMap((skill) => skill.lessons))];
+  const done = lessonIds.filter((id) => completed.has(id)).length;
+  const nextLesson = lessonIds.find((id) => !completed.has(id));
+  const percentage = Math.round((done / lessonIds.length) * 100);
+
+  return (
+    <article className="jobSprint reveal" style={{ '--hue': String(internshipRole.hue) } as CSSProperties}>
+      <div className="jobSprintHead">
+        <div>
+          <div className="kicker">From your advert</div>
+          <h3>Internship skill sprint</h3>
+          <p>Four requirements, mapped to lessons you can read, practise and prove inside Cipher School.</p>
+        </div>
+        <div className="jobSprintScore" aria-label={`${done} of ${lessonIds.length} lessons complete`}>
+          <strong>{percentage}%</strong>
+          <span>{done}/{lessonIds.length} lessons</span>
+        </div>
+      </div>
+
+      <div className="jobSprintBar" aria-hidden="true"><i style={{ width: `${percentage}%` }} /></div>
+
+      <div className="jobSprintGrid">
+        {skills.map((skill, index) => {
+          const skillDone = skill.lessons.filter((id) => completed.has(id)).length;
+          return (
+            <section className="jobSkill" key={skill.text}>
+              <div className="jobSkillTop">
+                <span>0{index + 1}</span>
+                <small>{skillDone}/{skill.lessons.length}</small>
+              </div>
+              <h4>{skill.text}</h4>
+              <p>{skill.means}</p>
+              <div className="jobSkillLessons">
+                {skill.lessons.map((id) => {
+                  const entry = byId.get(id);
+                  if (!entry) return null;
+                  return (
+                    <button key={id} className={completed.has(id) ? 'done' : ''} onClick={() => onOpen(id)}>
+                      {completed.has(id) ? '✓' : id} {entry.lesson.title}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          );
+        })}
+      </div>
+
+      <div className="jobSprintFinish">
+        <div>
+          <span className="kicker">Proof target</span>
+          <p>Finish the lessons, pass a scored investigation, then produce a web finding and an annotated Nmap scan from a legal lab.</p>
+        </div>
+        <div className="jobSprintActions">
+          {nextLesson ? (
+            <button className="btn primary" onClick={() => onOpen(nextLesson)}>Open next lesson</button>
+          ) : (
+            <button className="btn done" disabled>Lessons complete ✓</button>
+          )}
+          <button className="btn ghost" onClick={onMissions}>Practise a case</button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export function RolesSection({
+  completed,
+  onOpen,
+  onMissions,
+}: {
+  completed: Set<string>;
+  onOpen: (lessonId: string) => void;
+  onMissions: () => void;
 }) {
   return (
     <>
@@ -170,6 +249,8 @@ export function RolesSection({
           lesson to open it.
         </p>
       </div>
+
+      <JobAdSprint completed={completed} onOpen={onOpen} onMissions={onMissions} />
 
       <div className="roleGrid">
         {roles.map((role) => (
@@ -205,9 +286,9 @@ export function RolesSection({
         <b>Adverts expire; the shape does not.</b> These are real listings, quoted from their sources and dated. A
         closed advert is still a reliable picture of what that kind of employer asks for.{' '}
         <b>Apply before you feel ready.</b> These lists describe an ideal candidate who does not exist. Around sixty
-        percent coverage plus one piece of evidence you can link to puts you ahead of most of the queue — and stage 12
-        exists specifically to close the practical gap those adverts name. The roles further down are years away on purpose —
-        they show where each path leads, and how much of what a senior advert asks for is still stages 01, 02 and 04.
+        percent coverage plus one piece of evidence you can link to puts you ahead of most of the queue, and stage 12
+        exists specifically to close the practical gap those adverts name. The roles further down are years away on purpose.
+        They show where each path leads, and how much of what a senior advert asks for is still stages 01, 02 and 04.
       </div>
     </>
   );
@@ -220,8 +301,8 @@ export function CompanionSection() {
         <div className="kicker">Watching something else too?</div>
         <h2>Course crossover</h2>
         <p className="sectionNote">
-          Free courses people commonly work through alongside this one, mapped to the stages covering the same ground —
-          so you are not studying the same week twice.
+          Free courses people commonly work through alongside this one, mapped to the stages covering the same ground.
+          This keeps you from studying the same material twice.
         </p>
       </div>
 

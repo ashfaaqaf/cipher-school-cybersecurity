@@ -100,7 +100,7 @@ export function WeekReview({
       {nothingYet && (
         <p className="weekEmpty">
           One lesson and a handful of cards is a week that counts. The streak is worth more than any single long
-          session — consistency is what spaced repetition is built on.
+          session: consistency is what spaced repetition is built on.
         </p>
       )}
     </article>

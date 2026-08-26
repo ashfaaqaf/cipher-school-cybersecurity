@@ -7,7 +7,7 @@
  * the modules are prefetched as soon as the browser reports itself idle, so by
  * the time a lesson is opened, a search is typed or a review is started, the
  * import resolves from memory. `useFull()` returns null only in the window
- * between first paint and that prefetch landing — a few hundred milliseconds on
+ * between first paint and that prefetch landing: a few hundred milliseconds on
  * a cold load, and never again for the life of the tab.
  */
 
@@ -72,7 +72,7 @@ export function loadPractice(): Promise<typeof import('./practice')> {
 
 /**
  * The exercises, for search. Returns null until the module lands, at which
- * point the corpus is rebuilt to include them — the results simply get better
+ * point the corpus is rebuilt to include them: the results get better
  * a moment after the page does.
  */
 export function usePractice(): Map<string, import('./practice').Exercise> | null {

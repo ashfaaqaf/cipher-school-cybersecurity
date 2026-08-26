@@ -147,9 +147,9 @@ export function RouteBuilder({
           {fieldLabel(
             'Route style',
             <select value={pace} onChange={(event) => setPace(event.target.value as Pace)}>
-              <option value="sprint">Fast — essentials first</option>
-              <option value="steady">Steady — learn and practise</option>
-              <option value="deep">Deep — include every stage</option>
+              <option value="sprint">Fast: essentials first</option>
+              <option value="steady">Steady: learn and practise</option>
+              <option value="deep">Deep: include every stage</option>
             </select>,
           )}
           {fieldLabel(
@@ -355,7 +355,7 @@ function portfolioMarkdown(academy: AcademyState, completed: Set<string>, practi
     '',
     ...passed.flatMap((mission) => {
       const run = academy.missions[mission.id];
-      return [`### ${mission.title} — ${run.score}/100`, '', run.report.trim(), '', `Method source: ${mission.source.href}`, ''];
+      return [`### ${mission.title}: ${run.score}/100`, '', run.report.trim(), '', `Method source: ${mission.source.href}`, ''];
     }),
     '## Capstones',
     '',
@@ -369,7 +369,7 @@ function portfolioMarkdown(academy: AcademyState, completed: Set<string>, practi
 
 function instructorPack() {
   return [
-    '# Cipher School — facilitator pack',
+    '# Cipher School: facilitator pack',
     '',
     '## 60-minute mission lesson',
     '',
@@ -437,7 +437,7 @@ export function ProofView({
       <div className="sectionHead reveal">
         <div className="kicker">Proof, not points</div>
         <h2>Your cybersecurity evidence room</h2>
-        <p className="sectionNote">Knowledge grows through four gates: learn it, recall it, apply it, then prove it with reviewable work. The site labels self-attested evidence honestly.</p>
+        <p className="sectionNote">Knowledge grows through four gates: learn it, recall it, apply it, then prove it with reviewable work. Self-attested evidence is labelled clearly.</p>
       </div>
 
       <div className="proofStats">
@@ -479,15 +479,15 @@ export function ProofView({
               <h3>{capstone.title}</h3><p>{capstone.brief}</p>
               <div className="rubricList">{capstone.checks.map((check, index) => <label key={check}><input type="checkbox" checked={run.checks[index] ?? false} onChange={() => changeCapstone(capstone.id, (current) => ({ ...current, checks: current.checks.map((value, i) => i === index ? !value : value), completedAt: null }))} /><span>{check}</span></label>)}</div>
               <label className="capstoneNote"><span>{capstone.prompt}</span><textarea rows={5} value={run.notes} onChange={(event) => changeCapstone(capstone.id, (current) => ({ ...current, notes: event.target.value.slice(0, 1800), completedAt: null }))} /></label>
-              <button className={run.completedAt ? 'btn done' : 'btn primary'} disabled={!ready && !run.completedAt} onClick={() => changeCapstone(capstone.id, (current) => ({ ...current, completedAt: current.completedAt ? null : new Date().toISOString() }))}>{run.completedAt ? '✓ Evidence ready — undo' : 'Mark evidence ready'}</button>
+              <button className={run.completedAt ? 'btn done' : 'btn primary'} disabled={!ready && !run.completedAt} onClick={() => changeCapstone(capstone.id, (current) => ({ ...current, completedAt: current.completedAt ? null : new Date().toISOString() }))}>{run.completedAt ? '✓ Evidence ready: undo' : 'Mark evidence ready'}</button>
             </article>
           );
         })}
       </div>
 
       <div className="assessmentPanel">
-        <div><span className="kicker">Assessment record</span><h3>Scores with an honest boundary</h3><p>Mission scores are checked by this app. Capstones are self-attested until a mentor or employer reviews the artefact.</p></div>
-        <div>{MISSIONS.map((mission) => { const run = academy.missions[mission.id]; return <span key={mission.id}><b>{run?.completedAt ? `${run.score}/100` : '—'}</b>{mission.title}<small>{run?.completedAt ? 'locally assessed' : 'not passed yet'}</small></span>; })}</div>
+        <div><span className="kicker">Assessment record</span><h3>What the scores mean</h3><p>Mission scores are checked by this app. Capstones are self-attested until a mentor or employer reviews the artefact.</p></div>
+        <div>{MISSIONS.map((mission) => { const run = academy.missions[mission.id]; return <span key={mission.id}><b>{run?.completedAt ? `${run.score}/100` : 'Not yet'}</b>{mission.title}<small>{run?.completedAt ? 'locally assessed' : 'not passed yet'}</small></span>; })}</div>
       </div>
 
       <div className="instructorPanel">
@@ -500,7 +500,7 @@ export function ProofView({
 
 function Meter({ label, value, total }: { label: string; value: number; total: number }) {
   const pct = total ? Math.round((value / total) * 100) : 0;
-  return <div className={`masteryMeter${pct === 100 && total ? ' full' : ''}`} title={`${label}: ${value} of ${total || 0}`}><span>{label.charAt(0)}</span><i><b style={{ width: `${pct}%` }} /></i><small>{total ? `${pct}%` : '—'}</small></div>;
+  return <div className={`masteryMeter${pct === 100 && total ? ' full' : ''}`} title={`${label}: ${value} of ${total || 0}`}><span>{label.charAt(0)}</span><i><b style={{ width: `${pct}%` }} /></i><small>{total ? `${pct}%` : '0%'}</small></div>;
 }
 
 export function FreshnessPanel() {

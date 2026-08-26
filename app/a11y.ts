@@ -35,7 +35,7 @@ export function useFocusTrap(ref: RefObject<HTMLElement | null>, active: boolean
 
     const previous = document.activeElement as HTMLElement | null;
 
-    /* Move focus in, but to the dialog itself rather than its first button —
+    /* Move focus into the dialog itself rather than its first button.
        landing on "Mark as understood" would read the action before the title. */
     root.setAttribute('tabindex', '-1');
     root.focus({ preventScroll: true });
@@ -63,7 +63,7 @@ export function useFocusTrap(ref: RefObject<HTMLElement | null>, active: boolean
     document.addEventListener('keydown', onKey, true);
     return () => {
       document.removeEventListener('keydown', onKey, true);
-      /* Only restore if focus is still inside the dialog being torn down —
+      /* Only restore if focus is still inside the dialog being torn down.
          otherwise we would yank it away from wherever the user has since gone. */
       if (previous && root.contains(document.activeElement)) previous.focus({ preventScroll: true });
     };

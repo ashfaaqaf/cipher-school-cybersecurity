@@ -2,6 +2,58 @@
 
 .roleGrid { display: flex; flex-direction: column; gap: 0; }
 
+.jobSprint {
+  margin: 0 0 48px;
+  padding: 28px 0 0;
+  border-top: 1px solid var(--accent-line);
+  border-bottom: 1px solid var(--rim);
+}
+.jobSprintHead { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; }
+.jobSprintHead h3 { margin: 7px 0 0; font-size: clamp(27px, 6vw, 42px); font-weight: 430; letter-spacing: -0.04em; }
+.jobSprintHead p { max-width: 620px; margin: 12px 0 0; color: var(--ink-mute); line-height: 1.6; }
+.jobSprintScore { flex: none; display: grid; justify-items: end; gap: 3px; }
+.jobSprintScore strong { font-family: var(--mono); font-size: 30px; font-weight: 450; letter-spacing: -0.05em; }
+.jobSprintScore span { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; }
+.jobSprintBar { height: 2px; margin-top: 24px; background: var(--glass-3); overflow: hidden; }
+.jobSprintBar i { display: block; height: 100%; background: var(--accent); transition: width var(--slow) var(--sheet); }
+.jobSprintGrid { display: grid; grid-template-columns: 1fr; }
+.jobSkill { padding: 24px 0; border-top: 1px solid var(--rim-bright); }
+.jobSkill:first-child { border-top: 0; }
+.jobSkillTop { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mono); }
+.jobSkillTop span { color: var(--accent); font-size: 10px; letter-spacing: 0.12em; }
+.jobSkillTop small { color: var(--ink-faint); font-size: 10px; }
+.jobSkill h4 { margin: 10px 0 0; font-size: 16px; line-height: 1.45; letter-spacing: -0.018em; }
+.jobSkill > p { margin: 8px 0 0; color: var(--ink-mute); font-size: 13px; line-height: 1.55; }
+.jobSkillLessons { display: flex; flex-direction: column; margin-top: 14px; }
+.jobSkillLessons button {
+  min-height: 40px;
+  padding: 8px 0;
+  border: 0;
+  border-top: 1px solid var(--rim-bright);
+  background: transparent;
+  color: var(--ink-soft);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+}
+.jobSkillLessons button:hover { color: var(--accent); }
+.jobSkillLessons button.done { color: var(--grow); }
+.jobSprintFinish { display: grid; gap: 18px; padding: 24px 0; border-top: 1px solid var(--rim); }
+.jobSprintFinish p { max-width: 680px; margin: 8px 0 0; color: var(--ink-soft); font-size: 13.5px; line-height: 1.6; }
+.jobSprintActions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+@media (min-width: 720px) {
+  .jobSprintGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .jobSkill { padding: 26px 24px; border-top: 1px solid var(--rim-bright); border-left: 1px solid var(--rim-bright); }
+  .jobSkill:nth-child(odd) { padding-left: 0; border-left: 0; }
+  .jobSkill:nth-child(even) { padding-right: 0; }
+  .jobSkill:nth-child(-n + 2) { border-top: 0; }
+  .jobSprintFinish { grid-template-columns: minmax(0, 1fr) auto; align-items: end; }
+  .jobSprintActions { justify-content: flex-end; }
+}
+
 .role { border-radius: 0; border-top: 1px solid var(--rim); }
 .roleGrid > .role:last-child { border-bottom: 1px solid var(--rim); }
 

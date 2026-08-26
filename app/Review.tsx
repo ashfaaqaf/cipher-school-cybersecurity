@@ -16,8 +16,8 @@ const GRADES: { g: Grade; label: string; tone: string }[] = [
  *
  * Multiple choice measures recognition, which runs on familiarity: the right
  * answer looks right once it is in front of you, and the feeling of knowing it
- * is not the same as knowing it. Generating the answer first — writing it, with
- * nothing to choose from — is what the retrieval-practice evidence consistently
+ * is not the same as knowing it. Generating the answer first: writing it, with
+ * nothing to choose from: is what the retrieval-practice evidence consistently
  * favours for long-term retention.
  *
  * Nothing is marked here and skipping is one press, because a gate that punishes
@@ -27,7 +27,7 @@ function RecallFirst({ onDone }: { onDone: () => void }) {
   const [attempt, setAttempt] = useState('');
   return (
     <div className="recallFirst">
-      <div className="recallAsk">Answer it from memory first — then the options appear.</div>
+      <div className="recallAsk">Answer it from memory first, then the options appear.</div>
       <textarea
         className="recallBox"
         value={attempt}
@@ -37,7 +37,7 @@ function RecallFirst({ onDone }: { onDone: () => void }) {
         aria-label="Your answer from memory"
       />
       <button className="btn primary wide" onClick={onDone}>
-        {attempt.trim() ? 'Show the options' : 'Skip — show the options'}
+        {attempt.trim() ? 'Show the options' : 'Skip: show the options'}
       </button>
     </div>
   );
@@ -103,7 +103,7 @@ function CardFace({
         {answered && (
           <>
             <div className={correct ? 'verdict ok' : 'verdict no'}>
-              {correct ? 'Correct' : 'Not quite — this is the useful bit:'}
+              {correct ? 'Correct' : 'Not quite: this is the useful bit:'}
             </div>
             <div className="cardWhy">{q.why}</div>
             <div className="grades">
@@ -129,7 +129,7 @@ function CardFace({
           {/*
             * Typing the answer rather than thinking it is the whole point. The
             * evidence on retrieval practice is consistent that generating an
-            * answer — free recall or short answer — produces markedly better
+            * answer: free recall or short answer: produces markedly better
             * long-term retention than recognising one, because recognition can
             * be done on familiarity alone. Nothing marks this: it is compared
             * against the real definition by the only judge who knows whether
@@ -228,7 +228,7 @@ export function ReviewView({
       <div className="empty">
         <div className="emptyTitle">Nothing to review yet</div>
         <div className="emptyText">
-          Cards unlock as you finish lessons — each lesson adds its questions and its terms to the deck. Read one lesson
+          Cards unlock as you finish lessons: each lesson adds its questions and its terms to the deck. Read one lesson
           and mark it understood, then come back.
         </div>
       </div>
@@ -300,7 +300,7 @@ export function ReviewView({
         </button>
       ) : (
         <div className="restCard glass">
-          <div className="restTitle">Nothing due — that is the system working</div>
+          <div className="restTitle">Nothing due: that is the system working</div>
           <div className="restText">
             {stats.nextDue !== null
               ? `Your next cards come back in ${intervalLabel(stats.nextDue - day)}. Reviewing early feels productive and weakens the effect; the forgetting is the part that builds the memory.`
@@ -314,7 +314,7 @@ export function ReviewView({
 
       <div className="srsNote">
         <b>How this works.</b> Each card comes back just before you would have forgotten it. Get it right and the gap
-        grows — a day, six days, then weeks. Get it wrong and it resets. Answering honestly is the whole trick: grading
+        grows: a day, six days, then weeks. Get it wrong and it resets. Grade yourself accurately. That is what makes
         yourself generously only means reviewing things you do not actually know.
       </div>
     </>

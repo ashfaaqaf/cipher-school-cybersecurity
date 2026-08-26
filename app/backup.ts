@@ -1,7 +1,7 @@
 'use client';
 
 /**
- * Progress lives in localStorage and nowhere else — no account, no server,
+ * Progress lives in localStorage and nowhere else: no account, no server,
  * nothing uploaded. That is the right default for a study app, and it has one
  * consequence people discover the hard way: clearing your browser deletes
  * everything. This is the escape hatch.
@@ -106,7 +106,7 @@ export function downloadBackup(): Backup {
 
 /**
  * Validate and apply a restore file. Returns what was accepted and what was
- * skipped, rather than throwing — the caller shows the user both.
+ * skipped, rather than throwing: the caller shows the user both.
  */
 export function applyBackup(text: string): RestoreResult {
   if (text.length > LIMITS.fileBytes) {
@@ -174,7 +174,7 @@ export function applyBackup(text: string): RestoreResult {
     if (b.data.voice && typeof b.data.voice === 'object') {
       window.localStorage.setItem(KEYS.voice, JSON.stringify(b.data.voice));
     }
-    /* Absent in version 1 backups, which is fine — the streak simply restarts. */
+    /* Absent in version 1 backups, which is fine: the streak restarts. */
     if (b.data.plan && typeof b.data.plan === 'object') {
       window.localStorage.setItem(KEYS.plan, JSON.stringify(b.data.plan));
     }

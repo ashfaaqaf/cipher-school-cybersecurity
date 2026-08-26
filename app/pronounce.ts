@@ -2,7 +2,7 @@
  * Narration is written for the eye, not the ear. Speech engines read "SSRF" as
  * a word, "chmod 755" as "chmod seven hundred and fifty five", and "/var/log"
  * as silence. This rewrites the text into something meant to be spoken, before
- * it reaches either engine — the device voice reads the result directly, and
+ * it reaches either engine: the device voice reads the result directly, and
  * the ElevenLabs script sends the same result, so both pronounce identically.
  *
  * Nothing here changes what is displayed on screen.
@@ -158,8 +158,8 @@ const PHRASES_EARLY: [RegExp, string][] = [
 const PHRASES_LATE: [RegExp, string][] = [
   // Symbols the engines skip or mangle
   [/\s*→\s*/g, ', then '],
-  [/\s*—\s*/g, ', '],
-  [/\s*–\s*/g, ' to '],
+  [/\s*\u2014\s*/g, ', '],
+  [/\s*\u2013\s*/g, ' to '],
   [/\s*\|\s*/g, ' pipe '],
   [/&/g, ' and '],
   [/\bx(\d+)\b/g, '$1 times'],
