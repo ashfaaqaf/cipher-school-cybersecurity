@@ -11,6 +11,7 @@ import './shell.css';
 import './presence.css';
 import './academy.css';
 import './settings.css';
+import './mobile.css';
 
 /*
  * Declared through next/font rather than a hand-written @font-face so the build
@@ -56,7 +57,9 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'black-translucent',
+    // Keep iPhone standalone content below the system status bar instead of
+    // allowing the status bar to float over the app header.
+    statusBarStyle: 'black',
     title: 'Cipher School',
   },
   formatDetection: { telephone: false },

@@ -782,7 +782,10 @@ export default function Home() {
     if (!pendingStage || view !== 'learn') return;
     const el = document.getElementById(`stage-${pendingStage}`);
     if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 88;
+      // The header is taller on notched phones because it includes the safe
+      // area. Measure it instead of letting a fixed offset hide the stage.
+      const headerHeight = headerRef.current?.getBoundingClientRect().height ?? 88;
+      const top = el.getBoundingClientRect().top + window.scrollY - headerHeight - 12;
       window.scrollTo({ top: Math.max(0, top) });
     }
     setPendingStage(null);

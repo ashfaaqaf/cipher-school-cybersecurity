@@ -1,0 +1,176 @@
+/* ============================================================
+   Phone viewport tuning
+
+   The target 1260 × 2736 panel renders as roughly 420 × 912 CSS pixels at
+   3× density. These rules also cover the neighbouring 375–430px iPhone and
+   Android sizes without binding the app to one model.
+   ============================================================ */
+
+@media (max-width: 559px) {
+  :root {
+    --dock-h: calc(66px + env(safe-area-inset-bottom, 0px));
+  }
+
+  html {
+    scroll-padding-top: calc(116px + env(safe-area-inset-top, 0px));
+    scroll-padding-bottom: calc(var(--dock-h) + 24px);
+  }
+
+  body {
+    min-height: 100svh;
+    min-height: 100dvh;
+  }
+
+  .shell {
+    padding-bottom: calc(var(--dock-h) + 30px);
+  }
+
+  section {
+    scroll-margin-top: calc(116px + env(safe-area-inset-top, 0px));
+  }
+
+  /* The system status bar owns its strip; the app header owns everything
+     below it. A solid surface prevents scrolled content showing through. */
+  .topbar {
+    top: 0;
+    padding-top: max(10px, env(safe-area-inset-top, 0px));
+    padding-bottom: 8px;
+    background: var(--canvas);
+    contain: paint;
+  }
+
+  .topRow {
+    min-height: 44px;
+  }
+
+  .mark {
+    width: 38px;
+    height: 38px;
+  }
+
+  .iconBtn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .island {
+    min-height: 36px;
+    margin-top: 5px;
+    padding: 7px 0;
+  }
+
+  .islandText {
+    font-size: 12.5px;
+  }
+
+  /* Keep the promise and both actions visible before the floating dock on a
+     tall 19.5:9 screen, without shrinking the headline into ordinary body type. */
+  .hero {
+    padding: clamp(30px, 4.2dvh, 38px) 0 42px;
+  }
+
+  .hero::before,
+  .hero::after {
+    inset-inline: -18px;
+    height: min(680px, 86dvh);
+  }
+
+  .hero h1 {
+    margin-top: 18px;
+    font-size: clamp(40px, 11.4vw, 49px);
+    line-height: 1.025;
+    letter-spacing: -0.032em;
+  }
+
+  .lede {
+    margin-top: 20px;
+    font-size: 16.5px;
+    line-height: 1.55;
+  }
+
+  .promiseRow {
+    gap: 6px;
+    margin-top: 18px;
+    font-size: 9.5px;
+  }
+
+  .heroActions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+    margin-top: 24px;
+  }
+
+  .heroActions .btn {
+    width: 100%;
+    min-height: 50px;
+  }
+
+  .heroSide {
+    margin-top: 36px;
+  }
+
+  /* Seven destinations now share the available width. The previous fixed
+     minimums made the last item sit outside the 420px viewport. */
+  .dock {
+    left: max(8px, env(safe-area-inset-left, 0px));
+    right: max(8px, env(safe-area-inset-right, 0px));
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    width: auto;
+    max-width: none;
+    transform: none;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 1px;
+    padding: 4px;
+    overflow: visible;
+  }
+
+  .dockBtn {
+    width: 100%;
+    min-width: 0;
+    min-height: 50px;
+    padding: 7px 2px 6px;
+    gap: 3px;
+  }
+
+  .dockIcon {
+    font-size: 15px;
+  }
+
+  .dockLabel {
+    max-width: 100%;
+    overflow: hidden;
+    font-size: clamp(7px, 2vw, 8.5px);
+    letter-spacing: 0.025em;
+    white-space: nowrap;
+  }
+}
+
+/* Compact phones keep the same touch targets; only secondary branding yields. */
+@media (max-width: 374px) {
+  .brandSub {
+    display: none;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 11.4vw, 43px);
+  }
+
+  .dockLabel {
+    font-size: 7px;
+    letter-spacing: 0;
+  }
+}
+
+/* In landscape, avoiding a sticky layer matters more than retaining the
+   always-visible header because the usable height is much smaller. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .topbar {
+    position: relative;
+  }
+
+  .hero {
+    padding-top: 28px;
+  }
+}
