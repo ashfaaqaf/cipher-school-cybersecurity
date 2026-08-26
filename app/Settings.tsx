@@ -90,6 +90,7 @@ export function SettingsView({
 }: SettingsProps) {
   const [resetArmed, setResetArmed] = useState(false);
   const [resetDone, setResetDone] = useState(false);
+  const [resetPhrase, setResetPhrase] = useState('');
   const currentProfile = (): LearnerProfile => profile ?? {
     experience: 'new',
     role: 'INTERN',
@@ -106,12 +107,22 @@ export function SettingsView({
   return (
     <section id="settings" className="settingsPage">
       <header className="settingsHero reveal">
-        <div>
+        <div className="settingsHeroCopy">
           <div className="kicker">Your control room</div>
           <h1>Settings, without the scavenger hunt.</h1>
           <p>Shape how Cipher School looks, teaches, speaks and saves—everything important lives on this page.</p>
+          <button className="settingsBack" type="button" onClick={onLearn}>← Back to learning</button>
         </div>
-        <button className="btn ghost" type="button" onClick={onLearn}>← Back to learning</button>
+        <aside className="settingsConsole" aria-label="Current settings summary">
+          <div className="settingsConsoleBar"><span>CS://PREFERENCES</span><i>LIVE</i></div>
+          <dl>
+            <div><dt>DISPLAY</dt><dd>{theme.toUpperCase()}</dd></div>
+            <div><dt>STUDY LOAD</dt><dd>{plan.weeklyHours}H / {plan.daysPerWeek}D</dd></div>
+            <div><dt>ROUTE</dt><dd>{profile?.role ?? 'INTERN'}</dd></div>
+            <div><dt>STORAGE</dt><dd>DEVICE ONLY</dd></div>
+          </dl>
+          <div className="settingsConsoleFoot"><span>NO ACCOUNT</span><b>● SECURE</b></div>
+        </aside>
       </header>
 
       <div className="settingsPulse" role="status" aria-label="App status">
@@ -306,42 +317,48 @@ export function SettingsView({
         <article className="settingsGroup settingsWide resetGroup reveal">
           <div className="settingsGroupHead">
             <span>07</span>
-            <div><h2>Reset settings</h2><p>Return the controls on this page to their original defaults.</p></div>
+            <div><h2>Factory reset</h2><p>Erase all Cipher School data saved in this browser and return to a fresh start.</p></div>
           </div>
           <div className="resetSummary">
             <div>
-              <b>Your learning progress stays safe.</b>
-              <p>This resets appearance, study schedule, learning-route profile and narration. Completed lessons, review cards, missions and portfolio work are not deleted.</p>
+              <b>This permanently takes everything back to zero.</b>
+              <p>It removes completed lessons, review history, streaks, exercises, missions, capstones, portfolio evidence, your route and every preference from this device.</p>
+              <button className="resetBackup" type="button" onClick={onBackup}>↓ Download a backup first</button>
             </div>
             {!resetArmed ? (
               <button
                 className="resetButton"
                 type="button"
-                onClick={() => { setResetArmed(true); setResetDone(false); }}
+                onClick={() => { setResetArmed(true); setResetDone(false); setResetPhrase(''); }}
               >
-                Reset settings…
+                Reset Cipher School…
               </button>
             ) : (
-              <div className="resetConfirm" role="group" aria-label="Confirm settings reset">
-                <span>Reset these preferences now?</span>
+              <div className="resetConfirm" role="group" aria-label="Confirm complete Cipher School reset">
+                <label>
+                  <span>Type <b>RESET</b> to confirm</span>
+                  <input value={resetPhrase} onChange={(event) => setResetPhrase(event.target.value)} autoComplete="off" spellCheck="false" />
+                </label>
                 <div>
-                  <button type="button" onClick={() => setResetArmed(false)}>Cancel</button>
+                  <button type="button" onClick={() => { setResetArmed(false); setResetPhrase(''); }}>Cancel</button>
                   <button
                     className="confirmReset"
                     type="button"
+                    disabled={resetPhrase.trim() !== 'RESET'}
                     onClick={() => {
                       onReset();
                       setResetArmed(false);
                       setResetDone(true);
+                      setResetPhrase('');
                     }}
                   >
-                    Yes, reset settings
+                    Erase everything
                   </button>
                 </div>
               </div>
             )}
           </div>
-          {resetDone && <p className="settingsResult ok" role="status">Settings restored to their defaults. Your learning progress was not touched.</p>}
+          {resetDone && <p className="settingsResult ok" role="status">Cipher School has been reset. Progress and settings are back to zero on this device.</p>}
         </article>
       </div>
     </section>

@@ -29,6 +29,7 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **Spaced repetition** over all questions and terms, so what you read actually stays
 - **A daily plan** built from your weekly hour budget, with a streak and a week strip
 - **One settings hub** for theme, reading comfort, motion, contrast, study pace, learning route, narration, offline install and portable data
+- **A guarded factory reset** that can clear every device-local lesson, review, mission, portfolio and preference record after a typed confirmation
 - **A weekly review** naming what you actually learned, against last week
 - **Full-text search** across every word, with the matching passage highlighted
 - **Keyboard shortcuts** throughout, and `?` to see them

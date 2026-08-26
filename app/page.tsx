@@ -45,6 +45,7 @@ import { buildCorpus, searchIn } from './search';
 import { PrintSheet } from './Print';
 import { CapabilityBoundary, FreshnessPanel, MissionsView, ProofView, RouteBuilder, useAcademy } from './AcademyViews';
 import { SettingsView, type AccessibilitySettings } from './Settings';
+import { clearCipherSchoolStorage } from './reset';
 import { SHORTCUTS, actionFor, isTyping } from './keys';
 import { useFocusTrap } from './a11y';
 import { hashFor, parseHash, sameRoute, type Route, type View } from './routing';
@@ -844,13 +845,27 @@ export default function Home() {
 
   const resetPreferences = () => {
     speaker.stop();
+    try {
+      clearCipherSchoolStorage(window.localStorage);
+    } catch {
+      /* State still resets for this session when storage is unavailable. */
+    }
+    setCompleted(new Set());
+    setDeck({});
+    setPractised(new Set());
+    setHistory({});
+    setPlanSettings(DEFAULT_SETTINGS);
+    setQuery('');
+    setFilter('ALL');
+    setOpenStage(0);
+    setEverOpen(new Set([0]));
+    setPopped(null);
     setTheme('night');
-    changeSettings(DEFAULT_SETTINGS);
     changeAccessibility(DEFAULT_ACCESSIBILITY);
     speaker.setPreferStudio(true);
-    speaker.setVoiceURI('');
+    speaker.setVoiceURI(null);
     speaker.setRate(1);
-    updateAcademy((current) => ({ ...current, profile: null }));
+    updateAcademy(() => ({ version: 1, profile: null, missions: {}, capstones: {} }));
     document.documentElement.lang = 'en';
     setRestore(null);
     tap(16);

@@ -49,6 +49,7 @@
     "keys.test.ts",
     "routing.test.ts",
     "practice.test.ts",
-    "academy.test.ts"
+    "academy.test.ts",
+    "reset.test.ts"
   ]
 }
