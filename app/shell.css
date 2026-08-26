@@ -69,20 +69,18 @@
 /* ============================================================
    Large displays.
 
-   Above about 1900px the answer is not a wider column — a 2000px line of text
-   is unreadable. It is to scale the whole design: type, spacing, controls and
-   the rail all grow together, the measure grows more slowly, and the extra room
-   goes into more columns. This is why a 4K screen should look like a bigger
-   version of the same page rather than the same page with a desert either side.
+   Extra pixels buy clearer grids and breathing room, but controls and reading
+   measures stop growing once they reach a comfortable physical size. This
+   keeps ultrawide and 4K screens from turning ordinary data into giant tiles.
    ============================================================ */
 
 @media (min-width: 2000px) {
   :root {
     --maxw: 1600px;
     --rail: 108px;
-    --r-md: 22px;
-    --r-lg: 30px;
-    --r-xl: 40px;
+    --r-md: 12px;
+    --r-lg: 16px;
+    --r-xl: 22px;
   }
   body { font-size: 18px; }
   .shell { padding: 0 64px 120px calc(var(--rail) + 64px); }
@@ -92,9 +90,8 @@
   .lede { font-size: clamp(21px, 1.15vw, 24px); }
   .sectionNote { font-size: 17.5px; }
 
-  .stat { padding: 24px; }
+  .stat { padding: 20px; }
   .statNum { font-size: 36px; }
-  .stat:nth-child(1) .statNum { font-size: 68px; }
   .statLabel { font-size: 12px; }
 
   .dockBtn { min-width: 68px; padding: 12px 10px 10px; }
@@ -110,54 +107,52 @@
 }
 
 @media (min-width: 2560px) {
-  :root { --maxw: 2120px; --rail: 124px; }
-  body { font-size: 19.5px; }
-  .shell { padding: 0 88px 140px calc(var(--rail) + 88px); }
+  :root { --maxw: 1760px; --rail: 118px; }
+  body { font-size: 19px; }
+  .shell { padding: 0 80px 128px calc(var(--rail) + 80px); }
 
-  h1 { font-size: clamp(104px, 4.6vw, 128px); }
-  h2 { font-size: clamp(52px, 2.1vw, 62px); }
-  .lede { font-size: 26px; }
+  h1 { font-size: clamp(88px, 3.8vw, 112px); }
+  h2 { font-size: clamp(46px, 1.9vw, 56px); }
+  .lede { font-size: 24px; }
 
-  .stats { grid-auto-rows: minmax(128px, auto); }
-  .statNum { font-size: 42px; }
-  .stat:nth-child(1) .statNum { font-size: 84px; }
+  .stats { grid-auto-rows: auto; }
+  .statNum { font-size: 38px; }
 
-  .stageList, .roleGrid, .today, .week, .results { max-width: 1480px; }
+  .stageList, .roleGrid, .today, .week, .results { max-width: 1320px; }
   .sourceGrid { grid-template-columns: repeat(5, 1fr); }
   .glossList { grid-template-columns: repeat(4, 1fr); }
-  .sheet { width: min(1180px, 72vw); }
-  .prose p { font-size: 20px; max-width: 72ch; }
+  .sheet { width: min(1080px, 72vw); }
+  .prose p { font-size: 19.5px; max-width: 70ch; }
 }
 
 /* 4K and beyond. */
 @media (min-width: 3200px) {
-  :root { --maxw: 2720px; --rail: 152px; }
-  body { font-size: 23px; }
-  .shell { padding: 0 120px 180px calc(var(--rail) + 120px); }
+  :root { --maxw: 1920px; --rail: 132px; }
+  body { font-size: 20px; }
+  .shell { padding: 0 96px 144px calc(var(--rail) + 96px); }
 
-  h1 { font-size: clamp(128px, 4.4vw, 172px); }
-  h2 { font-size: clamp(62px, 2vw, 78px); }
-  .lede { font-size: 31px; }
-  .sectionNote { font-size: 22px; }
+  h1 { font-size: clamp(104px, 3.2vw, 128px); }
+  h2 { font-size: clamp(50px, 1.7vw, 60px); }
+  .lede { font-size: 26px; }
+  .sectionNote { font-size: 19px; }
 
-  .statNum { font-size: 54px; }
-  .stat:nth-child(1) .statNum { font-size: 108px; }
-  .statLabel { font-size: 14px; }
+  .statNum { font-size: 40px; }
+  .statLabel { font-size: 12px; }
 
-  .mark { width: 52px; height: 52px; font-size: 19px; }
-  .brandName { font-size: 21px; }
-  .dockBtn { min-width: 86px; padding: 16px 12px 14px; }
-  .dockIcon { font-size: 24px; }
-  .dockLabel { font-size: 13px; }
+  .mark { width: 48px; height: 48px; }
+  .brandName { font-size: 20px; }
+  .dockBtn { min-width: 72px; padding: 13px 10px 11px; }
+  .dockIcon { font-size: 20px; }
+  .dockLabel { font-size: 11px; }
 
-  .stageList, .roleGrid, .today, .week, .results { max-width: 1900px; }
-  .sourceGrid { grid-template-columns: repeat(6, 1fr); }
-  .glossList { grid-template-columns: repeat(5, 1fr); }
-  .trackGrid { grid-template-columns: repeat(4, 1fr); }
-  .sheet { width: min(1480px, 68vw); }
-  .sheetTitle { font-size: 42px; }
-  .prose p { font-size: 24px; max-width: 70ch; }
-  .readText { font-size: 23px; }
-  .readCard.key .readText { font-size: 27px; }
+  .stageList, .roleGrid, .today, .week, .results { max-width: 1440px; }
+  .sourceGrid { grid-template-columns: repeat(5, 1fr); }
+  .glossList { grid-template-columns: repeat(4, 1fr); }
+  .trackGrid { grid-template-columns: repeat(3, 1fr); }
+  .sheet { width: min(1120px, 68vw); }
+  .sheetTitle { font-size: 36px; }
+  .prose p { font-size: 21px; max-width: 68ch; }
+  .readText { font-size: 20px; }
+  .readCard.key .readText { font-size: 24px; }
 
 }

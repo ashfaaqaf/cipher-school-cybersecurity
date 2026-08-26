@@ -229,8 +229,18 @@
 }
 
 .heroSide .stats {
+  width: 100%;
+  min-width: 0;
   margin-top: 18px;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: auto;
+  border-bottom: 1px solid var(--rim);
+}
+
+.heroSide .stat {
+  min-width: 0;
+  padding: 17px 16px 17px 0;
+  border-left: 0;
 }
 
 .heroSide .stat:nth-child(even) {
@@ -238,7 +248,18 @@
   border-left: 1px solid var(--rim-bright);
 }
 
-.heroSide .statNum { font-size: 28px; }
+.heroSide .stat:nth-child(-n + 2) {
+  border-bottom: 1px solid var(--rim-bright);
+}
+
+.heroSide .statNum,
+.heroSide .stat:nth-child(1) .statNum {
+  font-size: clamp(28px, 1.7vw, 38px);
+}
+
+.heroSide .statLabel {
+  font-size: clamp(10px, 0.5vw, 11px);
+}
 
 .heroSide .ringWrap {
   margin-top: 0;
@@ -307,7 +328,7 @@
   }
 
   .heroCopy { padding-top: 26px; }
-  .heroSide { margin-top: 0; }
+  .heroSide { width: 100%; max-width: 720px; min-width: 0; margin-top: 0; justify-self: end; }
   .hero h1 { font-size: clamp(58px, 5.1vw, 82px); }
   .hero .lede { max-width: 31em; }
   .differenceRail { margin-top: 0; }
