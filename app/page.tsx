@@ -892,7 +892,11 @@ export default function Home() {
         <header className="topbar" ref={headerRef}>
           <div className="topRow">
             <div className="brand">
-              <div className="mark">CS</div>
+              <div className="mark" aria-hidden="true">
+                {/* A relative URL keeps the mark working on localhost and under the GitHub Pages base path. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="./cipher-school-icon-192.png" width="38" height="38" alt="" />
+              </div>
               <div>
                 <div className="brandName">Cipher School</div>
                 <div className="brandSub">Beginner → researcher</div>
