@@ -147,6 +147,57 @@
   }
 }
 
+/* A Home Screen launch already shows the app name and icon before opening.
+   Use that space for the learner's status and the one global control instead. */
+@media (max-width: 559px) and (display-mode: standalone) {
+  html {
+    scroll-padding-top: calc(64px + env(safe-area-inset-top, 0px));
+  }
+
+  section {
+    scroll-margin-top: calc(64px + env(safe-area-inset-top, 0px));
+  }
+
+  .topbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    align-items: center;
+    column-gap: 10px;
+    padding-top: max(8px, env(safe-area-inset-top, 0px));
+    padding-bottom: 7px;
+  }
+
+  .topRow {
+    display: contents;
+  }
+
+  .brand {
+    display: none;
+  }
+
+  .topActions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .island {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 44px;
+    margin-top: 0;
+    padding: 6px 0;
+    border-top: 0;
+  }
+
+  .islandBar {
+    display: none;
+  }
+
+  .hero {
+    padding-top: clamp(22px, 3dvh, 30px);
+  }
+}
+
 /* Compact phones keep the same touch targets; only secondary branding yields. */
 @media (max-width: 374px) {
   .brandSub {

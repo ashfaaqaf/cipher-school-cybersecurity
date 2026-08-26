@@ -5,6 +5,7 @@ import { readFileSync } from 'node:fs';
 const page = readFileSync(new URL('./app/page.tsx', import.meta.url), 'utf8');
 const globals = readFileSync(new URL('./app/globals.css', import.meta.url), 'utf8');
 const shell = readFileSync(new URL('./app/shell.css', import.meta.url), 'utf8');
+const mobile = readFileSync(new URL('./app/mobile.css', import.meta.url), 'utf8');
 const workerBuilder = readFileSync(new URL('./scripts/make-sw.mjs', import.meta.url), 'utf8');
 
 assert.match(page, /new IntersectionObserver/, 'scroll reveals need an intersection observer');
@@ -38,6 +39,17 @@ assert.doesNotMatch(
   workerBuilder,
   /c\.put\(START/,
   'an old service worker must not mix new HTML with old hashed app chunks',
+);
+assert.match(mobile, /display-mode:\s*standalone/, 'installed mobile layout needs a standalone mode');
+assert.match(
+  mobile,
+  /display-mode:\s*standalone[\s\S]*?\.brand\s*\{\s*display:\s*none;/,
+  'the installed mobile app must not repeat its Home Screen branding',
+);
+assert.match(
+  mobile,
+  /display-mode:\s*standalone[\s\S]*?\.topActions\s*\{[\s\S]*?grid-column:\s*2;/,
+  'settings must remain available in the compact installed header',
 );
 
 console.log('reliability: all checks passed');
