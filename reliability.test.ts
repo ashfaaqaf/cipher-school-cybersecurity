@@ -30,6 +30,9 @@ assert.match(
   /:root\[data-reveal='ready'\]:not\(\[data-motion='reduce'\]\) \.reveal:not\(\.in\)/,
   'hidden reveal state must require ready JavaScript and allow reduced-motion opt-out',
 );
+assert.match(page, /--reveal-delay/, 'simultaneous reveals should receive a controlled stagger');
+assert.match(page, /--reveal-x/, 'reveals should receive subtle directional variation');
+assert.match(shell, /filter:\s*blur\(5px\)/, 'cinematic reveals should include a bounded depth effect');
 assert.match(workerBuilder, /cache\.addAll\(PRECACHE\)/, 'a service worker update must cache one complete build');
 assert.doesNotMatch(
   workerBuilder,

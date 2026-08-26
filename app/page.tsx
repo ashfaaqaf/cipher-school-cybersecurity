@@ -644,12 +644,13 @@ export default function Home() {
     const root = document.documentElement;
     let intersection: IntersectionObserver | null = null;
 
-    const show = (node: HTMLElement) => {
+    const show = (node: HTMLElement, order = 0) => {
+      node.style.setProperty('--reveal-delay', `${Math.min(order, 4) * 65}ms`);
       node.classList.add('in');
       intersection?.unobserve(node);
     };
 
-    const watch = (node: Element) => {
+    const watch = (node: Element, animateIfVisible = false) => {
       if (!(node instanceof HTMLElement) || !node.classList.contains('reveal') || node.classList.contains('in')) {
         return;
       }
@@ -660,7 +661,12 @@ export default function Home() {
       }
 
       const rect = node.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 1.04 && rect.bottom > -32) {
+      const centre = rect.left + rect.width / 2;
+      const edge = window.innerWidth * 0.12;
+      const drift = window.innerWidth < 720 ? 7 : 14;
+      node.style.setProperty('--reveal-x', `${centre < window.innerWidth / 2 - edge ? -drift : centre > window.innerWidth / 2 + edge ? drift : 0}px`);
+
+      if (!animateIfVisible && rect.top < window.innerHeight * 1.04 && rect.bottom > -32) {
         show(node);
         return;
       }
@@ -671,22 +677,26 @@ export default function Home() {
     if ('IntersectionObserver' in window) {
       intersection = new IntersectionObserver(
         (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) show(entry.target as HTMLElement);
-          });
+          entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => {
+              const vertical = a.boundingClientRect.top - b.boundingClientRect.top;
+              return Math.abs(vertical) > 24 ? vertical : a.boundingClientRect.left - b.boundingClientRect.left;
+            })
+            .forEach((entry, order) => show(entry.target as HTMLElement, order));
         },
         { rootMargin: '0px 0px -8% 0px', threshold: 0.06 },
       );
     }
 
-    document.querySelectorAll<HTMLElement>('.reveal:not(.in)').forEach(watch);
+    document.querySelectorAll<HTMLElement>('.reveal:not(.in)').forEach((node) => watch(node));
 
     const additions = new MutationObserver((records) => {
       records.forEach((record) => {
         record.addedNodes.forEach((node) => {
           if (!(node instanceof Element)) return;
-          watch(node);
-          node.querySelectorAll<HTMLElement>('.reveal:not(.in)').forEach(watch);
+          watch(node, true);
+          node.querySelectorAll<HTMLElement>('.reveal:not(.in)').forEach((child) => watch(child, true));
         });
       });
     });

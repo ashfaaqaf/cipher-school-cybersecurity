@@ -932,6 +932,7 @@ h2 {
 .reveal.in {
   opacity: 1;
   transform: none;
+  filter: blur(0) saturate(1);
 }
 
 /* ---------- footer ---------- */
