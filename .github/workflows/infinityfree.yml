@@ -1,0 +1,78 @@
+name: Deploy to InfinityFree
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: infinityfree-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: ${{ vars.INFINITYFREE_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: infinityfree-production
+      url: ${{ vars.INFINITYFREE_SITE_URL }}
+    env:
+      SITE_URL: ${{ vars.INFINITYFREE_SITE_URL }}
+      FTP_SERVER: ${{ secrets.INFINITYFREE_FTP_SERVER }}
+      FTP_USERNAME: ${{ secrets.INFINITYFREE_FTP_USERNAME }}
+      FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
+      FTP_REMOTE_DIR: ${{ vars.INFINITYFREE_REMOTE_DIR || '/htdocs' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Check deployment settings
+        shell: bash
+        run: |
+          if [[ ! "$SITE_URL" =~ ^https?://[^/]+/?$ ]]; then
+            echo "INFINITYFREE_SITE_URL must be the public site origin, such as https://example.free.nf"
+            exit 1
+          fi
+
+          for setting in FTP_SERVER FTP_USERNAME FTP_PASSWORD; do
+            if [[ -z "${!setting}" ]]; then
+              echo "The $setting repository secret is missing."
+              exit 1
+            fi
+          done
+
+          case "$FTP_REMOTE_DIR" in
+            htdocs|/htdocs|*/htdocs) ;;
+            *)
+              echo "INFINITYFREE_REMOTE_DIR must point to an htdocs folder."
+              exit 1
+              ;;
+          esac
+
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
+      - name: Install FTP client
+        run: sudo apt-get update && sudo apt-get install --yes lftp
+
+      - name: Publish built site
+        shell: bash
+        run: |
+          lftp <<LFTP_COMMANDS
+          set cmd:fail-exit yes
+          set ftp:passive-mode true
+          set net:max-retries 3
+          set net:timeout 20
+          open -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER"
+          mirror --reverse --delete --verbose --parallel=4 out/ "$FTP_REMOTE_DIR"
+          bye
+          LFTP_COMMANDS

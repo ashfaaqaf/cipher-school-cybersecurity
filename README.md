@@ -4,6 +4,8 @@ Learn cybersecurity from absolute beginner to expert level — in plain language
 
 **Live:** https://ashfaaqaf.github.io/cipher-school-cybersecurity/
 
+**Hosting:** GitHub Pages is automatic. [InfinityFree deployment setup](docs/infinityfree-deployment.md) is included and activates only after its repository secrets and variables are added.
+
 Most security roadmaps hand you a list of topics and leave you to find the explanations
 yourself. This one contains the explanations. Every lesson is written out in full, in
 words a beginner can follow, with the jargon decoded as it appears.
