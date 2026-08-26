@@ -18,10 +18,13 @@ const KEYS = {
   theme: 'cipher-school-theme',
   voice: 'cipher-school-voice',
   plan: 'cipher-school-plan',
+  practised: 'cipher-school-practised',
+  academy: 'cipher-school-academy',
+  accessibility: 'cipher-school-accessibility',
 } as const;
 
 const FORMAT = 'cipher-school-backup';
-const VERSION = 2;
+const VERSION = 4;
 
 /** Guards against a hostile or corrupt file eating memory or the UI. */
 const LIMITS = { lessons: 5000, cards: 20000, fileBytes: 2_000_000 };
@@ -38,6 +41,11 @@ export type Backup = {
     voice: unknown;
     /** Added in version 2. Absent in older backups, which still restore. */
     plan?: unknown;
+    /** Added in version 3: exercise evidence, profile, missions and capstones. */
+    practised?: string[];
+    academy?: unknown;
+    /** Added in version 4: reading comfort, motion and contrast preferences. */
+    accessibility?: unknown;
   };
 };
 
@@ -71,6 +79,9 @@ export function buildBackup(): Backup {
       theme: window.localStorage.getItem(KEYS.theme),
       voice: read(KEYS.voice),
       plan: read(KEYS.plan),
+      practised: Array.isArray(read(KEYS.practised)) ? (read(KEYS.practised) as string[]) : [],
+      academy: read(KEYS.academy),
+      accessibility: read(KEYS.accessibility),
     },
   };
 }
@@ -166,6 +177,21 @@ export function applyBackup(text: string): RestoreResult {
     /* Absent in version 1 backups, which is fine — the streak simply restarts. */
     if (b.data.plan && typeof b.data.plan === 'object') {
       window.localStorage.setItem(KEYS.plan, JSON.stringify(b.data.plan));
+    }
+    if (Array.isArray(b.data.practised)) {
+      const practised = [...new Set(b.data.practised.filter((x): x is string => typeof x === 'string'))].slice(0, LIMITS.lessons);
+      window.localStorage.setItem(KEYS.practised, JSON.stringify(practised));
+    }
+    if (b.data.academy && typeof b.data.academy === 'object' && !Array.isArray(b.data.academy)) {
+      window.localStorage.setItem(KEYS.academy, JSON.stringify(b.data.academy));
+    }
+    if (b.data.accessibility && typeof b.data.accessibility === 'object' && !Array.isArray(b.data.accessibility)) {
+      const access = b.data.accessibility as Record<string, unknown>;
+      window.localStorage.setItem(KEYS.accessibility, JSON.stringify({
+        comfortableReading: access.comfortableReading === true,
+        reduceMotion: access.reduceMotion === true,
+        strongContrast: access.strongContrast === true,
+      }));
     }
   } catch {
     return { ok: false, error: 'This browser would not let the app save the restored data.' };

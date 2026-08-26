@@ -99,7 +99,7 @@ export function PrintSheet({ stage }: { stage: FullStage }) {
           Only test systems you own, systems you have written permission to test, or labs built for practice.
           Unauthorised access is a crime in most countries even when nothing breaks and no harm was intended.
         </p>
-        <p className="pSource">ashfaaqaf.github.io/cipher-school-cybersecurity</p>
+        <p className="pSource">Cipher School · Learn. Recall. Investigate. Prove.</p>
       </footer>
     </div>
   );

@@ -1,7 +1,7 @@
 /**
  * The daily plan.
  *
- * 104 lessons is a backlog, not a habit. This turns a weekly hour budget into
+ * 110 lessons is a backlog, not a habit. This turns a weekly hour budget into
  * one concrete answer to "what do I do today" — a named list of lessons plus
  * whatever review is due — and keeps a streak so returning is visible.
  *

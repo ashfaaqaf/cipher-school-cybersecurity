@@ -101,7 +101,7 @@ export function actionFor(e: KeyEvent, ctx: Context): Action | null {
 /** The list rendered in the help sheet. Kept beside the logic so they cannot drift. */
 export const SHORTCUTS: { keys: string[]; what: string; when?: string }[] = [
   { keys: ['/'], what: 'Search every word of every lesson' },
-  { keys: ['1', '–', '5'], what: 'Switch between Learn, Review, Paths, Words and Sources' },
+  { keys: ['1', '–', '5'], what: 'Switch between Learn, Missions, Review, Paths and Proof' },
   { keys: ['j', 'k'], what: 'Next and previous lesson', when: 'reading' },
   { keys: ['Space'], what: 'Mark understood and move on', when: 'reading' },
   { keys: ['l'], what: 'Listen to the lesson', when: 'reading' },

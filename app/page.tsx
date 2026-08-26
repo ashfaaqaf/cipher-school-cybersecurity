@@ -43,9 +43,11 @@ import { TodayCard } from './Today';
 import { WeekReview } from './Week';
 import { buildCorpus, searchIn } from './search';
 import { PrintSheet } from './Print';
+import { CapabilityBoundary, FreshnessPanel, MissionsView, ProofView, RouteBuilder, useAcademy } from './AcademyViews';
+import { SettingsView, type AccessibilitySettings } from './Settings';
 import { SHORTCUTS, actionFor, isTyping } from './keys';
 import { useFocusTrap } from './a11y';
-import { hashFor, parseHash, sameRoute, type Route } from './routing';
+import { hashFor, parseHash, sameRoute, type Route, type View } from './routing';
 import {
   CARD_MINS,
   DEFAULT_SETTINGS,
@@ -66,13 +68,28 @@ const PRACTISED = 'cipher-school-practised';
 /** What one hands-on exercise is worth to the daily plan. */
 const PRACTICE_MINS = 10;
 const PLAN = 'cipher-school-plan';
+const ACCESSIBILITY = 'cipher-school-accessibility';
+const DEFAULT_ACCESSIBILITY: AccessibilitySettings = {
+  comfortableReading: false,
+  reduceMotion: false,
+  strongContrast: false,
+};
 
-type View = 'learn' | 'review' | 'paths' | 'words' | 'sources';
+function safeAccessibility(input: unknown): AccessibilitySettings {
+  const value = input && typeof input === 'object' && !Array.isArray(input) ? input as Record<string, unknown> : {};
+  return {
+    comfortableReading: value.comfortableReading === true,
+    reduceMotion: value.reduceMotion === true,
+    strongContrast: value.strongContrast === true,
+  };
+}
 
 const views: { id: View; icon: string; label: string }[] = [
   { id: 'learn', icon: '◈', label: 'Learn' },
+  { id: 'missions', icon: '⌁', label: 'Missions' },
   { id: 'review', icon: '↻', label: 'Review' },
   { id: 'paths', icon: '⇢', label: 'Paths' },
+  { id: 'proof', icon: '◇', label: 'Proof' },
   { id: 'words', icon: '¶', label: 'Words' },
   { id: 'sources', icon: '❖', label: 'Sources' },
 ];
@@ -154,9 +171,11 @@ export default function Home() {
   const installRef = useRef<HTMLDivElement | null>(null);
   const [history, setHistory] = useState<History>({});
   const [planSettings, setPlanSettings] = useState<PlanSettings>(DEFAULT_SETTINGS);
+  const [accessibility, setAccessibility] = useState<AccessibilitySettings>(DEFAULT_ACCESSIBILITY);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const waitingRef = useRef<ServiceWorker | null>(null);
   const speaker = useSpeaker();
+  const { academy: academyState, loaded: academyLoaded, reload: reloadAcademy, update: updateAcademy } = useAcademy();
 
   /* ---------- persistence ---------- */
 
@@ -174,6 +193,8 @@ export default function Home() {
         if (parsed.settings) setPlanSettings({ ...DEFAULT_SETTINGS, ...parsed.settings });
         if (parsed.history) setHistory(prune(parsed.history));
       }
+      const access = window.localStorage.getItem(ACCESSIBILITY);
+      if (access) setAccessibility(safeAccessibility(JSON.parse(access)));
     } catch {
       /* progress simply starts clean when storage is unavailable */
     }
@@ -209,6 +230,16 @@ export default function Home() {
     },
     [history, savePlan],
   );
+
+  const changeAccessibility = useCallback((next: AccessibilitySettings) => {
+    setAccessibility(next);
+    try {
+      window.localStorage.setItem(ACCESSIBILITY, JSON.stringify(next));
+    } catch {
+      /* accessibility choices still apply for this session */
+    }
+    tap();
+  }, []);
 
   const markPractised = useCallback((lessonId: string) => {
     setPractised((prev) => {
@@ -273,6 +304,13 @@ export default function Home() {
       /* preference is cosmetic; ignore storage failures */
     }
   }, [theme]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.reading = accessibility.comfortableReading ? 'comfortable' : 'standard';
+    root.dataset.motion = accessibility.reduceMotion ? 'reduce' : 'system';
+    root.dataset.contrast = accessibility.strongContrast ? 'strong' : 'standard';
+  }, [accessibility]);
 
   const save = useCallback((next: Set<string>) => {
     setCompleted(next);
@@ -421,15 +459,19 @@ export default function Home() {
         try {
           setCompleted(new Set(JSON.parse(window.localStorage.getItem(STORE) ?? '[]')));
           setDeck(JSON.parse(window.localStorage.getItem(DECK) ?? '{}'));
+          setPractised(new Set(JSON.parse(window.localStorage.getItem(PRACTISED) ?? '[]')));
+          reloadAcademy();
           const t = window.localStorage.getItem(THEME);
           if (t === 'day' || t === 'night') setTheme(t);
+          const access = window.localStorage.getItem(ACCESSIBILITY);
+          setAccessibility(access ? safeAccessibility(JSON.parse(access)) : DEFAULT_ACCESSIBILITY);
         } catch {
           /* the restore already succeeded; a read-back failure is cosmetic */
         }
         tap(16);
       }
     },
-    [],
+    [reloadAcademy],
   );
 
   useFocusTrap(helpRef, helpOpen);
@@ -667,7 +709,10 @@ export default function Home() {
 
   /* ---------- reader ---------- */
 
-  const current = reader ? { stage: stages[reader.s], lesson: stages[reader.s].lessons[reader.l] } : null;
+  const current = useMemo(
+    () => (reader ? { stage: stages[reader.s], lesson: stages[reader.s].lessons[reader.l] } : null),
+    [reader],
+  );
   /* The lesson with its prose, once the heavy module is in memory. */
   const readerLesson = current && full ? (full.lessonById.get(current.lesson.id) ?? null) : null;
   const flatIndex = reader ? allLessons.findIndex((x) => x.lesson.id === current!.lesson.id) : -1;
@@ -797,6 +842,20 @@ export default function Home() {
     window.scrollTo({ top: 0 });
   };
 
+  const resetPreferences = () => {
+    speaker.stop();
+    setTheme('night');
+    changeSettings(DEFAULT_SETTINGS);
+    changeAccessibility(DEFAULT_ACCESSIBILITY);
+    speaker.setPreferStudio(true);
+    speaker.setVoiceURI('');
+    speaker.setRate(1);
+    updateAcademy((current) => ({ ...current, profile: null }));
+    document.documentElement.lang = 'en';
+    setRestore(null);
+    tap(16);
+  };
+
   return (
     <div className="app" style={rootStyle}>
 
@@ -826,23 +885,13 @@ export default function Home() {
             </div>
             <div className="topActions">
               <button
-                className="iconBtn"
-                onClick={() => {
-                  setTheme(theme === 'night' ? 'day' : 'night');
-                  tap();
-                }}
-                aria-label={theme === 'night' ? 'Switch to light reading mode' : 'Switch to dark mode'}
-                title="Reading mode"
+                className={view === 'settings' ? 'iconBtn settingsGear settingsActive' : 'iconBtn settingsGear'}
+                onClick={() => goto('settings')}
+                aria-label="Open settings"
+                aria-current={view === 'settings' ? 'page' : undefined}
+                title="Settings"
               >
-                {theme === 'night' ? '☀' : '☾'}
-              </button>
-              {speaker.supported && (
-                <button className="iconBtn" onClick={() => setVoiceOpen(true)} aria-label="Narration settings" title="Narration">
-                  ⌁
-                </button>
-              )}
-              <button className="iconBtn" onClick={() => setInstallOpen(true)} aria-label="Add to iPhone" title="Add to iPhone">
-                ⌂
+                ⚙
               </button>
             </div>
           </div>
@@ -975,15 +1024,20 @@ export default function Home() {
         {!reader && view === 'learn' && (
         <section className="hero">
           <div className="heroCopy">
-          <span className="eyebrow">◆ Everything, in plain language</span>
+          <span className="eyebrow"><i aria-hidden="true" /> Evidence-first cyber training</span>
           <h1>
-            Learn cybersecurity <em>from zero</em> to genuinely expert.
+            Don&apos;t just study cybersecurity. <em>Train for the work.</em>
           </h1>
           <p className="lede">
-            {stages.length} stages. {totalLessons} written lessons — not a list of topics, but the actual explanation, in words a
-            beginner can follow. Every idea gets a plain meaning, an everyday comparison, a jargon decoder, and something
-            to go and do.
+            Start at zero. Learn every idea in plain language, retrieve it from memory, investigate real artefacts, and
+            build evidence you can take to an interview. One free path from curious to capable.
           </p>
+
+          <div className="promiseRow" aria-label="Platform promises">
+            <span>No account</span>
+            <span>Works offline</span>
+            <span>Progress stays private</span>
+          </div>
 
           <div className="heroActions">
             <button
@@ -998,16 +1052,49 @@ export default function Home() {
                 tap();
               }}
             >
-              {doneCount === 0 ? 'Start lesson one' : 'Continue where you left off'} <span aria-hidden="true">→</span>
+              {doneCount === 0 ? 'Start your first mission' : 'Continue your mission'} <span aria-hidden="true">→</span>
             </button>
             <button className="btn ghost" onClick={() => goto('paths')}>
-              Pick a career path
+              Find your cyber role
             </button>
           </div>
 
           </div>
 
           <div className="heroSide">
+          <div className="protocol" aria-label="Cipher School learning loop">
+            <div className="protocolTop">
+              <span>CS://TRAINING_LOOP</span>
+              <span className="liveTag"><i aria-hidden="true" /> LIVE</span>
+            </div>
+            <ol className="protocolSteps">
+              <li>
+                <span className="protocolNum">01</span>
+                <span><b>Learn</b><small>Plain words, useful mental models.</small></span>
+              </li>
+              <li>
+                <span className="protocolNum">02</span>
+                <span><b>Recall</b><small>Answer before choices appear.</small></span>
+              </li>
+              <li>
+                <span className="protocolNum">03</span>
+                <span><b>Investigate</b><small>Logs, scans, headers, policies.</small></span>
+              </li>
+              <li>
+                <span className="protocolNum">04</span>
+                <span><b>Prove</b><small>Turn progress into career evidence.</small></span>
+              </li>
+            </ol>
+            <div className="missionBrief">
+              <div className="missionPrompt"><span aria-hidden="true">$</span> next_mission</div>
+              <div className="missionResult">
+                <span>STAGE {nextUp?.stage.number ?? '00'}</span>
+                <b>{nextUp?.lesson.title ?? 'How computers actually work'}</b>
+                <small>{nextUp?.lesson.mins ?? 8} min read · recall check · safe action</small>
+              </div>
+            </div>
+          </div>
+
           <div className="stats">
             <div className="stat glass">
               <div className="statNum">{totalLessons}</div>
@@ -1054,18 +1141,6 @@ export default function Home() {
                 <button className="dataBtn" onClick={() => fileRef.current?.click()}>
                   ↑ Restore
                 </button>
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="application/json,.json"
-                  aria-label="Choose a progress backup file to restore"
-                  className="sr"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) void onImportFile(f);
-                    e.target.value = '';
-                  }}
-                />
               </div>
               {restore && (
                 <p className={restore.ok ? 'dataNote ok' : 'dataNote bad'}>
@@ -1081,12 +1156,20 @@ export default function Home() {
             </div>
           </div>
           </div>
+
+          <div className="differenceRail" aria-label="What makes Cipher School different">
+            <div><span>01</span><b>Actual teaching</b><small>Not a bookmark list.</small></div>
+            <div><span>02</span><b>Real judgement</b><small>Not trivia alone.</small></div>
+            <div><span>03</span><b>Career evidence</b><small>Not an empty badge.</small></div>
+            <div><span>04</span><b>Private by design</b><small>Not another login.</small></div>
+          </div>
         </section>
         )}
 
         {/* ---------------- learn ---------------- */}
         {!reader && view === 'learn' && (
           <section id="learn">
+            {academyLoaded && <RouteBuilder academy={academyState} update={updateAcademy} onOpenStage={showStage} />}
             <TodayCard
               history={history}
               settings={planSettings}
@@ -1335,6 +1418,11 @@ export default function Home() {
           </section>
         )}
 
+        {/* ---------------- missions ---------------- */}
+        {!reader && view === 'missions' && (
+          <MissionsView academy={academyState} update={updateAcademy} />
+        )}
+
         {/* ---------------- review ---------------- */}
         {!reader && view === 'review' && (
           <section id="review" className="band">
@@ -1408,6 +1496,44 @@ export default function Home() {
           </section>
         )}
 
+        {/* ---------------- proof ---------------- */}
+        {!reader && view === 'proof' && (
+          <ProofView academy={academyState} update={updateAcademy} completed={completed} practised={practised} deck={deck} />
+        )}
+
+        {/* ---------------- settings ---------------- */}
+        {!reader && view === 'settings' && (
+          <SettingsView
+            theme={theme}
+            onTheme={(next) => { setTheme(next); tap(); }}
+            plan={planSettings}
+            onPlan={changeSettings}
+            profile={academyLoaded ? academyState.profile : null}
+            onProfile={(profile) => updateAcademy((current) => ({ ...current, profile }))}
+            accessibility={accessibility}
+            onAccessibility={changeAccessibility}
+            offlineReady={offlineReady}
+            narration={{
+              supported: speaker.supported,
+              hasStudio: speaker.hasStudio,
+              preferStudio: speaker.preferStudio,
+              onPreferStudio: speaker.setPreferStudio,
+              voices: speaker.voices,
+              voiceURI: speaker.voiceURI ?? '',
+              onVoiceURI: speaker.setVoiceURI,
+              rate: speaker.rate,
+              onRate: speaker.setRate,
+            }}
+            onInstall={() => setInstallOpen(true)}
+            onBackup={onExport}
+            onRestore={() => fileRef.current?.click()}
+            onShortcuts={() => setHelpOpen(true)}
+            onLearn={() => goto('learn')}
+            onReset={resetPreferences}
+            restore={restore}
+          />
+        )}
+
         {/* ---------------- glossary ---------------- */}
         {!reader && view === 'words' && (
           <section id="words" className="band">
@@ -1474,6 +1600,9 @@ export default function Home() {
               ))}
             </div>
 
+            <FreshnessPanel />
+            <CapabilityBoundary />
+
             <div className="safety reveal" style={{ background: 'var(--glass)', borderColor: 'var(--rim)' }}>
               <div className="safetyTitle" style={{ color: 'var(--ink)' }}>
                 An honest limit
@@ -1495,6 +1624,19 @@ export default function Home() {
           </section>
         )}
         </main>
+
+        <input
+          ref={fileRef}
+          type="file"
+          accept="application/json,.json"
+          aria-label="Choose a progress backup file to restore"
+          className="sr"
+          onChange={(event) => {
+            const file = event.target.files?.[0];
+            if (file) void onImportFile(file);
+            event.target.value = '';
+          }}
+        />
       </div>
 
       {/* ---------------- new build available ---------------- */}

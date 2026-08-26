@@ -11,9 +11,9 @@
  * prerendered page, which is a lot of build output for a single-page app.
  */
 
-export type View = 'learn' | 'review' | 'paths' | 'words' | 'sources';
+export type View = 'learn' | 'missions' | 'review' | 'paths' | 'proof' | 'words' | 'sources' | 'settings';
 
-export const VIEWS: View[] = ['learn', 'review', 'paths', 'words', 'sources'];
+export const VIEWS: View[] = ['learn', 'missions', 'review', 'paths', 'proof', 'words', 'sources', 'settings'];
 
 export type Route = { view: View; lessonId: string | null };
 

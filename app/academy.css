@@ -1,0 +1,179 @@
+/* Cipher School Academy: personalised routes, missions, mastery and proof. */
+
+.academyBand { padding-bottom: 32px; }
+.routeBuilder { margin: 42px 0 24px; padding: 26px 0; border-top: 1px solid var(--rim-bright); border-bottom: 1px solid var(--rim); }
+.routeHead, .masteryHead, .capstoneTools, .missionSubmit, .freshnessFoot { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.routeHead h2, .freshnessIntro h3, .instructorPanel h3, .assessmentPanel h3, .masteryHead h3 { margin-top: 7px; font-size: clamp(23px, 4vw, 34px); letter-spacing: -0.04em; }
+.routeForm { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 24px; }
+.academyField { display: grid; gap: 7px; }
+.academyField > span, .capstoneTools label, .capstoneNote > span { font-family: var(--mono); font-size: 10px; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-faint); }
+.academyField select, .academyField input, .capstoneTools select, .artefactFilter input, .reportCard textarea, .capstoneNote textarea {
+  width: 100%; min-height: 44px; border: 1px solid var(--rim-bright); border-radius: var(--r-sm); background: var(--canvas); color: var(--ink); padding: 10px 12px; font: inherit; outline: none;
+}
+.academyField select:focus, .academyField input:focus, .capstoneTools select:focus, .artefactFilter input:focus, .reportCard textarea:focus, .capstoneNote textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.routeSubmit { display: grid; gap: 10px; align-content: end; }
+.routeSubmit small { max-width: 48ch; color: var(--ink-faint); line-height: 1.45; }
+.routeResult { margin-top: 22px; display: grid; gap: 24px; }
+.routeSummary h3 { margin-top: 12px; font-size: clamp(24px, 5vw, 38px); letter-spacing: -.045em; }
+.routeSummary p { max-width: 62ch; margin-top: 9px; color: var(--ink-mute); line-height: 1.6; }
+.academyStatus { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 9px; letter-spacing: .1em; }
+.academyStatus::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 12px currentColor; }
+.academyStatus.ready { color: var(--grow); }
+.routeFacts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.routeFacts span, .missionMeta span { padding: 6px 9px; border: 1px solid var(--rim); border-radius: var(--r-full); font-family: var(--mono); font-size: 9px; letter-spacing: .05em; color: var(--ink-mute); }
+.routeStages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--rim); border: 1px solid var(--rim); }
+.routeStages button { min-height: 94px; display: grid; align-content: center; gap: 4px; padding: 15px; text-align: left; border: 0; background: var(--canvas); color: var(--ink); cursor: pointer; }
+.routeStages button:hover { background: var(--glass-2); }
+.routeStages button > span { font-family: var(--mono); font-size: 9px; color: hsl(var(--hue) 82% 62%); }
+.routeStages button b { font-size: 13px; }
+.routeStages button small { color: var(--ink-faint); line-height: 1.35; }
+
+.missionProgress { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; font-family: var(--mono); font-size: 10px; color: var(--ink-mute); }
+.missionProgress > i { flex: 1; height: 3px; overflow: hidden; background: var(--glass-3); }
+.missionProgress > i > b { display: block; height: 100%; background: var(--grow); transition: width var(--slow) var(--ease); }
+.missionPicker { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--rim); background: var(--rim); gap: 1px; }
+.missionPicker button { min-height: 110px; display: grid; align-content: center; gap: 6px; padding: 15px; border: 0; text-align: left; color: var(--ink-mute); background: var(--canvas); cursor: pointer; }
+.missionPicker button:hover { background: var(--glass-2); }
+.missionPicker button.on { color: var(--canvas); background: var(--ink); }
+.missionPicker button > span { font-family: var(--mono); font-size: 9px; color: var(--accent); }
+.missionPicker button.on > span, .missionPicker button.on small { color: color-mix(in srgb, var(--canvas), transparent 28%); }
+.missionPicker button b { font-size: 14px; line-height: 1.3; }
+.missionPicker button small { font-family: var(--mono); font-size: 8px; text-transform: uppercase; color: var(--ink-faint); }
+.missionLab { margin-top: 20px; }
+.missionBriefing { padding: 28px 0; }
+.missionBriefing h2 { margin-top: 8px; font-size: clamp(34px, 7vw, 64px); letter-spacing: -.055em; line-height: .98; }
+.missionBriefing > p { margin-top: 14px; max-width: 62ch; color: var(--ink-mute); font-size: 17px; line-height: 1.6; }
+.briefObjective { display: grid; gap: 5px; margin-top: 20px; padding-left: 14px; border-left: 2px solid var(--accent); }
+.briefObjective b { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.briefObjective span { line-height: 1.45; }
+.missionMeta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; }
+.artefactPanel { border: 1px solid var(--rim-bright); background: #08090b; color: #d8fce4; box-shadow: var(--shadow-lg); }
+.artefactBar { min-height: 42px; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 14px; border-bottom: 1px solid #24262b; font-family: var(--mono); font-size: 9px; letter-spacing: .08em; color: #9ea4ad; }
+.artefactBar i { color: #6ee7a0; font-style: normal; }
+.artefactFilter { display: flex; align-items: center; gap: 10px; padding: 10px 14px 0; font-family: var(--mono); font-size: 9px; color: #7f8791; }
+.artefactFilter input { min-height: 36px; background: #0e1013; border-color: #24262b; color: #e5e7eb; font-family: var(--mono); font-size: 11px; }
+.artefactPanel pre { min-height: 180px; margin: 0; padding: 18px 14px 22px; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--mono); font-size: 11px; line-height: 1.75; color: #b8e8c9; }
+.decisionStack { display: grid; gap: 18px; margin-top: 28px; }
+.decisionCard { margin: 0; padding: 18px; border: 1px solid var(--rim); }
+.decisionCard legend { width: 100%; padding: 0 0 12px; font-weight: 650; line-height: 1.4; }
+.decisionCard legend span { margin-right: 10px; font-family: var(--mono); font-size: 9px; color: var(--accent); }
+.answer { position: relative; display: flex; align-items: flex-start; gap: 10px; padding: 12px; border-top: 1px solid var(--rim); cursor: pointer; color: var(--ink-mute); line-height: 1.4; }
+.answer:hover, .answer.picked { background: var(--glass-2); color: var(--ink); }
+.answer input { margin-top: 3px; accent-color: var(--accent); }
+.answer.correct { color: var(--grow); background: color-mix(in srgb, var(--grow), transparent 92%); }
+.answer.wrong { color: var(--attend); background: color-mix(in srgb, var(--attend), transparent 93%); }
+.answerWhy { margin: 12px 0 0; padding: 12px; border-left: 2px solid var(--accent); color: var(--ink-mute); font-size: 13px; line-height: 1.55; }
+.reportCard { margin-top: 22px; padding: 20px; border: 1px solid var(--rim); }
+.reportCard > label { display: grid; gap: 6px; margin-bottom: 12px; color: var(--ink-mute); line-height: 1.5; }
+.reportCard > label span { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; color: var(--accent); text-transform: uppercase; }
+.reportCard textarea, .capstoneNote textarea { resize: vertical; line-height: 1.55; }
+.reportMeta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-top: 8px; font-family: var(--mono); font-size: 8px; color: var(--ink-faint); }
+.coachPanel { display: grid; grid-template-columns: 1fr auto; gap: 14px; margin-top: 18px; padding: 18px; border: 1px dashed var(--rim-bright); }
+.coachPanel p { margin-top: 5px; color: var(--ink-mute); font-size: 13px; }
+.coachPanel blockquote { grid-column: 1 / -1; display: grid; gap: 5px; margin: 0; padding: 12px 14px; border-left: 2px solid var(--t-purple); color: var(--ink-mute); font-size: 13px; line-height: 1.5; }
+.coachPanel blockquote b { color: var(--t-purple); font-family: var(--mono); font-size: 9px; text-transform: uppercase; }
+.missionSubmit { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--rim-bright); }
+.missionSubmit > div { display: grid; gap: 5px; }
+.missionSubmit strong { font-family: var(--mono); font-size: 13px; letter-spacing: .04em; }
+.missionSubmit strong.pass { color: var(--grow); }
+.missionSubmit strong.retry { color: var(--attend); }
+.missionSubmit small { color: var(--ink-faint); line-height: 1.4; }
+.missionSource { display: inline-block; margin-top: 16px; color: var(--ink-faint); font-family: var(--mono); font-size: 9px; }
+.missionSource:hover { color: var(--accent); }
+
+.proofStats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin-bottom: 54px; background: var(--rim); border: 1px solid var(--rim); }
+.proofStats > div { display: grid; gap: 4px; padding: 18px; background: var(--canvas); }
+.proofStats strong { font-family: var(--mono); font-size: 28px; font-weight: 450; }
+.proofStats span { font-family: var(--mono); font-size: 9px; text-transform: uppercase; color: var(--ink-faint); }
+.masteryHead { margin-bottom: 16px; align-items: flex-end; }
+.masteryLegend { display: none; gap: 9px; flex-wrap: wrap; font-family: var(--mono); font-size: 8px; color: var(--ink-faint); }
+.masteryGraph { border-top: 1px solid var(--rim-bright); }
+.masteryRow { display: grid; grid-template-columns: 1fr; gap: 10px; padding: 16px 0; border-bottom: 1px solid var(--rim); }
+.masteryName { display: flex; gap: 10px; align-items: center; }
+.masteryName > span { width: 28px; font-family: var(--mono); font-size: 9px; color: hsl(var(--hue) 82% 62%); }
+.masteryName b { font-size: 13px; }
+.masteryMeter { display: grid; grid-template-columns: 18px 1fr 34px; align-items: center; gap: 7px; }
+.masteryMeter > span, .masteryMeter small { font-family: var(--mono); font-size: 8px; color: var(--ink-faint); }
+.masteryMeter > i { height: 3px; background: var(--glass-3); overflow: hidden; }
+.masteryMeter > i > b { display: block; height: 100%; background: hsl(var(--hue) 76% 58%); }
+.masteryMeter.full small { color: var(--grow); }
+.capstoneTools { align-items: flex-end; margin-bottom: 16px; }
+.capstoneTools label { display: grid; gap: 6px; }
+.capstoneTools select { min-width: 220px; text-transform: none; letter-spacing: normal; }
+.capstoneGrid { display: grid; gap: 18px; }
+.capstoneCard { padding: 20px; border: 1px solid var(--rim); }
+.capstoneTop { display: flex; justify-content: space-between; gap: 12px; font-family: var(--mono); font-size: 9px; color: var(--accent); }
+.capstoneTop i { font-style: normal; color: var(--grow); }
+.capstoneCard h3 { margin-top: 12px; font-size: 22px; letter-spacing: -.035em; }
+.capstoneCard > p { margin-top: 8px; color: var(--ink-mute); line-height: 1.5; }
+.rubricList { display: grid; gap: 1px; margin: 18px 0; background: var(--rim); border: 1px solid var(--rim); }
+.rubricList label { display: flex; gap: 10px; padding: 10px; background: var(--canvas); color: var(--ink-mute); font-size: 13px; line-height: 1.4; }
+.rubricList input { accent-color: var(--grow); }
+.capstoneNote { display: grid; gap: 8px; margin-bottom: 14px; }
+.assessmentPanel, .instructorPanel, .freshnessPanel, .boundaryPanel { margin-top: 52px; padding: 24px 0; border-top: 1px solid var(--rim-bright); border-bottom: 1px solid var(--rim); }
+.assessmentPanel > div:first-child p, .instructorPanel p, .freshnessIntro p, .boundaryPanel p { margin-top: 9px; max-width: 64ch; color: var(--ink-mute); line-height: 1.55; }
+.assessmentPanel > div:last-child { display: grid; margin-top: 22px; border: 1px solid var(--rim); }
+.assessmentPanel > div:last-child > span { display: grid; grid-template-columns: 58px 1fr; gap: 4px 12px; padding: 12px; border-bottom: 1px solid var(--rim); font-size: 13px; }
+.assessmentPanel > div:last-child > span:last-child { border-bottom: 0; }
+.assessmentPanel > div:last-child b { grid-row: 1 / 3; color: var(--accent); font-family: var(--mono); }
+.assessmentPanel > div:last-child small { color: var(--ink-faint); }
+.instructorPanel { display: grid; gap: 20px; align-items: center; }
+.freshnessPanel { margin-top: 42px; }
+.freshnessTable { display: grid; gap: 1px; margin-top: 22px; border: 1px solid var(--rim); background: var(--rim); }
+.freshnessTable > div { display: grid; grid-template-columns: 1fr auto; gap: 5px 14px; padding: 13px; background: var(--canvas); }
+.freshnessTable span { font-family: var(--mono); font-size: 10px; color: var(--grow); }
+.freshnessTable small { grid-column: 1 / -1; color: var(--ink-faint); }
+.freshnessFoot { margin-top: 16px; font-family: var(--mono); font-size: 9px; color: var(--ink-faint); }
+.freshnessFoot a { color: var(--accent); }
+.boundaryPanel { display: grid; gap: 22px; }
+.boundaryPanel ul { display: grid; gap: 1px; margin: 0; padding: 0; border: 1px solid var(--rim); background: var(--rim); list-style: none; }
+.boundaryPanel li { display: grid; gap: 5px; padding: 13px; background: var(--canvas); }
+.boundaryPanel li b { font-size: 13px; }
+.boundaryPanel li span { color: var(--ink-faint); font-size: 12px; line-height: 1.45; }
+
+@media (min-width: 620px) {
+  .routeForm { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .routeSubmit { grid-column: 1 / -1; grid-template-columns: auto 1fr; align-items: center; }
+  .routeStages { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .missionPicker { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .decisionStack { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .decisionCard { padding: 18px 14px; }
+  .proofStats { grid-template-columns: repeat(4, 1fr); }
+  .masteryLegend { display: flex; }
+  .masteryRow { grid-template-columns: minmax(170px, 1.4fr) repeat(4, minmax(84px, .7fr)); align-items: center; }
+  .capstoneGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .instructorPanel, .boundaryPanel { grid-template-columns: 1.3fr .7fr; }
+  .freshnessTable { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .routeForm { grid-template-columns: 1.1fr 1.5fr .7fr 1fr 1fr; }
+  .routeSubmit { grid-column: 1 / -1; }
+  .routeResult { grid-template-columns: .8fr 1.2fr; align-items: start; }
+  .routeStages { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .missionPicker { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .missionPicker button { min-height: 132px; }
+  .missionLab { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 28px; align-items: start; }
+  .missionBriefing { grid-column: 1; }
+  .artefactPanel { grid-column: 2; grid-row: 1; margin-top: 28px; align-self: start; }
+  .artefactPanel pre { min-height: 320px; }
+  .decisionStack, .reportCard, .coachPanel, .missionSubmit, .missionSource { grid-column: 1 / -1; }
+  .masteryRow { grid-template-columns: minmax(220px, 1.5fr) repeat(4, minmax(110px, .75fr)); }
+  .freshnessPanel { display: grid; grid-template-columns: .8fr 1.2fr; gap: 28px; }
+  .freshnessTable { margin-top: 0; }
+  .freshnessFoot { grid-column: 1 / -1; }
+}
+
+@media (max-width: 619px) {
+  .routeHead, .missionSubmit, .capstoneTools, .freshnessFoot { align-items: stretch; flex-direction: column; }
+  .routeHead .dataBtn, .capstoneTools .dataBtn { align-self: flex-start; }
+  .coachPanel { grid-template-columns: 1fr; }
+  .coachPanel .dataBtn { justify-self: start; }
+  .missionSubmit .btn { width: 100%; }
+  .masteryRow { grid-template-columns: repeat(2, 1fr); }
+  .masteryName { grid-column: 1 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .missionProgress > i > b { transition: none; }
+}

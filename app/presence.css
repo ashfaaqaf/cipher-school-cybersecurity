@@ -1,0 +1,339 @@
+/* The public face of Cipher School: an operations console, not a course catalogue. */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  inset: 10px -18px auto;
+  height: min(760px, 92vh);
+  pointer-events: none;
+  background:
+    linear-gradient(var(--canvas) 0 0) padding-box,
+    radial-gradient(circle at 18% 14%, hsl(var(--hue) 90% 60% / 0.13), transparent 42%),
+    radial-gradient(circle at 88% 34%, hsl(152 68% 55% / 0.08), transparent 34%);
+  opacity: 0.95;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 10px -18px auto;
+  height: min(760px, 92vh);
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--rim-bright) 1px, transparent 1px),
+    linear-gradient(90deg, var(--rim-bright) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.38), transparent 72%);
+  opacity: 0.28;
+}
+
+.eyebrow i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--grow);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--grow) 14%, transparent);
+}
+
+.hero h1 {
+  max-width: 12.5ch;
+}
+
+.hero h1 em {
+  display: block;
+  background: linear-gradient(110deg, var(--accent), var(--t-cyan) 46%, var(--t-green));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.promiseRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 24px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.promiseRow span::before {
+  content: '✓';
+  margin-right: 7px;
+  color: var(--grow);
+}
+
+.protocol {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--rim);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--lift) 92%, transparent);
+  box-shadow: var(--lift-edge), 0 32px 100px rgba(0, 0, 0, 0.25);
+}
+
+.protocol::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, hsl(var(--hue) 80% 64% / 0.08), transparent 38%);
+}
+
+.protocolTop {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--rim);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--ink-faint);
+}
+
+.liveTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--grow);
+}
+
+.liveTag i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 12px currentColor;
+}
+
+.protocolSteps {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.protocolSteps li {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 10px;
+  min-height: 94px;
+  padding: 17px 14px;
+  border-bottom: 1px solid var(--rim-bright);
+}
+
+.protocolSteps li:nth-child(odd) { border-right: 1px solid var(--rim-bright); }
+
+.protocolNum {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+}
+
+.protocolSteps b,
+.protocolSteps small {
+  display: block;
+}
+
+.protocolSteps b {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.protocolSteps small {
+  margin-top: 5px;
+  color: var(--ink-faint);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.missionBrief {
+  position: relative;
+  z-index: 1;
+  padding: 16px;
+  background: color-mix(in srgb, var(--canvas) 58%, transparent);
+}
+
+.missionPrompt {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+}
+
+.missionPrompt span {
+  margin-right: 8px;
+  color: var(--t-green);
+}
+
+.missionPrompt::after {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 1em;
+  margin-left: 6px;
+  vertical-align: -2px;
+  background: var(--accent);
+  animation: cursorBlink 1.1s steps(1) infinite;
+}
+
+@keyframes cursorBlink { 50% { opacity: 0; } }
+
+.missionResult {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+  margin-top: 13px;
+}
+
+.missionResult span {
+  grid-row: 1 / 3;
+  align-self: start;
+  padding: 5px 7px;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--r-xs);
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--accent);
+}
+
+.missionResult b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 560;
+}
+
+.missionResult small {
+  color: var(--ink-faint);
+  font-size: 11px;
+}
+
+.heroSide .stats {
+  margin-top: 18px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.heroSide .stat:nth-child(even) {
+  padding-left: 18px;
+  border-left: 1px solid var(--rim-bright);
+}
+
+.heroSide .statNum { font-size: 28px; }
+
+.heroSide .ringWrap {
+  margin-top: 0;
+  padding: 18px 0;
+}
+
+.differenceRail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column: 1 / -1;
+  margin-top: 12px;
+  border-top: 1px solid var(--rim);
+  border-bottom: 1px solid var(--rim);
+}
+
+.differenceRail > div {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 10px;
+  padding: 18px 12px 18px 0;
+  border-bottom: 1px solid var(--rim-bright);
+}
+
+.differenceRail > div:nth-child(odd) {
+  border-right: 1px solid var(--rim-bright);
+}
+
+.differenceRail > div:nth-child(even) { padding-left: 12px; }
+.differenceRail > div:nth-last-child(-n + 2) { border-bottom: 0; }
+
+.differenceRail span {
+  grid-row: 1 / 3;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--accent);
+}
+
+.differenceRail b {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.differenceRail small {
+  color: var(--ink-faint);
+  font-size: 11px;
+}
+
+@media (min-width: 720px) {
+  .differenceRail { grid-template-columns: repeat(4, 1fr); }
+  .differenceRail > div,
+  .differenceRail > div:nth-child(odd) {
+    border-right: 1px solid var(--rim-bright);
+    border-bottom: 0;
+  }
+  .differenceRail > div:last-child { border-right: 0; }
+  .differenceRail > div:not(:first-child) { padding-left: 16px; }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.78fr);
+    gap: 42px clamp(52px, 6vw, 92px);
+    align-items: start;
+    padding: 88px 0 58px;
+  }
+
+  .heroCopy { padding-top: 26px; }
+  .heroSide { margin-top: 0; }
+  .hero h1 { font-size: clamp(58px, 5.1vw, 82px); }
+  .hero .lede { max-width: 31em; }
+  .differenceRail { margin-top: 0; }
+}
+
+@media (min-width: 1500px) {
+  .hero {
+    grid-template-columns: minmax(0, 1.18fr) minmax(460px, 0.82fr);
+    gap: 56px 112px;
+  }
+  .protocolSteps li { min-height: 104px; padding: 20px 18px; }
+  .protocolSteps b { font-size: 15px; }
+  .protocolSteps small { font-size: 12px; }
+}
+
+@media (max-width: 559px) {
+  .hero h1 { font-size: clamp(42px, 12.8vw, 62px); }
+  .promiseRow { flex-direction: column; gap: 7px; }
+  .protocolSteps { grid-template-columns: 1fr; }
+  .protocolSteps li,
+  .protocolSteps li:nth-child(odd) { border-right: 0; }
+  .protocolSteps li { min-height: 78px; grid-template-columns: 26px 1fr; }
+  .missionResult { grid-template-columns: 1fr; }
+  .missionResult span { grid-row: auto; width: max-content; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .missionPrompt::after { animation: none; }
+}

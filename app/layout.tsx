@@ -8,6 +8,9 @@ import './find.css';
 import './desktop.css';
 import './print.css';
 import './shell.css';
+import './presence.css';
+import './academy.css';
+import './settings.css';
 
 /*
  * Declared through next/font rather than a hand-written @font-face so the build
@@ -33,9 +36,9 @@ const mono = localFont({
   adjustFontFallback: false,
 });
 
-const title = 'Cipher School — Master Cybersecurity';
-const description = 'Learn cybersecurity from absolute beginner to expert. 110 written lessons in plain language, a 414-word jargon decoder, eight career paths, legal labs and on-device progress.';
-const siteUrl = 'https://ashfaaqaf.github.io/cipher-school-cybersecurity';
+const title = 'Cipher School — Train for Real Cybersecurity Work';
+const description = 'Go from cybersecurity beginner to capable practitioner with 110 plain-language lessons, real artefact labs, active recall, career paths and proof you can show.';
+const siteUrl = process.env.SITE_URL ?? 'https://ashfaaqaf.github.io/cipher-school-cybersecurity';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

@@ -6,7 +6,7 @@
  * that explains password spraying by searching "spraying", because the phrase
  * only appears in the body.
  *
- * Small enough corpus (104 lessons) that a linear scan per keystroke is fine.
+ * Small enough corpus (110 lessons) that a linear scan per keystroke is fine.
  * An index would be premature; if it ever stops feeling instant, that is the
  * moment to build one.
  */

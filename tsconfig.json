@@ -48,6 +48,7 @@
     "search.test.ts",
     "keys.test.ts",
     "routing.test.ts",
-    "practice.test.ts"
+    "practice.test.ts",
+    "academy.test.ts"
   ]
 }

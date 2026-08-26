@@ -900,7 +900,11 @@ h2 {
   box-shadow: var(--lift-edge), var(--shadow-lg);
   animation: dockIn var(--base) var(--ease);
   max-width: calc(100vw - 24px);
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
 }
+.dock::-webkit-scrollbar { display: none; }
 @keyframes dockIn { from { opacity: 0; } }
 
 .dockBtn {
@@ -910,6 +914,7 @@ h2 {
   justify-content: center;
   border-radius: var(--r-sm); cursor: pointer; font-family: inherit;
   transition: color var(--fast) var(--ease), background var(--fast) var(--ease), transform var(--fast) var(--spring);
+  flex: 0 0 auto;
 }
 .dockBtn:active { transform: scale(0.9); }
 .dockBtn.on { color: var(--canvas); background: var(--ink); }

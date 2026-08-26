@@ -1,7 +1,7 @@
 {
-  "name": "Cipher School — Master Cybersecurity",
+  "name": "Cipher School — Train for Real Cybersecurity Work",
   "short_name": "Cipher School",
-  "description": "A mission-based cybersecurity field guide from beginner to researcher.",
+  "description": "Learn, recall, investigate and prove real cybersecurity skills — from beginner to practitioner.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

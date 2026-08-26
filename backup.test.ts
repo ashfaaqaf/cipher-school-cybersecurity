@@ -44,12 +44,17 @@ assert.deepEqual(r.skipped, [], 'nothing should be skipped in a clean file');
 assert.deepEqual(JSON.parse(store.get('cipher-school-progress')!), ['00-1', '00-2']);
 assert.equal(store.get('cipher-school-theme'), 'night');
 
+// Current backups also carry the preferences that materially change reading.
+store.set('cipher-school-accessibility', JSON.stringify({ comfortableReading: true, reduceMotion: true, strongContrast: false }));
+
 // A round trip must survive intact.
 const round = buildBackup();
 assert.equal(round.summary.lessons, 2, 'export should see what restore wrote');
 assert.equal(round.summary.cards, 1);
+assert.deepEqual(round.data.accessibility, { comfortableReading: true, reduceMotion: true, strongContrast: false });
 store.clear();
 assert.ok(applyBackup(JSON.stringify(round)).ok, 'our own export must be restorable');
+assert.deepEqual(JSON.parse(store.get('cipher-school-accessibility')!), { comfortableReading: true, reduceMotion: true, strongContrast: false });
 
 // --- refusing bad input -------------------------------------------------
 

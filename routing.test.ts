@@ -14,7 +14,10 @@ assert.deepEqual(parseHash('#'), DEFAULT_ROUTE);
 assert.deepEqual(parseHash('#/'), DEFAULT_ROUTE);
 assert.deepEqual(parseHash('#/learn'), { view: 'learn', lessonId: null });
 assert.deepEqual(parseHash('#/review'), { view: 'review', lessonId: null });
+assert.deepEqual(parseHash('#/missions'), { view: 'missions', lessonId: null });
+assert.deepEqual(parseHash('#/proof'), { view: 'proof', lessonId: null });
 assert.deepEqual(parseHash('#/sources'), { view: 'sources', lessonId: null });
+assert.deepEqual(parseHash('#/settings'), { view: 'settings', lessonId: null });
 
 // Both hash styles work, since people hand-edit and older links may lack the slash.
 assert.deepEqual(parseHash('#paths'), { view: 'paths', lessonId: null }, 'a bare hash still routes');

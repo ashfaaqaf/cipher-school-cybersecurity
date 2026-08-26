@@ -14,6 +14,12 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **110 written lessons** — not topic titles, the actual teaching
 - **414 terms decoded** in a searchable glossary, each explained without more jargon
 - **8 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research, fastest-to-hired) with stage order
+- **Personal onboarding** that turns a target role, starting point and weekly time budget into a saved route
+- **Six zero-setup browser missions** using logs, email headers, HTTP traffic, cloud policy, scan output and an incident timeline
+- **Evidence-based mission scoring** across technical decisions and a written analyst report, with method-first coach hints
+- **A four-gate mastery graph** — learned, recalled, applied and proven — instead of one misleading completion number
+- **Eight career capstones** with inspectable rubrics and a Markdown portfolio export that labels self-attested work honestly
+- **A classroom facilitator pack**, core English/Sinhala/Tamil interface support, and visible standards/version review dates
 - **Nine real job adverts**, all but one Sri Lankan, broken into individual requirements and mapped to the lessons covering each — plus sourced market context
 - **220 quiz questions**, two per lesson, with an explanation on every answer
 - **15 hands-on exercises, one in every stage** — an SSH log, a permission set, a code
@@ -22,6 +28,7 @@ words a beginner can follow, with the jargon decoded as it appears.
   the mark
 - **Spaced repetition** over all questions and terms, so what you read actually stays
 - **A daily plan** built from your weekly hour budget, with a streak and a week strip
+- **One settings hub** for theme, reading comfort, motion, contrast, study pace, learning route, narration, offline install and portable data
 - **A weekly review** naming what you actually learned, against last week
 - **Full-text search** across every word, with the matching passage highlighted
 - **Keyboard shortcuts** throughout, and `?` to see them
@@ -115,7 +122,7 @@ the column, and leaving it puts you back on the row you came from. Nothing to di
 nothing trapped, and the back button already worked because it was a route all along.
 
 The nav rail changes page rather than scrolling one. The hero belongs to the roadmap and
-renders only there, so choosing Review, Paths, Words or Sources lands you on that section's
+renders only there, so choosing Missions, Review, Paths, Proof, Words or Sources lands you on that section's
 first line instead of on a headline you have already read.
 
 Lessons live at hash routes — `#/lesson/05-2` — so one can be bookmarked, shared or
@@ -138,7 +145,7 @@ progress is untouched, because it is.
 
 ## Keyboard
 
-`/` searches, `1`–`5` switch tabs, `j` and `k` move between lessons while reading, `Space`
+`/` searches, `1`–`5` switch between Learn, Missions, Review, Paths and Proof, `j` and `k` move between lessons while reading, `Space`
 marks a lesson understood, `l` starts narration, `Esc` closes whatever is open, and `?`
 lists all of it.
 
@@ -169,12 +176,12 @@ A title hit deliberately shows a snippet from somewhere other than the title, be
 repeating the title back as the excerpt tells the reader nothing. `node search.test.ts`
 covers the ranking, the tokeniser and the snippet windowing against the real curriculum.
 
-At 104 lessons a linear scan per keystroke is instant, so there is no index. If that ever
+At 110 lessons a linear scan per keystroke is instant, so there is no index. If that ever
 stops being true, that is the moment to build one.
 
 ## The daily plan
 
-104 lessons is a backlog, not a habit. Set a weekly hour budget and how many days you
+110 lessons is a backlog, not a habit. Set a weekly hour budget and how many days you
 intend to study, and the top of the Learn tab answers one question: what do I do today.
 Review comes before new reading, always — cards arrive just before you would forget them,
 so a skipped review costs more than a skipped lesson.
