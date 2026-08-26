@@ -632,29 +632,6 @@ export default function Home() {
     return () => window.removeEventListener('keydown', onKey);
   });
 
-  /* ---------- reveal on scroll ---------- */
-
-  useEffect(() => {
-    const nodes = document.querySelectorAll('.reveal:not(.in)');
-    if (!('IntersectionObserver' in window)) {
-      nodes.forEach((n) => n.classList.add('in'));
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add('in');
-            io.unobserve(e.target);
-          }
-        });
-      },
-      { rootMargin: '0px 0px -8% 0px', threshold: 0.06 },
-    );
-    nodes.forEach((n) => io.observe(n));
-    return () => io.disconnect();
-  }, [view, openStage, search, filter]);
-
   /* ---------- body lock while a dialog is open ---------- */
 
   /* The lesson is a page now, not a sheet, so only the remaining dialogs lock. */

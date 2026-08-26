@@ -11,19 +11,19 @@
    does that work now, in one line of CSS instead of forty.
    ============================================================ */
 
-/* ---------- richer reveal ---------- */
+/* ---------- reliable content visibility ---------- */
 
-.reveal {
-  opacity: 0;
-  transform: translateY(34px);
-  transition:
-    opacity 800ms var(--ease),
-    transform 800ms var(--ease);
-}
-.reveal.in { opacity: 1; transform: none; }
-
-@media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; }
+/*
+ * `.reveal` used to start transparent and depended on one IntersectionObserver
+ * pass to make it visible. Client-only sections can arrive after that pass,
+ * leaving a full-height, permanently invisible block that looks like the page
+ * never loaded. Content is now visible by default; reliability matters more
+ * than a decorative entrance effect.
+ */
+.reveal,
+.reveal.in {
+  opacity: 1;
+  transform: none;
 }
 
 /* ---------- desktop: use the width ---------- */
