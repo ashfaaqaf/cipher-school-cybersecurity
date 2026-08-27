@@ -2,7 +2,9 @@
 
 Learn cybersecurity from absolute beginner to expert level — in plain language.
 
-**Live:** https://ashfaaqaf.github.io/cipher-school-cybersecurity/
+**Main site:** https://cipherschool.free.nf/
+
+**GitHub Pages mirror:** https://ashfaaqaf.github.io/cipher-school-cybersecurity/
 
 **Hosting:** GitHub Pages is automatic. [InfinityFree deployment setup](docs/infinityfree-deployment.md) is included and activates only after its repository secrets and variables are added.
 

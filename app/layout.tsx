@@ -39,7 +39,7 @@ const mono = localFont({
 
 const title = 'Cipher School: Train for Real Cybersecurity Work';
 const description = 'Go from cybersecurity beginner to capable practitioner with 110 plain-language lessons, real artefact labs, active recall, career paths and proof you can show.';
-const siteUrl = process.env.SITE_URL ?? 'https://ashfaaqaf.github.io/cipher-school-cybersecurity';
+const siteUrl = process.env.SITE_URL ?? 'https://cipherschool.free.nf';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
