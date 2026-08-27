@@ -91,6 +91,10 @@
 .settingsResult { margin-top: 14px; padding-left: 12px; border-left: 2px solid; color: var(--ink-mute); font-size: 12px; line-height: 1.5; }
 .settingsResult.ok { border-color: var(--grow); }
 .settingsResult.bad { border-color: var(--alert); }
+.narrationStatus { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 14px; }
+.narrationStatus .settingMath { margin: 0; }
+.voicePreview { min-height: 42px; flex: none; padding: 0 14px; border: 1px solid var(--settings-accent); border-radius: var(--r-md); background: color-mix(in srgb, var(--settings-accent), transparent 94%); color: var(--ink); font: 10px var(--mono); letter-spacing: .06em; cursor: pointer; }
+.voicePreview:hover { background: color-mix(in srgb, var(--settings-accent), transparent 88%); }
 
 .resetGroup { --settings-accent: var(--alert); border-color: color-mix(in srgb, var(--alert), transparent 48%); background: linear-gradient(145deg, color-mix(in srgb, var(--alert), transparent 95%), transparent 58%), var(--canvas); }
 .resetGroup .settingsGroupHead > span { color: var(--alert); }
@@ -156,6 +160,8 @@
   .settingsActions button { min-height: 56px; }
   .privacyStrip { grid-template-columns: 1fr; }
   .settingsDataActions .btn { width: 100%; }
+  .narrationStatus { align-items: stretch; flex-direction: column; }
+  .voicePreview { width: 100%; }
   .resetSummary { align-items: stretch; flex-direction: column; }
   .resetButton, .resetConfirm { width: 100%; }
   .resetConfirm > div { display: grid; grid-template-columns: 1fr; }

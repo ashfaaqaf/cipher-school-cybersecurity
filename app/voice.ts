@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { FullLesson } from './curriculum';
 import { forSpeech } from './pronounce';
+import { pickDefaultVoice, professionalVoiceList } from './voice-profile';
 
 /**
  * Narration has two engines and prefers the better one it can actually use.
@@ -45,28 +46,6 @@ export function lessonToChunks(lesson: FullLesson): Chunk[] {
   return raw.map((c) => ({ ...c, text: forSpeech(c.text) }));
 }
 
-/**
- * Rank installed voices for a calm, measured, British-leaning narrator.
- * Which voices exist is entirely up to the device, so this is a preference
- * order rather than a guarantee.
- */
-const PREFERRED = ['daniel', 'arthur', 'google uk english male', 'microsoft ryan', 'microsoft george', 'oliver', 'en-gb'];
-
-export function rankVoice(v: SpeechSynthesisVoice): number {
-  const name = `${v.name} ${v.lang}`.toLowerCase();
-  const hit = PREFERRED.findIndex((p) => name.includes(p));
-  let score = hit === -1 ? 100 : hit;
-  if (v.lang.toLowerCase().startsWith('en-gb')) score -= 20;
-  else if (v.lang.toLowerCase().startsWith('en')) score -= 10;
-  if (v.localService) score -= 2;
-  return score;
-}
-
-export function pickDefaultVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null {
-  if (voices.length === 0) return null;
-  return [...voices].sort((a, b) => rankVoice(a) - rankVoice(b))[0];
-}
-
 /** Which section a given playback position falls in. */
 export function markIndexAt(marks: Mark[], t: number): number {
   let i = 0;
@@ -82,6 +61,7 @@ export function useSpeaker() {
   const [engine, setEngine] = useState<Engine>('none');
   const [preferStudio, setPreferStudio] = useState(true);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [allVoiceCount, setAllVoiceCount] = useState(0);
   const [voiceURI, setVoiceURI] = useState<string | null>(null);
   const [rate, setRate] = useState(1);
   const [speaking, setSpeaking] = useState(false);
@@ -127,8 +107,14 @@ export function useSpeaker() {
     const load = () => {
       const list = window.speechSynthesis.getVoices();
       if (list.length === 0) return;
-      setVoices(list);
-      setVoiceURI((current) => current ?? pickDefaultVoice(list)?.voiceURI ?? null);
+      const professional = professionalVoiceList(list);
+      setAllVoiceCount(list.length);
+      setVoices(professional);
+      setVoiceURI((current) =>
+        current && professional.some((voice) => voice.voiceURI === current)
+          ? current
+          : pickDefaultVoice(professional)?.voiceURI ?? null,
+      );
     };
 
     load();
@@ -143,6 +129,14 @@ export function useSpeaker() {
   useEffect(() => {
     voiceRef.current = voices.find((v) => v.voiceURI === voiceURI) ?? null;
   }, [voiceURI, voices]);
+
+  const chooseVoice = useCallback(
+    (nextURI: string | null) => {
+      voiceRef.current = voices.find((voice) => voice.voiceURI === nextURI) ?? null;
+      setVoiceURI(nextURI);
+    },
+    [voices],
+  );
 
   useEffect(() => {
     try {
@@ -199,7 +193,7 @@ export function useSpeaker() {
         u.lang = voiceRef.current.lang;
       }
       u.rate = rateRef.current;
-      u.pitch = 0.95; // slightly lower reads as measured rather than chirpy
+      u.pitch = 1;
       const advance = () => {
         if (!stoppedRef.current && indexRef.current === n) runDevice(n + 1);
       };
@@ -312,7 +306,7 @@ export function useSpeaker() {
       u.lang = voiceRef.current.lang;
     }
     u.rate = rateRef.current;
-    u.pitch = 0.95;
+    u.pitch = 1;
     window.speechSynthesis.speak(u);
   }, []);
 
@@ -344,8 +338,9 @@ export function useSpeaker() {
     preferStudio,
     setPreferStudio,
     voices,
+    allVoiceCount,
     voiceURI,
-    setVoiceURI,
+    setVoiceURI: chooseVoice,
     rate,
     setRate,
     speaking,

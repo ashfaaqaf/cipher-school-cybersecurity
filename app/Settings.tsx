@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { LOCALE_NAMES, ROLE_ROUTES, type LearnerProfile, type Locale, type Pace, type RoleCode } from './academy';
 import type { RestoreResult } from './backup';
 import type { PlanSettings } from './plan';
+import { voiceQualityLabel } from './voice-profile';
 
 export type AccessibilitySettings = {
   comfortableReading: boolean;
@@ -27,10 +28,12 @@ type SettingsProps = {
     preferStudio: boolean;
     onPreferStudio: (value: boolean) => void;
     voices: SpeechSynthesisVoice[];
+    allVoiceCount: number;
     voiceURI: string;
     onVoiceURI: (value: string) => void;
     rate: number;
     onRate: (value: number) => void;
+    onPreview: () => void;
   };
   onInstall: () => void;
   onBackup: () => void;
@@ -249,22 +252,22 @@ export function SettingsView({
         <article className="settingsGroup reveal">
           <div className="settingsGroupHead">
             <span>04</span>
-            <div><h2>Narration</h2><p>Choose the voice and speed that helps the ideas stick.</p></div>
+            <div><h2>Narration</h2><p>Use a clear system voice with natural pitch and controlled pacing.</p></div>
           </div>
 
           {narration.supported ? (
             <>
               <div className="settingsFields">
                 <label className="settingsField">
-                  <span>Device voice</span>
+                  <span>Professional voice</span>
                   <select value={narration.voiceURI} onChange={(event) => narration.onVoiceURI(event.target.value)}>
                     <option value="">Device default</option>
-                    {narration.voices.map((voice) => <option key={voice.voiceURI} value={voice.voiceURI}>{voice.name} · {voice.lang}</option>)}
+                    {narration.voices.map((voice) => <option key={voice.voiceURI} value={voice.voiceURI}>{voice.name} · {voiceQualityLabel(voice)} · {voice.lang}</option>)}
                   </select>
                 </label>
                 <label className="settingsField rangeField">
                   <span>Speed <b>{narration.rate.toFixed(2)}×</b></span>
-                  <input type="range" min="0.7" max="1.5" step="0.05" value={narration.rate} onChange={(event) => narration.onRate(Number(event.target.value))} />
+                  <input type="range" min="0.85" max="1.25" step="0.05" value={narration.rate} onChange={(event) => narration.onRate(Number(event.target.value))} />
                 </label>
               </div>
               {narration.hasStudio && (
@@ -275,7 +278,10 @@ export function SettingsView({
                   note="Uses published lesson audio when it is available."
                 />
               )}
-              <p className="settingMath">Selected: <b>{chosenVoice?.name ?? 'device default'}</b></p>
+              <div className="narrationStatus">
+                <p className="settingMath">Selected: <b>{chosenVoice?.name ?? 'device default'}</b> · {narration.voices.length} of {narration.allVoiceCount} device voices shown</p>
+                <button type="button" className="voicePreview" onClick={narration.onPreview}>Preview voice</button>
+              </div>
             </>
           ) : <p className="settingEmpty">Narration is not supported by this browser. The lessons still work normally.</p>}
         </article>

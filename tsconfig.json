@@ -43,6 +43,7 @@
     "node_modules",
     "srs.test.ts",
     "pronounce.test.ts",
+    "voice.test.ts",
     "backup.test.ts",
     "plan.test.ts",
     "search.test.ts",

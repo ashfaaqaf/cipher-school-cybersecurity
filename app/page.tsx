@@ -38,6 +38,7 @@ const EvidenceSheet = dynamic(() => import('./Evidence').then((m) => m.EvidenceS
 const CompanionSection = dynamic(() => import('./Roles').then((m) => m.CompanionSection), { ssr: false });
 import { deckStats, schedule, today, type Deck, type Grade } from './srs';
 import { useSpeaker } from './voice';
+import { voiceQualityLabel } from './voice-profile';
 import { applyBackup, downloadBackup, type RestoreResult } from './backup';
 import { TodayCard } from './Today';
 import { WeekReview } from './Week';
@@ -1599,10 +1600,12 @@ export default function Home() {
               preferStudio: speaker.preferStudio,
               onPreferStudio: speaker.setPreferStudio,
               voices: speaker.voices,
+              allVoiceCount: speaker.allVoiceCount,
               voiceURI: speaker.voiceURI ?? '',
               onVoiceURI: speaker.setVoiceURI,
               rate: speaker.rate,
               onRate: speaker.setRate,
+              onPreview: () => speaker.say('Clear thinking starts with a clear question. Let us examine the evidence.'),
             }}
             onInstall={() => setInstallOpen(true)}
             onBackup={onExport}
@@ -1756,10 +1759,10 @@ export default function Home() {
               <i />
             </div>
             <div className="sheetHead">
-              <div className="sheetCrumb">Listen instead of reading</div>
+              <div className="sheetCrumb">Professional system narration</div>
               <h3 className="sheetTitle">Narration</h3>
               <div className="sheetMeta">
-                {speaker.voices.length} voice{speaker.voices.length === 1 ? '' : 's'} available on this device
+                {speaker.voices.length} professional voice{speaker.voices.length === 1 ? '' : 's'} selected from {speaker.allVoiceCount}
               </div>
             </div>
             <div className="sheetBody">
@@ -1784,22 +1787,26 @@ export default function Home() {
               )}
 
               <div className="readCard key">
-                <div className="readLabel">Speed</div>
+                <div className="readLabel">Delivery</div>
                 <div className="rateRow">
-                  {[0.8, 1, 1.2, 1.5, 1.8].map((r) => (
+                  {[
+                    { label: 'Measured', rate: 0.9 },
+                    { label: 'Natural', rate: 1 },
+                    { label: 'Brisk', rate: 1.15 },
+                  ].map((option) => (
                     <button
-                      key={r}
-                      className={Math.abs(speaker.rate - r) < 0.01 ? 'ratePill on' : 'ratePill'}
-                      onClick={() => speaker.setRate(r)}
+                      key={option.label}
+                      className={Math.abs(speaker.rate - option.rate) < 0.01 ? 'ratePill on' : 'ratePill'}
+                      onClick={() => speaker.setRate(option.rate)}
                     >
-                      {r}×
+                      {option.label}
                     </button>
                   ))}
                 </div>
               </div>
 
               <div className="readCard">
-                <div className="readLabel">Device voice{speaker.hasStudio ? ' (used as fallback)' : ''}</div>
+                <div className="readLabel">Professional voices{speaker.hasStudio ? ' (used as fallback)' : ''}</div>
                 <div className="voiceList">
                   {speaker.voices.length === 0 && (
                     <div className="cardPrompt">
@@ -1816,7 +1823,10 @@ export default function Home() {
                         speaker.say('Narration set. Ready when you are.');
                       }}
                     >
-                      <span className="voiceName">{v.name}</span>
+                      <span className="voiceIdentity">
+                        <span className="voiceName">{v.name}</span>
+                        <span className="voiceTier">{voiceQualityLabel(v)}</span>
+                      </span>
                       <span className="voiceLang">{v.lang}</span>
                     </button>
                   ))}
@@ -1824,16 +1834,12 @@ export default function Home() {
               </div>
 
               <div className="readCard check">
-                <div className="readLabel">A note on the voice</div>
+                <div className="readLabel">Voice quality</div>
                 <div className="readText">
-                  The studio narrator is an original synthetic voice designed from a written brief. It uses a calm,
-                  precise British style. It is not a clone of any performer, and no film audio was used to make it. Studio
-                  audio is generated ahead of time and served as ordinary files, so no API key ever reaches your
-                  browser and it keeps working offline.
-                  {' '}
-                  Anything without studio audio falls back to the voices installed on this device. On iPhone, Settings →
-                  Accessibility → Spoken Content → Voices downloads much better ones. iOS stops narration when the
-                  screen locks.
+                  Cipher School ranks natural, enhanced and common English system voices first. Novelty character voices
+                  are removed, and narration uses the voice&apos;s natural pitch. Nothing you listen to is sent to Cipher
+                  School. On iPhone, Settings → Accessibility → Spoken Content → Voices lets you download more voices.
+                  Reopen the app after a download. iOS stops narration when the screen locks.
                 </div>
               </div>
             </div>
