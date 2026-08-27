@@ -1,5 +1,12 @@
 import assert from 'node:assert/strict';
-import { isNoveltyVoice, pickDefaultVoice, professionalVoiceList, voiceQualityLabel } from './app/voice-profile.ts';
+import {
+  filterProfessionalVoices,
+  isNoveltyVoice,
+  pickDefaultVoice,
+  professionalVoiceList,
+  voiceGender,
+  voiceQualityLabel,
+} from './app/voice-profile.ts';
 
 const voice = (
   name: string,
@@ -18,9 +25,15 @@ const siri = voice('Siri Voice 1');
 const standard = voice('Plain English');
 const novelty = voice('Zarvox');
 const french = voice('Amelie', 'fr-FR');
+const female = voice('Microsoft Aria Online (Natural)');
+const male = voice('Microsoft Ryan Online (Natural)');
+const unspecified = voice('Siri Voice 1');
 
 assert.equal(voiceQualityLabel(natural), 'Natural');
 assert.equal(isNoveltyVoice(novelty), true);
+assert.equal(voiceGender(female), 'female');
+assert.equal(voiceGender(male), 'male');
+assert.equal(voiceGender(unspecified), 'unknown');
 assert.equal(pickDefaultVoice([standard, natural])?.name, natural.name, 'a natural voice should win automatic selection');
 assert.equal(pickDefaultVoice([natural, siri])?.name, siri.name, 'an exposed Siri system voice should receive first priority');
 assert.deepEqual(
@@ -32,6 +45,16 @@ assert.deepEqual(
   professionalVoiceList([french]).map((item) => item.name),
   [french.name],
   'another language must remain available when no English voice exists',
+);
+assert.deepEqual(
+  filterProfessionalVoices([female, male, unspecified], 'female').map((item) => item.name),
+  [female.name],
+  'the female filter should keep only clearly identified female voices',
+);
+assert.deepEqual(
+  filterProfessionalVoices([female, male, unspecified], 'male').map((item) => item.name),
+  [male.name],
+  'the male filter should keep only clearly identified male voices',
 );
 
 console.log('voice: all checks passed');

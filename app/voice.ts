@@ -1,9 +1,15 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { FullLesson } from './curriculum';
 import { forSpeech } from './pronounce';
-import { pickDefaultVoice, professionalVoiceList } from './voice-profile';
+import {
+  filterProfessionalVoices,
+  pickDefaultVoice,
+  professionalVoiceList,
+  voiceGender,
+  type VoiceFilter,
+} from './voice-profile';
 
 /**
  * Narration has two engines and prefers the better one it can actually use.
@@ -63,6 +69,7 @@ export function useSpeaker() {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [allVoiceCount, setAllVoiceCount] = useState(0);
   const [voiceURI, setVoiceURI] = useState<string | null>(null);
+  const [voiceFilter, setVoiceFilter] = useState<VoiceFilter>('all');
   const [rate, setRate] = useState(1);
   const [speaking, setSpeaking] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -142,10 +149,13 @@ export function useSpeaker() {
     try {
       const saved = window.localStorage.getItem('cipher-school-voice');
       if (saved) {
-        const parsed = JSON.parse(saved) as { voiceURI?: string; rate?: number; studio?: boolean };
+        const parsed = JSON.parse(saved) as { voiceURI?: string; rate?: number; studio?: boolean; filter?: VoiceFilter };
         if (parsed.voiceURI) setVoiceURI(parsed.voiceURI);
         if (parsed.rate) setRate(parsed.rate);
         if (typeof parsed.studio === 'boolean') setPreferStudio(parsed.studio);
+        if (parsed.filter === 'all' || parsed.filter === 'female' || parsed.filter === 'male') {
+          setVoiceFilter(parsed.filter);
+        }
       }
     } catch {
       /* narration preferences are cosmetic */
@@ -154,11 +164,33 @@ export function useSpeaker() {
 
   useEffect(() => {
     try {
-      window.localStorage.setItem('cipher-school-voice', JSON.stringify({ voiceURI, rate, studio: preferStudio }));
+      window.localStorage.setItem(
+        'cipher-school-voice',
+        JSON.stringify({ voiceURI, rate, studio: preferStudio, filter: voiceFilter }),
+      );
     } catch {
       /* ignore */
     }
-  }, [voiceURI, rate, preferStudio]);
+  }, [voiceURI, rate, preferStudio, voiceFilter]);
+
+  const filteredVoices = useMemo(() => filterProfessionalVoices(voices, voiceFilter), [voices, voiceFilter]);
+  const femaleVoiceCount = useMemo(
+    () => voices.filter((voice) => voiceGender(voice) === 'female').length,
+    [voices],
+  );
+  const maleVoiceCount = useMemo(
+    () => voices.filter((voice) => voiceGender(voice) === 'male').length,
+    [voices],
+  );
+
+  useEffect(() => {
+    if (voiceFilter === 'all' || filteredVoices.length === 0) return;
+    setVoiceURI((current) =>
+      current && filteredVoices.some((voice) => voice.voiceURI === current)
+        ? current
+        : pickDefaultVoice(filteredVoices)?.voiceURI ?? current,
+    );
+  }, [filteredVoices, voiceFilter]);
 
   const stop = useCallback(() => {
     stoppedRef.current = true;
@@ -338,9 +370,14 @@ export function useSpeaker() {
     preferStudio,
     setPreferStudio,
     voices,
+    filteredVoices,
     allVoiceCount,
+    femaleVoiceCount,
+    maleVoiceCount,
     voiceURI,
     setVoiceURI: chooseVoice,
+    voiceFilter,
+    setVoiceFilter,
     rate,
     setRate,
     speaking,

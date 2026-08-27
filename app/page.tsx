@@ -38,7 +38,7 @@ const EvidenceSheet = dynamic(() => import('./Evidence').then((m) => m.EvidenceS
 const CompanionSection = dynamic(() => import('./Roles').then((m) => m.CompanionSection), { ssr: false });
 import { deckStats, schedule, today, type Deck, type Grade } from './srs';
 import { useSpeaker } from './voice';
-import { voiceQualityLabel } from './voice-profile';
+import { voiceGenderLabel, voiceQualityLabel } from './voice-profile';
 import { applyBackup, downloadBackup, type RestoreResult } from './backup';
 import { TodayCard } from './Today';
 import { WeekReview } from './Week';
@@ -1600,9 +1600,14 @@ export default function Home() {
               preferStudio: speaker.preferStudio,
               onPreferStudio: speaker.setPreferStudio,
               voices: speaker.voices,
+              filteredVoices: speaker.filteredVoices,
               allVoiceCount: speaker.allVoiceCount,
+              femaleVoiceCount: speaker.femaleVoiceCount,
+              maleVoiceCount: speaker.maleVoiceCount,
               voiceURI: speaker.voiceURI ?? '',
               onVoiceURI: speaker.setVoiceURI,
+              voiceFilter: speaker.voiceFilter,
+              onVoiceFilter: speaker.setVoiceFilter,
               rate: speaker.rate,
               onRate: speaker.setRate,
               onPreview: () => speaker.say('Clear thinking starts with a clear question. Let us examine the evidence.'),
@@ -1807,14 +1812,32 @@ export default function Home() {
 
               <div className="readCard">
                 <div className="readLabel">Professional voices{speaker.hasStudio ? ' (used as fallback)' : ''}</div>
+                <div className="rateRow voiceFilterRow" role="group" aria-label="Filter voices">
+                  {[
+                    { value: 'all' as const, label: 'All', count: speaker.voices.length },
+                    { value: 'female' as const, label: 'Female', count: speaker.femaleVoiceCount },
+                    { value: 'male' as const, label: 'Male', count: speaker.maleVoiceCount },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      className={speaker.voiceFilter === option.value ? 'ratePill on' : 'ratePill'}
+                      type="button"
+                      disabled={option.value !== 'all' && option.count === 0}
+                      onClick={() => speaker.setVoiceFilter(option.value)}
+                    >
+                      {option.label} <small>{option.count}</small>
+                    </button>
+                  ))}
+                </div>
                 <div className="voiceList">
-                  {speaker.voices.length === 0 && (
+                  {speaker.filteredVoices.length === 0 && (
                     <div className="cardPrompt">
-                      No voices reported yet. On some browsers they appear only after the first playback. Press Listen
-                      once and come back.
+                      {speaker.voices.length === 0
+                        ? 'No voices reported yet. On some browsers they appear only after the first playback. Press Listen once and come back.'
+                        : 'This device does not identify any voices in this group. Choose All to see every professional voice.'}
                     </div>
                   )}
-                  {speaker.voices.map((v) => (
+                  {speaker.filteredVoices.map((v) => (
                     <button
                       key={v.voiceURI}
                       className={speaker.voiceURI === v.voiceURI ? 'voiceRow on' : 'voiceRow'}
@@ -1825,7 +1848,7 @@ export default function Home() {
                     >
                       <span className="voiceIdentity">
                         <span className="voiceName">{v.name}</span>
-                        <span className="voiceTier">{voiceQualityLabel(v)}</span>
+                        <span className="voiceTier">{voiceGenderLabel(v)} · {voiceQualityLabel(v)}</span>
                       </span>
                       <span className="voiceLang">{v.lang}</span>
                     </button>
@@ -1836,7 +1859,8 @@ export default function Home() {
               <div className="readCard check">
                 <div className="readLabel">Voice quality</div>
                 <div className="readText">
-                  Cipher School ranks natural, enhanced and common English system voices first. Novelty character voices
+                  Cipher School ranks natural, enhanced and common English system voices first. Female and male groups
+                  use the names supplied by your device because browsers do not provide a gender field. Novelty character voices
                   are removed, and narration uses the voice&apos;s natural pitch. Nothing you listen to is sent to Cipher
                   School. On iPhone, Settings → Accessibility → Spoken Content → Voices lets you download more voices.
                   Reopen the app after a download. iOS stops narration when the screen locks.

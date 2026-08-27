@@ -158,6 +158,9 @@
 }
 .ratePill:hover { color: var(--ink); border-color: var(--ink); }
 .ratePill.on { background: transparent; border-color: var(--accent); color: var(--accent); }
+.ratePill:disabled { opacity: .38; cursor: not-allowed; }
+.voiceFilterRow { grid-auto-columns: minmax(0, 1fr); }
+.voiceFilterRow small { margin-left: 4px; color: var(--ink-faint); font: 9px var(--mono); }
 
 .voiceList { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; max-height: 260px; overflow-y: auto; }
 .voiceRow {

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { LOCALE_NAMES, ROLE_ROUTES, type LearnerProfile, type Locale, type Pace, type RoleCode } from './academy';
 import type { RestoreResult } from './backup';
 import type { PlanSettings } from './plan';
-import { voiceQualityLabel } from './voice-profile';
+import { voiceGenderLabel, voiceQualityLabel, type VoiceFilter } from './voice-profile';
 
 export type AccessibilitySettings = {
   comfortableReading: boolean;
@@ -28,9 +28,14 @@ type SettingsProps = {
     preferStudio: boolean;
     onPreferStudio: (value: boolean) => void;
     voices: SpeechSynthesisVoice[];
+    filteredVoices: SpeechSynthesisVoice[];
     allVoiceCount: number;
+    femaleVoiceCount: number;
+    maleVoiceCount: number;
     voiceURI: string;
     onVoiceURI: (value: string) => void;
+    voiceFilter: VoiceFilter;
+    onVoiceFilter: (value: VoiceFilter) => void;
     rate: number;
     onRate: (value: number) => void;
     onPreview: () => void;
@@ -258,11 +263,31 @@ export function SettingsView({
           {narration.supported ? (
             <>
               <div className="settingsFields">
+                <div className="settingsField voiceFilterField">
+                  <span>Voice</span>
+                  <div className="segmented voiceFilters" aria-label="Filter voices">
+                    {[
+                      { value: 'all' as const, label: 'All', count: narration.voices.length },
+                      { value: 'female' as const, label: 'Female', count: narration.femaleVoiceCount },
+                      { value: 'male' as const, label: 'Male', count: narration.maleVoiceCount },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        className={narration.voiceFilter === option.value ? 'on' : ''}
+                        type="button"
+                        disabled={option.value !== 'all' && option.count === 0}
+                        onClick={() => narration.onVoiceFilter(option.value)}
+                      >
+                        {option.label} <small>{option.count}</small>
+                      </button>
+                    ))}
+                  </div>
+                </div>
                 <label className="settingsField">
                   <span>Professional voice</span>
                   <select value={narration.voiceURI} onChange={(event) => narration.onVoiceURI(event.target.value)}>
                     <option value="">Device default</option>
-                    {narration.voices.map((voice) => <option key={voice.voiceURI} value={voice.voiceURI}>{voice.name} · {voiceQualityLabel(voice)} · {voice.lang}</option>)}
+                    {narration.filteredVoices.map((voice) => <option key={voice.voiceURI} value={voice.voiceURI}>{voice.name} · {voiceGenderLabel(voice)} · {voiceQualityLabel(voice)} · {voice.lang}</option>)}
                   </select>
                 </label>
                 <label className="settingsField rangeField">
@@ -279,7 +304,7 @@ export function SettingsView({
                 />
               )}
               <div className="narrationStatus">
-                <p className="settingMath">Selected: <b>{chosenVoice?.name ?? 'device default'}</b> · {narration.voices.length} of {narration.allVoiceCount} device voices shown</p>
+                <p className="settingMath">Selected: <b>{chosenVoice?.name ?? 'device default'}</b> · {narration.filteredVoices.length} matching voices shown</p>
                 <button type="button" className="voicePreview" onClick={narration.onPreview}>Preview voice</button>
               </div>
             </>
