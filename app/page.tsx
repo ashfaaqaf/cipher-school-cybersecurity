@@ -1702,16 +1702,45 @@ export default function Home() {
               </div>
             </div>
 
-            <footer className="foot">
-              <p>
-                Cipher School · {totalLessons} lessons · {totalWeeks} weeks of structured study · progress stored only in
-                this browser.
-              </p>
-              <p>Built as an open study aid. Curriculum grounded in NIST, MITRE and OWASP publications.</p>
-            </footer>
           </section>
         )}
         </main>
+
+        <footer className="foot creatorFoot" aria-label="Creator details">
+          <div className="creatorFootTop">
+            <div className="creatorIdentity">
+              <span className="creatorEyebrow">Created by</span>
+              <strong className="creatorName">Ashfaaq Ahamed</strong>
+            </div>
+
+            <a
+              className="creatorSocial"
+              href="https://www.instagram.com/ashfaaqaf/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Open ashfaaqaf on Instagram"
+            >
+              <svg className="creatorSocialIcon" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1" className="creatorSocialDot" />
+              </svg>
+              <span className="creatorSocialText">
+                <span className="creatorSocialLabel">Instagram</span>
+                <strong>@ashfaaqaf</strong>
+              </span>
+              <span className="creatorSocialArrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+
+          <div className="creatorFootMeta">
+            <p>
+              Cipher School · {totalLessons} lessons · {totalWeeks} weeks of structured study · progress stored only in
+              this browser.
+            </p>
+            <p>Built as an open study aid. Curriculum grounded in NIST, MITRE and OWASP publications.</p>
+          </div>
+        </footer>
 
         <input
           ref={fileRef}

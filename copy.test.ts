@@ -43,5 +43,7 @@ for (const tool of ['Burp Suite', 'OWASP ZAP', 'Nmap']) {
   assert.match(roleView, new RegExp(tool), `${tool} needs a visible lab checklist`);
 }
 assert.match(roleView, /cipher-school-tool-labs/, 'tool lab progress needs device-local persistence');
+assert.match(publicCopy, /https:\/\/www\.instagram\.com\/ashfaaqaf\//, 'the creator footer must link to Ashfaaq on Instagram');
+assert.match(publicCopy, /aria-label="Open ashfaaqaf on Instagram"/, 'the creator Instagram link must have an accessible name');
 
 console.log('copy: all checks passed');

@@ -145,6 +145,27 @@
     letter-spacing: 0.025em;
     white-space: nowrap;
   }
+
+  .foot {
+    margin-top: 62px;
+    padding-top: 22px;
+  }
+
+  .creatorFootTop {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .creatorSocial {
+    width: 100%;
+    min-height: 50px;
+    padding: 10px 14px;
+  }
+
+  .creatorSocialArrow {
+    margin-left: auto;
+  }
 }
 
 /* A Home Screen launch already shows the app name and icon before opening.
