@@ -12,7 +12,16 @@ assert.match(generator, /robots\.txt/, 'the host build must generate robots.txt'
 assert.match(generator, /sitemap\.xml/, 'the host build must generate sitemap.xml');
 assert.match(infinityFreeWorkflow, /INFINITYFREE_ENABLED == 'true'/, 'InfinityFree deployment must be opt-in');
 assert.match(infinityFreeWorkflow, /SITE_URL: \$\{\{ vars\.INFINITYFREE_SITE_URL \}\}/, 'InfinityFree must receive its own canonical origin');
-assert.match(infinityFreeWorkflow, /mirror --reverse --delete/, 'InfinityFree deployment must remove stale build files');
-assert.match(infinityFreeWorkflow, /htdocs\|\/htdocs\|\*\/htdocs/, 'InfinityFree deployment must reject unsafe remote roots');
+assert.match(infinityFreeWorkflow, /SITE_URL" != "https:\/\/cipherschool\.page\.gd"/, 'InfinityFree deployment must reject the wrong public host');
+assert.match(infinityFreeWorkflow, /FTP_SERVER" != "ftpupload\.net"/, 'InfinityFree deployment must reject the wrong FTP server');
+assert.match(infinityFreeWorkflow, /FTP_USERNAME" != "\$EXPECTED_FTP_USERNAME"/, 'InfinityFree deployment must reject the wrong hosting account');
+assert.match(infinityFreeWorkflow, /FTP_REMOTE_DIR" != "\/htdocs"/, 'InfinityFree deployment must require the exact remote root');
+assert.doesNotMatch(infinityFreeWorkflow, /mirror[^\n]*--delete/, 'InfinityFree deployment must not delete unknown remote files');
+assert.match(infinityFreeWorkflow, /actions\/upload-artifact@v4/, 'InfinityFree deployment must save a rollback build');
+assert.match(infinityFreeWorkflow, /cancel-in-progress: false/, 'InfinityFree deployments must not interrupt an upload halfway through');
+
+const mirrorPosition = infinityFreeWorkflow.indexOf('mirror --reverse');
+const entrypointPosition = infinityFreeWorkflow.indexOf('put -O . out/index.html');
+assert.ok(mirrorPosition >= 0 && entrypointPosition > mirrorPosition, 'the entry page must be uploaded after its assets');
 
 console.log('hosting: all checks passed');

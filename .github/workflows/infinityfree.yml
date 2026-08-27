@@ -10,12 +10,13 @@ permissions:
 
 concurrency:
   group: infinityfree-production
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
     if: ${{ vars.INFINITYFREE_ENABLED == 'true' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     environment:
       name: infinityfree-production
       url: ${{ vars.INFINITYFREE_SITE_URL }}
@@ -25,6 +26,7 @@ jobs:
       FTP_USERNAME: ${{ secrets.INFINITYFREE_FTP_USERNAME }}
       FTP_PASSWORD: ${{ secrets.INFINITYFREE_FTP_PASSWORD }}
       FTP_REMOTE_DIR: ${{ vars.INFINITYFREE_REMOTE_DIR || '/htdocs' }}
+      EXPECTED_FTP_USERNAME: ${{ vars.INFINITYFREE_ACCOUNT_ID }}
 
     steps:
       - uses: actions/checkout@v4
@@ -37,29 +39,52 @@ jobs:
       - name: Check deployment settings
         shell: bash
         run: |
-          if [[ ! "$SITE_URL" =~ ^https?://[^/]+/?$ ]]; then
-            echo "INFINITYFREE_SITE_URL must be the public site origin, such as https://example.free.nf"
+          if [[ "$SITE_URL" != "https://cipherschool.page.gd" ]]; then
+            echo "Deployment stopped: the public site must be https://cipherschool.page.gd"
             exit 1
           fi
 
-          for setting in FTP_SERVER FTP_USERNAME FTP_PASSWORD; do
+          for setting in FTP_SERVER FTP_USERNAME FTP_PASSWORD EXPECTED_FTP_USERNAME; do
             if [[ -z "${!setting}" ]]; then
-              echo "The $setting repository secret is missing."
+              echo "Deployment stopped: $setting is missing."
               exit 1
             fi
           done
 
-          case "$FTP_REMOTE_DIR" in
-            htdocs|/htdocs|*/htdocs) ;;
-            *)
-              echo "INFINITYFREE_REMOTE_DIR must point to an htdocs folder."
-              exit 1
-              ;;
-          esac
+          if [[ "$FTP_SERVER" != "ftpupload.net" ]]; then
+            echo "Deployment stopped: the FTP server is not InfinityFree."
+            exit 1
+          fi
+
+          if [[ "$FTP_USERNAME" != "$EXPECTED_FTP_USERNAME" ]]; then
+            echo "Deployment stopped: the FTP username does not match the approved account."
+            exit 1
+          fi
+
+          if [[ "$FTP_REMOTE_DIR" != "/htdocs" ]]; then
+            echo "Deployment stopped: the remote directory must be exactly /htdocs."
+            exit 1
+          fi
 
       - run: npm ci
       - run: npm test
       - run: npm run build
+
+      - name: Check production output
+        shell: bash
+        run: |
+          test -s out/index.html
+          test -s out/manifest.webmanifest
+          grep -q "Cipher School" out/index.html
+
+      - name: Save a rollback copy
+        uses: actions/upload-artifact@v4
+        with:
+          name: cipher-school-${{ github.sha }}
+          path: out/
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 14
 
       - name: Install FTP client
         run: sudo apt-get update && sudo apt-get install --yes lftp
@@ -76,6 +101,8 @@ jobs:
           set net:reconnect-interval-multiplier 1
           set net:reconnect-interval-max 10
           open -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER"
-          mirror --reverse --delete --no-perms --verbose --parallel=1 out/ "$FTP_REMOTE_DIR"
+          cd "$FTP_REMOTE_DIR"
+          mirror --reverse --no-perms --verbose --parallel=1 --exclude-glob index.html out/ .
+          put -O . out/index.html
           bye
           LFTP_COMMANDS
