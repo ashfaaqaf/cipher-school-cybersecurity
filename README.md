@@ -2,7 +2,7 @@
 
 Learn cybersecurity from absolute beginner to expert level — in plain language.
 
-**Main site:** https://cipherschool.free.nf/
+**Main site:** https://cipherschool.page.gd/
 
 **GitHub Pages mirror:** https://ashfaaqaf.github.io/cipher-school-cybersecurity/
 

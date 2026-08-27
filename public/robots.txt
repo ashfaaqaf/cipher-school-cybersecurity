@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://cipherschool.free.nf/sitemap.xml
+Sitemap: https://cipherschool.page.gd/sitemap.xml
