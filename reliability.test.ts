@@ -35,6 +35,12 @@ assert.match(page, /--reveal-delay/, 'simultaneous reveals should receive a cont
 assert.match(page, /--reveal-x/, 'reveals should receive subtle directional variation');
 assert.match(shell, /filter:\s*blur\(5px\)/, 'cinematic reveals should include a bounded depth effect');
 assert.match(workerBuilder, /cache\.addAll\(PRECACHE\)/, 'a service worker update must cache one complete build');
+assert.match(workerBuilder, /readFile\(path\.join\(OUT, file\)\)/, 'a release cache key must include built file contents');
+assert.doesNotMatch(
+  workerBuilder,
+  /createHash\(['"]sha256['"]\)\.update\(urls\.join/,
+  'file names alone are not a safe release fingerprint',
+);
 assert.doesNotMatch(
   workerBuilder,
   /c\.put\(START/,
