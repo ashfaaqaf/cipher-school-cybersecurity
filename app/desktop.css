@@ -2,7 +2,7 @@
    Desktop.
 
    Everything else in this project is designed phone-first, and that stays
-   the source of truth — these rules only widen out above 1024px. Nothing
+   the source of truth. These rules only widen out above 1024px. Nothing
    here changes mobile, which is why it lives in its own file: if a rule
    is in here, it cannot affect a phone.
 
@@ -12,7 +12,7 @@
    centred dialog.
    ============================================================ */
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   :root {
     --maxw: 1120px;
     --rail: 96px;

@@ -265,7 +265,7 @@
 }
 .updateBtn:active { transform: scale(0.94); }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .updateBar { bottom: 24px; left: auto; right: 32px; transform: none; }
   @keyframes updateIn { from { opacity: 0; transform: translateY(16px); } }
 }
@@ -402,7 +402,7 @@
   vertical-align: 1px;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .exBrief { font-size: 16px; }
   .artefactBody { font-size: 12.5px; }
 }
@@ -427,6 +427,6 @@
   overflow-x: auto;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .evidenceSheet { font-size: 13px; padding: 26px 28px; }
 }

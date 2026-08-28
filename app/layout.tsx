@@ -13,6 +13,7 @@ import './academy.css';
 import './assessment.css';
 import './settings.css';
 import './mobile.css';
+import './redesign.css';
 
 /*
  * Declared through next/font rather than a hand-written @font-face so the build
@@ -38,8 +39,8 @@ const mono = localFont({
   adjustFontFallback: false,
 });
 
-const title = 'Cipher School: Train for Real Cybersecurity Work';
-const description = 'Go from cybersecurity beginner to capable practitioner with 110 plain-language lessons, real artefact labs, active recall, career paths and proof you can show.';
+const title = 'Cipher School: Learn Cybersecurity and Build Proof';
+const description = 'Learn cybersecurity from zero with 110 plain-language lessons, real evidence labs, spaced recall, career paths and portfolio-ready proof.';
 const siteUrl = process.env.SITE_URL ?? 'https://cipherschool.page.gd';
 
 export const metadata: Metadata = {
@@ -79,7 +80,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     title,
     description,
-    images: [{ url: `${siteUrl}/og.png`, width: 1200, height: 630, alt: 'Cipher School: Learn the system. Defend the future.' }],
+    images: [{ url: `${siteUrl}/og.png`, width: 1200, height: 630, alt: 'Cipher School: Learn cybersecurity. Build proof you can do the work.' }],
   },
   twitter: {
     card: 'summary_large_image',
@@ -93,7 +94,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#000000',
+  themeColor: '#07090d',
   colorScheme: 'dark light',
 };
 

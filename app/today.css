@@ -81,7 +81,7 @@
 .tunePill.on { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent); }
 .tuneNote { margin: 6px 0 0; font-size: 12.5px; line-height: 1.55; color: var(--ink-mute); }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .today { padding: 24px; max-width: 860px; }
   .todayTitle { font-size: 21px; }
   .todayItem { padding: 14px 15px; }

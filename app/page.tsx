@@ -60,6 +60,7 @@ import {
 import { SHORTCUTS, actionFor, isTyping } from './keys';
 import { useFocusTrap } from './a11y';
 import { hashFor, parseHash, sameRoute, type Route, type View } from './routing';
+import { InterfaceIcon, type InterfaceIcon as InterfaceIconName } from './icons';
 import {
   CARD_MINS,
   DEFAULT_SETTINGS,
@@ -96,14 +97,14 @@ function safeAccessibility(input: unknown): AccessibilitySettings {
   };
 }
 
-const views: { id: View; icon: string; label: string }[] = [
-  { id: 'learn', icon: '◈', label: 'Learn' },
-  { id: 'missions', icon: '⌁', label: 'Missions' },
-  { id: 'review', icon: '↻', label: 'Review' },
-  { id: 'paths', icon: '⇢', label: 'Paths' },
-  { id: 'proof', icon: '◇', label: 'Proof' },
-  { id: 'words', icon: '¶', label: 'Words' },
-  { id: 'sources', icon: '❖', label: 'Sources' },
+const views: { id: Exclude<View, 'settings'>; icon: InterfaceIconName; label: string }[] = [
+  { id: 'learn', icon: 'learn', label: 'Learn' },
+  { id: 'missions', icon: 'missions', label: 'Missions' },
+  { id: 'review', icon: 'review', label: 'Review' },
+  { id: 'paths', icon: 'paths', label: 'Paths' },
+  { id: 'proof', icon: 'proof', label: 'Proof' },
+  { id: 'words', icon: 'words', label: 'Words' },
+  { id: 'sources', icon: 'sources', label: 'Sources' },
 ];
 
 /*
@@ -1012,8 +1013,40 @@ export default function Home() {
                 aria-current={view === 'settings' ? 'page' : undefined}
                 title="Settings"
               >
-                ⚙
+                <InterfaceIcon name="settings" />
               </button>
+              <details
+                className={view === 'words' || view === 'sources' || view === 'settings' ? 'mobileUtility utilityActive' : 'mobileUtility'}
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget)) event.currentTarget.removeAttribute('open');
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Escape') event.currentTarget.removeAttribute('open');
+                }}
+              >
+                <summary className="iconBtn" aria-label="Open glossary, sources and settings">
+                  <InterfaceIcon name="more" />
+                </summary>
+                <div className="mobileUtilityMenu">
+                  {([
+                    ['words', 'words', 'Glossary', 'Decode security language'],
+                    ['sources', 'sources', 'Sources', 'Check the primary references'],
+                    ['settings', 'settings', 'Settings', 'Control your learning experience'],
+                  ] as const).map(([destination, icon, label, note]) => (
+                    <button
+                      key={destination}
+                      type="button"
+                      onClick={(event) => {
+                        event.currentTarget.closest('details')?.removeAttribute('open');
+                        goto(destination);
+                      }}
+                    >
+                      <InterfaceIcon name={icon} />
+                      <span><b>{label}</b><small>{note}</small></span>
+                    </button>
+                  ))}
+                </div>
+              </details>
             </div>
           </div>
 
@@ -1150,12 +1183,10 @@ export default function Home() {
         <section className="hero">
           <div className="heroCopy">
           <span className="eyebrow"><i aria-hidden="true" /> Evidence-first cyber training</span>
-          <h1>
-            Don&apos;t just study cybersecurity. <em>Train for the work.</em>
-          </h1>
+          <h1>Learn cybersecurity. <em>Build proof you can do the work.</em></h1>
           <p className="lede">
-            Start at zero. Learn every idea in plain language, retrieve it from memory, investigate real artefacts, and
-            build evidence you can take to an interview. One free path from curious to capable.
+            Start at zero, learn each idea in plain language, retrieve it from memory, investigate real artefacts and
+            leave with evidence you can take to an interview.
           </p>
 
           <div className="promiseRow" aria-label="Platform promises">
@@ -1177,10 +1208,10 @@ export default function Home() {
                 tap();
               }}
             >
-              {doneCount === 0 ? 'Start your first mission' : 'Continue your mission'} <span aria-hidden="true">→</span>
+              {doneCount === 0 ? 'Start with stage 00' : 'Continue learning'} <span aria-hidden="true">→</span>
             </button>
             <button className="btn ghost" onClick={() => goto('paths')}>
-              Find your cyber role
+              Take the skill check
             </button>
           </div>
 
@@ -1283,10 +1314,10 @@ export default function Home() {
           </div>
 
           <div className="differenceRail" aria-label="What makes Cipher School different">
-            <div><span>01</span><b>Actual teaching</b><small>Not a bookmark list.</small></div>
-            <div><span>02</span><b>Real judgement</b><small>Not trivia alone.</small></div>
-            <div><span>03</span><b>Career evidence</b><small>Not an empty badge.</small></div>
-            <div><span>04</span><b>Private by design</b><small>Not another login.</small></div>
+            <div><span>01</span><b>Learn the idea</b><small>Plain language first.</small></div>
+            <div><span>02</span><b>Make the call</b><small>Recall and judgement.</small></div>
+            <div><span>03</span><b>Work the evidence</b><small>Logs, scans and policies.</small></div>
+            <div><span>04</span><b>Show the proof</b><small>Portfolio-ready outcomes.</small></div>
           </div>
         </section>
         )}
@@ -1823,7 +1854,7 @@ export default function Home() {
             aria-current={view === v.id ? 'page' : undefined}
           >
             <span className="dockIcon" aria-hidden="true">
-              {v.icon}
+              <InterfaceIcon name={v.icon} />
               {v.id === 'review' && srs.due > 0 && <b className="dockBadge">{srs.due > 99 ? '99+' : srs.due}</b>}
             </span>
             <span className="dockLabel">{v.label}</span>

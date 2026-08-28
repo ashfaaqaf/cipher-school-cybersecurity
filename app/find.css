@@ -75,7 +75,7 @@
 
 .weekEmpty { margin: 14px 0 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-mute); }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .week { padding: 24px; max-width: 860px; }
   .results { max-width: 860px; }
   .weekBig { font-size: 21px; }

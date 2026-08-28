@@ -146,7 +146,7 @@
   .freshnessTable { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .academyBand { width: 100%; max-width: 1560px; }
   .routeForm { grid-template-columns: 1.1fr 1.5fr .7fr 1fr 1fr; }
   .routeSubmit { grid-column: 1 / -1; }

@@ -1,79 +1,62 @@
 /* ============================================================
-   Cipher School — design system
+   Cipher School design system
 
-   Minimal, and the minimalism is the structure rather than the absence
-   of it. There are no cards: content is divided by hairline rules and
-   held on a common left edge, which is what stops a stripped-back page
-   from turning into text floating in a void. Weight comes from the type
-   scale — 11px monospaced metadata against a 76px headline is a bigger
-   gesture than any border or shadow.
+   A precision field manual rather than a science-fiction dashboard. The
+   mobile experience exposes one claim, one next action and five primary
+   destinations. Larger screens add depth without changing that hierarchy.
 
-   The rules, in full:
-   · two inks, one rule, no fills   — a surface is the canvas, always
-   · monospace for anything counted — numbers, identifiers, durations
-   · colour names a kind of thing   — never decorates one
-   · nothing moves that is not answering the pointer
-
-   Colour is borrowed from a terminal and spent like a syntax highlighter:
-   · per-stage hue     — the stage number, its progress, its links. A
-                         distinct colour per stage creates separate memory
-                         traces, and a mark is enough to do that
-   · difficulty        — a heat scale, green through red, so a roadmap of
-                         thirteen stages can be skimmed for how hard they get
-   · lesson parts      — six categories, six colours, so the shape of a
-                         lesson is legible before a sentence is read
-   · cyan = a term     — the same colour a highlighter gives a type name
-   · green = progress  — growth and safety, never used for warnings
-   · amber = attention — warns without the anxiety response red triggers
-   · red  = critical   — kept for the things that are genuinely critical
-
-   What is NOT coloured is the point: prose, headings, rules, controls and
-   every number stay monochrome. Six colours only avoid becoming a fruit
-   salad because nothing wears one without meaning it.
+   Surface contrast creates Gestalt grouping. Monospace identifies counts,
+   stages and evidence. Colour stays semantic: blue for navigation, green for
+   progress, amber for attention and red only for destructive or critical
+   states. The 8pt rhythm, fluid type and 48px controls hold across devices.
    ============================================================ */
 
 :root {
   color-scheme: dark;
 
-  /* Two inks and a rule. Everything else is one of these at less weight. */
+  /* Canvas, grouped surfaces and readable text levels. */
   /*
    * Near-black rather than black. Pure #000 gives a rule nothing to sit on and
    * makes every edge in the design a hard clip; two per cent of light is enough
    * for the page to have a surface without becoming grey.
    */
-  --canvas: #0a0a0a;
-  --canvas-2: #0a0a0a;
-  --ink: #fafafa;
-  --ink-soft: #d4d4d8;
-  --ink-mute: #a1a1aa;
-  --ink-faint: #8f8f99;
+  --canvas: #07090d;
+  --canvas-2: #0b0e14;
+  --surface: #0d1118;
+  --surface-raised: #121722;
+  --surface-hover: #171e2a;
+  --ink: #f6f8fb;
+  --ink-soft: #d6dbe4;
+  --ink-mute: #a6afbd;
+  --ink-faint: #818b9a;
 
   /* The hairline. It is the only structural element in the design, so it
      is set where it reads as deliberate rather than as a rendering seam. */
-  --rim: #2e2e33;
-  --rim-bright: #1f1f23;
+  --rim: #303744;
+  --rim-bright: #202733;
 
   /* Semantic signals */
-  --focus: #2997ff;
-  --focus-deep: #0071e3;
-  --grow: #30d158;
+  --focus: #58a6ff;
+  --focus-deep: #1f6feb;
+  --grow: #45d483;
   --attend: #ff9f0a;
   --alert: #ff453a;
 
   /* An action is the ink inverted — the strongest mark available, and it
      costs no colour. */
-  --action: #fafafa;
+  --action: #f6f8fb;
   --action-hi: #ffffff;
-  --on-action: #0a0a0a;
+  --on-action: #07090d;
 
-  /* No fills. --glass-2 is the pointer response, --glass-3 a track. */
+  /* Pointer response, tracks and quiet utility surfaces. */
   --glass: transparent;
-  --glass-2: rgba(255, 255, 255, 0.06);
-  --glass-3: #2e2e33;
+  --glass-2: rgba(255, 255, 255, 0.055);
+  --glass-hi: rgba(255, 255, 255, 0.08);
+  --glass-3: #303744;
   --shade: rgba(0, 0, 0, 0.78);
 
   /* The two things that genuinely float get a surface and an edge of light. */
-  --lift: #111113;
+  --lift: #10151e;
   --lift-edge: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
   /*
@@ -99,11 +82,11 @@
   --accent-line: hsl(var(--hue) 80% 64% / 0.4);
 
   /* Shape — square unless the thing is genuinely a control */
-  --r-xs: 4px;
-  --r-sm: 6px;
-  --r-md: 8px;
-  --r-lg: 10px;
-  --r-xl: 16px;
+  --r-xs: 6px;
+  --r-sm: 9px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
   --r-full: 980px;
 
   /* Type */
@@ -117,14 +100,24 @@
   --spring: cubic-bezier(0.34, 1.4, 0.64, 1);
   --sheet: cubic-bezier(0.32, 0.72, 0, 1);
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --fast: 150ms;
-  --base: 220ms;
-  --slow: 320ms;
+  --fast: 140ms;
+  --base: 240ms;
+  --slow: 420ms;
 
   /* Kept so the sheet reads as lifted off the page. Nothing else uses one. */
   --shadow-sm: none;
   --shadow-md: none;
-  --shadow-lg: 0 32px 80px rgba(0, 0, 0, 0.8);
+  --shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.44);
+
+  /* Mobile-first 8pt rhythm. Fluid steps bridge phone, tablet and desktop. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: clamp(40px, 7vw, 64px);
+  --space-8: clamp(64px, 10vw, 104px);
 
   --maxw: 780px;
   --dock-h: calc(62px + env(safe-area-inset-bottom, 0px));
@@ -138,15 +131,18 @@
 
 :root[data-theme='day'] {
   color-scheme: light;
-  --canvas: #fafafa;
-  --canvas-2: #fafafa;
-  --ink: #0a0a0a;
-  --ink-soft: #3f3f46;
-  --ink-mute: #52525b;
-  --ink-faint: #62626b;
+  --canvas: #f4f6f9;
+  --canvas-2: #eef1f5;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-hover: #f7f9fc;
+  --ink: #10151e;
+  --ink-soft: #303846;
+  --ink-mute: #566171;
+  --ink-faint: #647083;
 
-  --rim: #d8d8dd;
-  --rim-bright: #e6e6ea;
+  --rim: #cbd2dc;
+  --rim-bright: #dfe4eb;
 
   --focus: #0071e3;
   --focus-deep: #0060c8;
@@ -154,13 +150,14 @@
   --attend: #b25000;
   --alert: #d70015;
 
-  --action: #0a0a0a;
-  --action-hi: #27272a;
-  --on-action: #fafafa;
+  --action: #111827;
+  --action-hi: #263244;
+  --on-action: #ffffff;
 
   --glass: transparent;
   --glass-2: rgba(0, 0, 0, 0.045);
-  --glass-3: #d8d8dd;
+  --glass-hi: rgba(0, 0, 0, 0.075);
+  --glass-3: #cbd2dc;
   --shade: rgba(0, 0, 0, 0.28);
 
   --lift: #ffffff;
@@ -715,7 +712,7 @@ h2 {
 }
 .readerFoot .btn { flex: 1; }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .reader { max-width: 760px; padding: 16px 0 64px; }
   .readerHead { padding: 22px 0 26px; }
   .readerBody { padding: 32px 0 0; }

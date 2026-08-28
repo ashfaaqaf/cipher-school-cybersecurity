@@ -139,7 +139,7 @@
   .profileFields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .settingsPage { width: 100%; max-width: 1440px; padding-top: 82px; }
   .settingsHero { grid-template-columns: minmax(0, 1.45fr) minmax(300px, .55fr); gap: 54px; }
   .settingsGroup { padding: 30px; }

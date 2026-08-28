@@ -50,7 +50,7 @@
 
 /* ---------- desktop: use the width ---------- */
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   :root { --maxw: 1240px; }
 
   /*

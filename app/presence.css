@@ -318,7 +318,7 @@
   .differenceRail > div:not(:first-child) { padding-left: 16px; }
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1025px) {
   .hero {
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.78fr);

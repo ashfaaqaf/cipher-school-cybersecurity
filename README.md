@@ -268,65 +268,29 @@ device voices than the defaults. iOS stops narration when the screen locks.
 
 ## Design notes
 
-The interface is minimal, and the minimalism is the structure rather than the absence
-of it. There are no cards: content is divided by hairline rules and held on a shared left
-edge. That distinction matters, because stripping the fills out without adding the rules
-is how a minimal page turns into text floating in a void — the rules and the alignment
-are what the boxes were for.
+The visual direction is a precision field manual, not a science-fiction dashboard. The
+first screen gives the learner one promise, one primary action and one proof of how the
+system works. Restrained surfaces create common regions, while rules and shared alignment
+preserve the density expected from a serious technical product.
 
-Two typefaces, both variable and both self-hosted: **Inter** for text and **JetBrains
-Mono** for anything counted. Self-hosted because this is an offline-first app — a font
-fetched from a CDN at runtime is a font the app does not have on a plane — and the build
-fingerprints them into the precache automatically. Two files, 80kB together.
+The interface is mobile-first. Phones keep five primary destinations in the bottom thumb
+zone. Glossary, sources and settings move into one utility menu instead of shrinking seven
+labels until they become hard to read. Tablets use a balanced two-column hero and a
+two-column roadmap whose open stage expands to full width. Desktop retains the complete
+navigation rail, a cinematic split hero and editorial section headings.
 
-Weight comes from the type scale, not from decoration. Eleven-pixel monospaced metadata
-sits directly above a seventy-two-pixel headline set in Inter Light, and that jump is a
-bigger gesture than any border, shadow or glow: weight 300 at display size reads as
-confidence, where weight 600 at the same size reads as shouting. Stage numbers, durations,
-percentages, readiness and streaks are all monospace with tabular figures, so the app reads
-as an instrument and the numbers line up in a column whether or not anyone is looking.
+The spacing system follows an 8pt rhythm. Major controls are at least 48px tall, type scales
+with `clamp()`, and reading lines stop at a comfortable measure. **Inter** carries teaching
+and interface language. **JetBrains Mono** carries stages, durations, evidence and status.
+Both are self-hosted and precached for offline use.
 
-Colour is borrowed from a terminal and spent the way a syntax highlighter spends it: to
-say what a thing is, never to decorate one. Difficulty is a heat scale from green to red,
-so thirteen stages can be skimmed for how hard they get. The six parts of a lesson are six
-categories in six colours, so its shape is legible before a sentence is read — and the one
-part that asks you to go and type something is prefixed with a `$`. A defined term is
-cyan, the colour a highlighter gives a type name.
+Colour is semantic. Cobalt guides navigation, emerald means progress, amber means attention
+and red is reserved for destructive or critical states. The quietest normal text measures
+5.78:1 against the dark canvas and 4.63:1 against the light canvas. Both clear WCAG AA.
 
-What is not coloured is the point. Prose, headings, rules, controls and every number stay
-monochrome; six colours only avoid becoming a fruit salad because nothing wears one
-without meaning it. The canvas is near-black — `#0a0a0a`, not `#000`, because pure black
-gives a hairline nothing to sit on and turns every edge into a hard clip. An action is the
-ink inverted, the strongest mark available at no cost in colour. Each stage keeps one hue
-for its number, its progress and its links. Green always means progress and never warning,
-amber carries attention without triggering the anxiety response red does, and red is kept
-for the things that are genuinely critical. Every one of them clears WCAG AA against both
-canvases.
-
-Hovering a row lights the row: a wash that reaches past the measure into the gutter so it
-reads as a row in a table rather than a rectangle drawn round some text, and a two-pixel
-rule in the stage colour growing out from the middle of its left edge. Nothing moves,
-nothing resizes, no layout is touched — which is what keeps it subtle at the twentieth row
-as well as the first. It sits behind a `hover: hover` query, because on a touch screen a
-hover state latches: tap a row, come back, and it is still lit with no pointer anywhere
-near it. Touch gets `:active` instead, and the browser's own grey tap flash is turned off
-because it is the wrong shape for every row here.
-
-Text passes WCAG AA contrast in all five views in both themes, and every control clears
-the 44px touch target — several of them through an invisible expander, so a 34px link or
-an 18px checkbox still takes a thumb without becoming a button.
-
-Sections are separated by a rule and named in the same small monospace as every other
-label, which is what used to take full-bleed alternating bands and forty lines of CSS.
-Above 2000px the whole design scales rather than just the column — type, spacing, rules
-and the nav rail grow together, and the extra room goes into more columns. A 4K screen
-gets a bigger version of the same page, not the same page with a desert either side.
-
-Built phone-first and installable to the Home Screen, then widened out. Above 1024px the
-bottom dock becomes a floating vertical rail, the thirteen stages read as an index with a
-hanging number column, card grids go multi-column, and the lesson reader stops being a
-bottom sheet and becomes a centred dialog. All of that lives in `app/desktop.css`
-behind a single media query, so a desktop rule can never affect a phone.
+Scroll entrances use only opacity and transforms. Content remains visible before JavaScript
+starts, late-rendered views are observed safely, and `prefers-reduced-motion` removes the
+animation. Mobile blur is disabled to reduce compositing cost on mid-tier devices.
 
 The home screen icons are drawn by `node scripts/make-icons.mjs` — a 5x7 bitmap of the
 mark and a small PNG encoder, no dependencies. They are generated rather than exported
