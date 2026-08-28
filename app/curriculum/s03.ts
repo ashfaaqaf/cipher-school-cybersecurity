@@ -17,6 +17,7 @@ export const s03: Stage = {
     { label: 'Official Python tutorial', href: 'https://docs.python.org/3/tutorial/' },
     { label: 'Automate the Boring Stuff (free online)', href: 'https://automatetheboringstuff.com/' },
     { label: 'SQL practice: SQLBolt', href: 'https://sqlbolt.com/' },
+    { label: 'Pro Git book (free online)', href: 'https://git-scm.com/book/en/v2' },
   ],
   lessons: [
     {
@@ -189,6 +190,8 @@ export const s03: Stage = {
       body: [
         'A REST API is just HTTP with structure: a URL identifies a thing, a method says what to do with it, JSON carries the data, and a token proves who you are. Once you can read HTTP, you can use almost any security product’s API to automate the boring parts.',
         'Rate limits and pagination are the two practical realities. Ask too fast and you get blocked; assume one response contains everything and you will silently miss results. Both bite beginners writing their first enrichment script.',
+        'Use Git as a work log, not just a place to upload finished code. Make small commits with messages that say why the change exists, inspect the diff before each commit, and use a branch when an experiment may fail. A clear README should tell another person what the project does, how to run it, what evidence it produces, and which safe test data you used. This turns a practice script into work an interviewer can inspect.',
+        'Learn recovery before you need it. A revert records a new commit that safely undoes an old one. Reset and force-push can rewrite history, so keep them away from shared branches until you understand exactly who else depends on that history.',
         'Git tracks every change forever, which is exactly the problem. Committing an API key and deleting it in the next commit does not remove it: it is still in history, and automated scanners find leaked keys on public repositories within minutes. Rotate the secret, do not just delete the line.',
         'Keep secrets out of code entirely: environment variables, a secrets manager, or an ignored local file. Add a pre-commit scanner such as gitleaks so the mistake is caught before it becomes permanent. This one habit prevents a genuinely common cause of breaches.',
         'Finally, write tests for anything you will rely on. Not a full suite: one test that fails if the parsing breaks. Security tooling that silently stops working is worse than no tooling, because you believe you are covered.',
@@ -196,11 +199,12 @@ export const s03: Stage = {
       words: [
         { term: 'REST API', means: 'A web interface programs use to talk to a service.' },
         { term: 'API token', means: 'A credential proving your program is allowed to call an API.' },
+        { term: 'Branch', means: 'A separate line of changes used to test work without disturbing the main version.' },
         { term: 'Commit history', means: 'Git’s permanent record of every change ever made.' },
         { term: 'Secret scanning', means: 'Automatically detecting credentials in code.' },
       ],
       why: 'Leaked credentials in code repositories are one of the most reliable ways attackers get an initial foothold, and one of the easiest to prevent.',
-      doThis: 'Install gitleaks and run it on a repository you own. Then move any hard-coded value into an environment variable.',
+      doThis: 'Put one of your scripts in a Git repository. Add a README, make one small change on a branch, inspect the diff, merge it, and practise reverting the commit. Then run gitleaks before you publish.',
       check: 'You accidentally pushed an API key and immediately deleted it. What must you actually do, and why is deleting insufficient?',
     },
   ],

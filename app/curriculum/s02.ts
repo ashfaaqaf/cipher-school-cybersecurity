@@ -15,6 +15,7 @@ export const s02: Stage = {
   checkpoint: 'You can narrate exactly what happens between typing a web address and the page appearing, in order, without hand-waving.',
   resources: [
     { label: 'Wireshark User Guide', href: 'https://www.wireshark.org/docs/wsug_html_chunked/' },
+    { label: 'Wireshark official training resources', href: 'https://www.wireshark.org/training/' },
     { label: 'Cloudflare Learning Center', href: 'https://www.cloudflare.com/learning/' },
     { label: 'Let’s Encrypt: how certificates work', href: 'https://letsencrypt.org/how-it-works/' },
   ],

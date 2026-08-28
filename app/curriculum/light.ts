@@ -54,6 +54,10 @@ export const stages: LightStage[] = [
       {
         "label": "TryHackMe (free beginner rooms)",
         "href": "https://tryhackme.com/"
+      },
+      {
+        "label": "90 Days of CyberSecurity (optional study sequence)",
+        "href": "https://github.com/farhanashrafdev/90DaysOfCyberSecurity"
       }
     ],
     "lessons": [
@@ -211,6 +215,10 @@ export const stages: LightStage[] = [
         "href": "https://www.wireshark.org/docs/wsug_html_chunked/"
       },
       {
+        "label": "Wireshark official training resources",
+        "href": "https://www.wireshark.org/training/"
+      },
+      {
         "label": "Cloudflare Learning Center",
         "href": "https://www.cloudflare.com/learning/"
       },
@@ -298,6 +306,10 @@ export const stages: LightStage[] = [
       {
         "label": "SQL practice: SQLBolt",
         "href": "https://sqlbolt.com/"
+      },
+      {
+        "label": "Pro Git book (free online)",
+        "href": "https://git-scm.com/book/en/v2"
       }
     ],
     "lessons": [
@@ -1385,6 +1397,7 @@ export const cardIdsByLesson: Record<string, string[]> = {
     "q:03-8-b",
     "w:REST API",
     "w:API token",
+    "w:Branch",
     "w:Commit history",
     "w:Secret scanning"
   ],
@@ -1993,5 +2006,5 @@ export const cardIdsByLesson: Record<string, string[]> = {
 /** Lessons carrying a hands-on exercise, so the roadmap can say which. */
 export const practiceLessons: string[] = ["03-2","05-3","04-6","12-4","05-2","00-4","01-3","02-7","06-1","07-4","08-2","09-2","10-7","11-3","08-5"];
 
-export const glossaryCount = 414;
+export const glossaryCount = 415;
 export const totalQuestions = 220;

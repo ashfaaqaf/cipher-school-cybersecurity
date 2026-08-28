@@ -16,7 +16,7 @@ words a beginner can follow, with the jargon decoded as it appears.
 
 - **13 stages**, beginner through expert, in the order they should be learned
 - **110 written lessons** — not topic titles, the actual teaching
-- **414 terms decoded** in a searchable glossary, each explained without more jargon
+- **415 terms decoded** in a searchable glossary, each explained without more jargon
 - **8 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research, fastest-to-hired) with stage order
 - **Personal onboarding** that turns a target role, starting point and weekly time budget into a saved route
 - **A 12-situation cybersecurity baseline assessment** that saves privately and turns missed decisions into an exact lesson plan
@@ -45,17 +45,14 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **Back up and restore** progress as a JSON file, so clearing your browser is survivable
 - **Works fully offline** once installed, via a service worker generated at build time
 
-Every lesson follows the same shape, because that shape is what makes an idea stick:
+Every lesson follows the same four-step learning loop:
 
 | Section | What it does |
 | --- | --- |
-| The whole idea | The entire lesson in one sentence |
-| Think of it like | An everyday comparison to hold on to |
-| The explanation | Short paragraphs that survive being read out loud |
-| Jargon decoder | The terms you will meet in the wild, in human |
-| Why this matters | The real-world consequence |
-| Go and do this | Something to actually do today, safely |
-| Check yourself | A question you should be able to answer |
+| Understand | The idea, an everyday comparison, the explanation, jargon and consequence |
+| Recall | A question answered from memory before the choices appear |
+| Apply | A safe action and, where available, a scored evidence exercise |
+| Capture | An optional private field note saved only on the device |
 
 ## What you can show for it
 
@@ -390,6 +387,11 @@ NIST SP 800-61r3, NIST SSDF (SP 800-218), the NIST post-quantum standards (FIPS 
 MITRE ATT&CK v18, MITRE ATLAS, OWASP Top 10 (2025), the OWASP API and LLM Top 10s, and the
 NICE workforce framework. Practice links point at PortSwigger Web Security Academy,
 pwn.college, OverTheWire and TryHackMe.
+
+The [90 Days of CyberSecurity](https://github.com/farhanashrafdev/90DaysOfCyberSecurity)
+project was used as a coverage checklist for networking, Linux, Python, traffic analysis,
+Git, Elastic and cloud study. Cipher School keeps its own teaching, exercises and lesson
+order; the linked plan remains an optional daily sequence for learners who want one.
 
 ## Running it locally
 

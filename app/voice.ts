@@ -46,8 +46,8 @@ export function lessonToChunks(lesson: FullLesson): Chunk[] {
     ...lesson.body.map((p, i) => ({ label: `Explanation ${i + 1}`, text: p })),
     { label: 'Jargon decoder', text: lesson.words.map((w) => `${w.term}. ${w.means}`).join(' ') },
     { label: 'Why this matters', text: lesson.why },
-    { label: 'Go and do this', text: lesson.doThis },
     { label: 'Check yourself', text: lesson.check },
+    { label: 'Go and do this', text: lesson.doThis },
   ];
   return raw.map((c) => ({ ...c, text: forSpeech(c.text) }));
 }

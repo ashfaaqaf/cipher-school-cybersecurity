@@ -107,6 +107,15 @@ const views: { id: Exclude<View, 'settings'>; icon: InterfaceIconName; label: st
   { id: 'sources', icon: 'sources', label: 'Sources' },
 ];
 
+type LessonStep = 'understand' | 'recall' | 'apply' | 'capture';
+
+const LESSON_STEPS: { id: LessonStep; label: string; note: string }[] = [
+  { id: 'understand', label: 'Understand', note: 'Build the mental model' },
+  { id: 'recall', label: 'Recall', note: 'Answer from memory' },
+  { id: 'apply', label: 'Apply', note: 'Use the idea safely' },
+  { id: 'capture', label: 'Capture', note: 'Save what matters' },
+];
+
 /*
  * The corpus needs every word of every lesson, so it is built the first time
  * the heavy half of the curriculum is in memory, once, not per render, and
@@ -135,6 +144,7 @@ export default function Home() {
    */
   const [everOpen, setEverOpen] = useState<Set<number>>(() => new Set([0]));
   const [reader, setReader] = useState<{ s: number; l: number } | null>(null);
+  const [activeLessonStep, setActiveLessonStep] = useState<LessonStep>('understand');
   const [query, setQuery] = useState('');
   /*
    * Searching scans every word of all 110 lessons, which is a few milliseconds
@@ -816,10 +826,13 @@ export default function Home() {
   /* The lesson with its prose, once the heavy module is in memory. */
   const readerLesson = current && full ? (full.lessonById.get(current.lesson.id) ?? null) : null;
   const flatIndex = reader ? allLessons.findIndex((x) => x.lesson.id === current!.lesson.id) : -1;
+  const activeLessonStepIndex = Math.max(0, LESSON_STEPS.findIndex((item) => item.id === activeLessonStep));
+  const nextLessonStep = LESSON_STEPS[activeLessonStepIndex + 1] ?? null;
 
   const cameFrom = useRef(0);
   const openReader = useCallback((s: number, l: number) => {
     cameFrom.current = window.scrollY;
+    setActiveLessonStep('understand');
     setReader({ s, l });
     window.scrollTo({ top: 0 });
   }, []);
@@ -848,11 +861,48 @@ export default function Home() {
       const s = stages.findIndex((st) => st.lessons.some((x) => x.id === lesson.id));
       const l = stages[s].lessons.findIndex((x) => x.id === lesson.id);
       speaker.stop();
+      setActiveLessonStep('understand');
       setReader({ s, l });
       window.scrollTo({ top: 0 });
     },
     [flatIndex, speaker],
   );
+
+  useEffect(() => {
+    if (!reader || !readerLesson) return;
+    const sections = [...document.querySelectorAll<HTMLElement>('[data-lesson-step]')];
+    if (!sections.length) return;
+
+    const pickCurrent = () => {
+      const focusLine = window.innerHeight * 0.32;
+      const visible = sections
+        .filter((section) => {
+          const box = section.getBoundingClientRect();
+          return box.bottom > focusLine && box.top < window.innerHeight * 0.82;
+        })
+        .sort((a, b) => Math.abs(a.getBoundingClientRect().top - focusLine) - Math.abs(b.getBoundingClientRect().top - focusLine));
+      const step = visible[0]?.dataset.lessonStep as LessonStep | undefined;
+      if (step) setActiveLessonStep((currentStep) => currentStep === step ? currentStep : step);
+    };
+
+    const observer = new IntersectionObserver(pickCurrent, {
+      rootMargin: '-18% 0px -52% 0px',
+      threshold: [0, 0.05, 0.2],
+    });
+    sections.forEach((section) => observer.observe(section));
+    pickCurrent();
+    return () => observer.disconnect();
+  }, [reader, readerLesson]);
+
+  const jumpToLessonStep = useCallback((step: LessonStep) => {
+    const section = document.querySelector<HTMLElement>(`[data-lesson-step="${step}"]`);
+    if (!section) return;
+    const headerHeight = headerRef.current?.getBoundingClientRect().height ?? 88;
+    const top = section.getBoundingClientRect().top + window.scrollY - headerHeight - 20;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'instant' });
+    setActiveLessonStep(step);
+    tap();
+  }, []);
 
   /*
    * Jump to a stage by its number. The career paths are written as a sequence
@@ -975,7 +1025,7 @@ export default function Home() {
   };
 
   return (
-    <div className="app" style={rootStyle}>
+    <div className={reader ? 'app readingMode' : 'app'} style={rootStyle}>
 
       <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}>
         <defs>
@@ -1075,20 +1125,24 @@ export default function Home() {
         {reader && current && (
           <article className="reader" style={{ '--hue': String(current.stage.hue) } as CSSProperties}>
             <button className="readerBack" onClick={closeReader}>
-              ← Stage {current.stage.number} · {current.stage.title}
+              <InterfaceIcon name="arrowLeft" />
+              <span>Stage {current.stage.number} · {current.stage.title}</span>
             </button>
 
             <div className="readerHead">
               <h1 className="readerTitle">{current.lesson.title}</h1>
-              <div className="readerMeta">
-                Lesson {flatIndex + 1} of {totalLessons} · about {current.lesson.mins} minutes to read
+              <div className="readerMeta" aria-label="Lesson position and reading time">
+                <span>Stage {current.stage.number}</span>
+                <span>Lesson {reader.l + 1} of {current.stage.lessons.length}</span>
+                <span>{current.lesson.mins} min</span>
+                <span className="coursePosition">Course {flatIndex + 1} of {totalLessons}</span>
               </div>
             </div>
 
             {speaker.supported && (
-              <div className={speaker.speaking ? 'player on' : 'player'}>
+              <div className={speaker.speaking ? 'player on' : 'player'} aria-label="Lesson audio player">
                 <button className="playBtn" onClick={listen} aria-label={speaker.speaking && !speaker.paused ? 'Pause' : 'Listen'}>
-                  {speaker.speaking && !speaker.paused ? '❙❙' : '▶'}
+                  <InterfaceIcon name={speaker.speaking && !speaker.paused ? 'pause' : 'play'} />
                 </button>
                 <div className="playInfo">
                   {speaker.speaking ? (
@@ -1109,22 +1163,37 @@ export default function Home() {
                 </div>
                 {speaker.speaking && (
                   <>
-                    <button className="playMini" onClick={() => speaker.jump(-1)} aria-label="Back">
-                      ↺
+                    <button className="playMini" onClick={() => speaker.jump(-1)} aria-label="Previous audio section">
+                      <InterfaceIcon name="rewind" />
                     </button>
-                    <button className="playMini" onClick={() => speaker.jump(1)} aria-label="Skip">
-                      ↻
+                    <button className="playMini" onClick={() => speaker.jump(1)} aria-label="Next audio section">
+                      <InterfaceIcon name="forward" />
                     </button>
                     <button className="playMini" onClick={speaker.stop} aria-label="Stop">
-                      ✕
+                      <InterfaceIcon name="close" />
                     </button>
                   </>
                 )}
                 <button className="playMini" onClick={() => setVoiceOpen(true)} aria-label="Voice settings">
-                  ⚙
+                  <InterfaceIcon name="settings" />
                 </button>
               </div>
             )}
+
+            <nav className="lessonMap" aria-label="Lesson steps">
+              {LESSON_STEPS.map((item, index) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={activeLessonStep === item.id ? 'active' : undefined}
+                  aria-current={activeLessonStep === item.id ? 'step' : undefined}
+                  onClick={() => jumpToLessonStep(item.id)}
+                >
+                  <span className="lessonMapNum">0{index + 1}</span>
+                  <span><b>{item.label}</b><small>{item.note}</small></span>
+                </button>
+              ))}
+            </nav>
 
             <div className="readerBody">
               {readerLesson ? (
@@ -1133,18 +1202,51 @@ export default function Home() {
                     lesson={readerLesson}
                     activeLabel={speaker.speaking ? speaker.chunks[speaker.index]?.label : undefined}
                   />
+
+                  <section
+                    id="lesson-recall"
+                    className="lessonPhase"
+                    data-lesson-step="recall"
+                    aria-labelledby="lesson-recall-title"
+                  >
+                    <LessonPhaseHead number="02" title="Recall" note="Say what you think before the choices appear." id="lesson-recall-title" />
+                    <div className={`readCard check${speaker.speaking && speaker.chunks[speaker.index]?.label === 'Check yourself' ? ' reading' : ''}`}>
+                      <h3 className="readLabel">Check yourself</h3>
+                      <div className="readText">{readerLesson.check}</div>
+                    </div>
+                    <LessonQuiz lessonId={current.lesson.id} onGrade={gradeCard} />
+                  </section>
+
+                  <section
+                    id="lesson-apply"
+                    className="lessonPhase"
+                    data-lesson-step="apply"
+                    aria-labelledby="lesson-apply-title"
+                  >
+                    <LessonPhaseHead
+                      number="03"
+                      title="Apply"
+                      note={practiceLessons.includes(current.lesson.id) ? 'Use the idea, then work the evidence.' : 'Use the idea safely in your own context.'}
+                      id="lesson-apply-title"
+                    />
+                    <div className={`readCard do${speaker.speaking && speaker.chunks[speaker.index]?.label === 'Go and do this' ? ' reading' : ''}`}>
+                      <h3 className="readLabel">Go and do this</h3>
+                      <div className="readText">{readerLesson.doThis}</div>
+                    </div>
+                    {practiceLessons.includes(current.lesson.id) && (
+                      <PracticeBlock
+                        lessonId={current.lesson.id}
+                        onWorked={() => logWork({ mins: PRACTICE_MINS })}
+                        onSolved={() => markPractised(current.lesson.id)}
+                      />
+                    )}
+                  </section>
+
                   <LessonNotebook
+                    key={current.lesson.id}
                     note={notes[current.lesson.id] ?? ''}
                     onChange={(value) => updateLessonNote(current.lesson.id, value)}
                   />
-                  <LessonQuiz lessonId={current.lesson.id} onGrade={gradeCard} />
-                  {practiceLessons.includes(current.lesson.id) && (
-                    <PracticeBlock
-                      lessonId={current.lesson.id}
-                      onWorked={() => logWork({ mins: PRACTICE_MINS })}
-                      onSolved={() => markPractised(current.lesson.id)}
-                    />
-                  )}
                 </>
               ) : (
                 <p className="readWait">{current.lesson.oneLine}</p>
@@ -1152,27 +1254,40 @@ export default function Home() {
             </div>
 
             <div className="readerFoot">
-              <button className="navBtn" onClick={() => step(-1)} disabled={flatIndex <= 0} aria-label="Previous lesson">
-                ‹
+              <button
+                className="navBtn"
+                onClick={() => step(-1)}
+                disabled={flatIndex <= 0}
+                aria-label={flatIndex > 0 ? `Previous lesson: ${allLessons[flatIndex - 1].lesson.title}` : 'No previous lesson'}
+              >
+                <InterfaceIcon name="arrowLeft" />
               </button>
               <button
-                className={completed.has(current.lesson.id) ? 'btn done' : 'btn primary'}
+                className={!nextLessonStep && completed.has(current.lesson.id) ? 'btn done' : 'btn primary'}
                 onClick={() => {
+                  if (nextLessonStep) {
+                    jumpToLessonStep(nextLessonStep.id);
+                    return;
+                  }
                   toggle(current.lesson.id);
                   if (!completed.has(current.lesson.id) && flatIndex < allLessons.length - 1) {
-                    window.setTimeout(() => step(1), 320);
+                    window.setTimeout(() => step(1), 480);
                   }
                 }}
               >
-                {completed.has(current.lesson.id) ? '✓ Done. Tap to undo' : 'Mark as understood'}
+                {nextLessonStep
+                  ? `Continue to ${nextLessonStep.label}`
+                  : completed.has(current.lesson.id)
+                    ? 'Completed · Tap to undo'
+                    : flatIndex < allLessons.length - 1 ? 'Complete and continue' : 'Complete lesson'}
               </button>
               <button
                 className="navBtn"
                 onClick={() => step(1)}
                 disabled={flatIndex >= allLessons.length - 1}
-                aria-label="Next lesson"
+                aria-label={flatIndex < allLessons.length - 1 ? `Next lesson: ${allLessons[flatIndex + 1].lesson.title}` : 'No next lesson'}
               >
-                ›
+                <InterfaceIcon name="arrowRight" />
               </button>
             </div>
           </article>
@@ -2082,34 +2197,44 @@ export default function Home() {
   );
 }
 
-/** The reading view for one lesson. Order matters: idea, comparison, detail, jargon, why, do, check. */
+/** The explanation phase. Retrieval, application and capture follow as separate landmarks. */
 function LessonBody({ lesson, activeLabel }: { lesson: FullLesson; activeLabel?: string }) {
   /* While narration runs, the section being spoken is marked so the eye can follow it. */
   const lit = (label: string) => (activeLabel === label ? ' reading' : '');
 
   return (
-    <>
+    <section
+      id="lesson-understand"
+      className="lessonPhase first"
+      data-lesson-step="understand"
+      aria-labelledby="lesson-understand-title"
+    >
+      <LessonPhaseHead number="01" title="Understand" note="Start with one clear idea, then build the detail around it." id="lesson-understand-title" />
+
       <div className={`readCard key${lit('The whole idea')}`}>
-        <div className="readLabel">The whole idea</div>
+        <h3 className="readLabel">The whole idea</h3>
         <div className="readText">{lesson.oneLine}</div>
       </div>
 
       <div className={`readCard like${lit('Think of it like')}`}>
-        <div className="readLabel">Think of it like</div>
+        <h3 className="readLabel">Think of it like</h3>
         <div className="readText">{lesson.like}</div>
       </div>
 
-      <div className="prose">
-        {lesson.body.map((p, i) => (
-          <p key={i} className={activeLabel === `Explanation ${i + 1}` ? 'reading' : undefined}>
-            {p}
-          </p>
-        ))}
+      <div className="lessonExplanation">
+        <h3 className="readLabel">Build the model</h3>
+        <div className="prose">
+          {lesson.body.map((p, i) => (
+            <p key={i} className={activeLabel === `Explanation ${i + 1}` ? 'reading' : undefined}>
+              {p}
+            </p>
+          ))}
+        </div>
       </div>
 
-      <div className={`readCard${lit('Jargon decoder')}`} style={{ marginTop: 18 }}>
-        <div className="readLabel">Jargon decoder</div>
-        <div className="wordList" style={{ marginTop: 8 }}>
+      <div className={`readCard jargon${lit('Jargon decoder')}`}>
+        <h3 className="readLabel">Jargon decoder</h3>
+        <div className="wordList">
           {lesson.words.map((w) => (
             <div className="word" key={w.term}>
               <div className="wordTerm">{w.term}</div>
@@ -2120,50 +2245,70 @@ function LessonBody({ lesson, activeLabel }: { lesson: FullLesson; activeLabel?:
       </div>
 
       <div className={`readCard why${lit('Why this matters')}`}>
-        <div className="readLabel">Why this matters</div>
+        <h3 className="readLabel">Why this matters</h3>
         <div className="readText">{lesson.why}</div>
       </div>
+    </section>
+  );
+}
 
-      <div className={`readCard do${lit('Go and do this')}`}>
-        <div className="readLabel">Go and do this</div>
-        <div className="readText">{lesson.doThis}</div>
+function LessonPhaseHead({ number, title, note, id }: { number: string; title: string; note: string; id: string }) {
+  return (
+    <div className="lessonPhaseHead">
+      <span>{number}</span>
+      <div>
+        <h2 id={id}>{title}</h2>
+        <p>{note}</p>
       </div>
-
-      <div className={`readCard check${lit('Check yourself')}`}>
-        <div className="readLabel">Check yourself</div>
-        <div className="readText">{lesson.check}</div>
-      </div>
-    </>
+    </div>
   );
 }
 
 function LessonNotebook({ note, onChange }: { note: string; onChange: (value: string) => void }) {
   const template = 'Observation:\n\nWhy it matters:\n\nHow I would test or verify it:\n\nQuestion to revisit:';
+  const [isOpen, setIsOpen] = useState(Boolean(note.trim()));
 
   return (
-    <section className="lessonNotebook" aria-labelledby="lesson-notebook-title">
-      <div className="lessonNotebookHead">
+    <details
+      id="lesson-capture"
+      className="lessonNotebook lessonPhase"
+      data-lesson-step="capture"
+      aria-labelledby="lesson-notebook-title"
+      open={isOpen}
+      onToggle={(event) => setIsOpen(event.currentTarget.open)}
+    >
+      <summary className="lessonNotebookSummary">
+        <span className="lessonNotebookNumber">04</span>
         <div>
-          <span className="readLabel">Private field note</span>
-          <h2 id="lesson-notebook-title">Make the lesson yours</h2>
+          <h2 id="lesson-notebook-title">Capture</h2>
+          <p>Save one useful observation or question. This step is optional.</p>
         </div>
-        <button type="button" onClick={() => onChange(template)} disabled={Boolean(note.trim())}>
+        <span className="lessonNotebookState">{note.trim() ? 'Saved' : 'Optional'}<i aria-hidden="true" /></span>
+      </summary>
+      <div className="lessonNotebookBody">
+        <div className="lessonNotebookHead">
+          <div>
+            <span className="readLabel">Private field note</span>
+            <h3>Make the lesson yours</h3>
+          </div>
+          <button type="button" onClick={() => onChange(template)} disabled={Boolean(note.trim())}>
           Use note structure
-        </button>
+          </button>
+        </div>
+        <p>Write the detail you want to remember, the evidence you would check, or the question you still have.</p>
+        <textarea
+          value={note}
+          maxLength={NOTE_LIMIT}
+          rows={8}
+          onChange={(event) => onChange(event.target.value)}
+          placeholder={'Observation:\n\nWhy it matters:\n\nHow I would verify it:'}
+          aria-describedby="lesson-note-status"
+        />
+        <div className="lessonNotebookFoot" id="lesson-note-status">
+          <span>{note.trim() ? 'Saved on this device' : 'Nothing saved yet'}</span>
+          <span>{note.length.toLocaleString()} / {NOTE_LIMIT.toLocaleString()}</span>
+        </div>
       </div>
-      <p>Write the detail you want to remember, the evidence you would check, or the question you still have.</p>
-      <textarea
-        value={note}
-        maxLength={NOTE_LIMIT}
-        rows={8}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder={'Observation:\n\nWhy it matters:\n\nHow I would verify it:'}
-        aria-describedby="lesson-note-status"
-      />
-      <div className="lessonNotebookFoot" id="lesson-note-status">
-        <span>{note.trim() ? 'Saved on this device' : 'Nothing saved yet'}</span>
-        <span>{note.length.toLocaleString()} / {NOTE_LIMIT.toLocaleString()}</span>
-      </div>
-    </section>
+    </details>
   );
 }

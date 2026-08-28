@@ -9,7 +9,14 @@ export type InterfaceIcon =
   | 'words'
   | 'sources'
   | 'settings'
-  | 'more';
+  | 'more'
+  | 'play'
+  | 'pause'
+  | 'rewind'
+  | 'forward'
+  | 'close'
+  | 'arrowLeft'
+  | 'arrowRight';
 
 export function InterfaceIcon({ name, ...props }: { name: InterfaceIcon } & SVGProps<SVGSVGElement>) {
   const common = {
@@ -43,5 +50,19 @@ export function InterfaceIcon({ name, ...props }: { name: InterfaceIcon } & SVGP
       return <svg {...common}><path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h7M15 18h5" /><circle cx="16" cy="6" r="2" /><circle cx="8" cy="12" r="2" /><circle cx="13" cy="18" r="2" /></svg>;
     case 'more':
       return <svg {...common}><circle cx="5" cy="12" r="1.1" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1.1" fill="currentColor" stroke="none" /><circle cx="19" cy="12" r="1.1" fill="currentColor" stroke="none" /></svg>;
+    case 'play':
+      return <svg {...common}><path d="m9 6 8 6-8 6z" /></svg>;
+    case 'pause':
+      return <svg {...common}><path d="M9 6v12M15 6v12" /></svg>;
+    case 'rewind':
+      return <svg {...common}><path d="M9 8 4.5 12 9 16zM18 8l-4.5 4 4.5 4z" /></svg>;
+    case 'forward':
+      return <svg {...common}><path d="m6 8 4.5 4L6 16zM15 8l4.5 4-4.5 4z" /></svg>;
+    case 'close':
+      return <svg {...common}><path d="m7 7 10 10M17 7 7 17" /></svg>;
+    case 'arrowLeft':
+      return <svg {...common}><path d="m14.5 6-6 6 6 6" /></svg>;
+    case 'arrowRight':
+      return <svg {...common}><path d="m9.5 6 6 6-6 6" /></svg>;
   }
 }

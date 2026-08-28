@@ -17,6 +17,7 @@ export const s00: Stage = {
     { label: 'NIST Cybersecurity Framework 2.0', href: 'https://www.nist.gov/cyberframework' },
     { label: 'CISA Cyber Career Pathways', href: 'https://niccs.cisa.gov/tools/cyber-career-pathways-tool' },
     { label: 'TryHackMe (free beginner rooms)', href: 'https://tryhackme.com/' },
+    { label: '90 Days of CyberSecurity (optional study sequence)', href: 'https://github.com/farhanashrafdev/90DaysOfCyberSecurity' },
   ],
   lessons: [
     {

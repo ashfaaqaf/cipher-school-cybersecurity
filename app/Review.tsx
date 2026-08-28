@@ -338,15 +338,16 @@ export function LessonQuiz({ lessonId, onGrade }: { lessonId: string; onGrade: (
   return (
     <div className="quizBlock">
       <div className="quizHead">
-        <span className="readLabel" style={{ margin: 0 }}>
+        <h3 className="readLabel" style={{ margin: 0 }}>
           Test yourself
-        </span>
+        </h3>
         {answered === qs.length && (
           <span className="quizScore">
             {right}/{qs.length}
           </span>
         )}
       </div>
+      <p className="quizIntro">Think first. Reveal the choices only after you have formed an answer.</p>
 
       {qs.map((q) => {
         const picked = picks[q.id];
