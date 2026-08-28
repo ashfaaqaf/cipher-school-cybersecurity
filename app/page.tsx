@@ -1715,7 +1715,7 @@ export default function Home() {
 
             <a
               className="creatorSocial"
-              href="https://www.instagram.com/ashfaaqaf/"
+              href={'https://www.instagram.com/ashfaaqaf?igsi=MW0zdjM0dmdvcnB1ZA%3D%3D&utm_source=qr'}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Open ashfaaqaf on Instagram"
