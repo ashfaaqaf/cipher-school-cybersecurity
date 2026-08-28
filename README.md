@@ -39,6 +39,7 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **Keyboard shortcuts** throughout, and `?` to see them
 - **Print or save any stage as a PDF**, typeset for paper
 - **Narration** — listen to any lesson like an audiobook, with follow-along highlighting
+- **Private field notes:** available inside every lesson, saved automatically on the device and exportable as clean Markdown
 - **Progress tracking** stored only in your browser — nothing is uploaded anywhere
 - **Back up and restore** progress as a JSON file, so clearing your browser is survivable
 - **Works fully offline** once installed, via a service worker generated at build time

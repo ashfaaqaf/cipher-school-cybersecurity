@@ -13,6 +13,7 @@
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "types": [
       "node"
     ],
@@ -44,6 +45,7 @@
     "srs.test.ts",
     "pronounce.test.ts",
     "voice.test.ts",
+    "notes.test.ts",
     "backup.test.ts",
     "plan.test.ts",
     "search.test.ts",

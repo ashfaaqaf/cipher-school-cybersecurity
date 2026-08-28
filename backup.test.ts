@@ -47,6 +47,7 @@ assert.equal(store.get('cipher-school-theme'), 'night');
 // Current backups also carry the preferences that materially change reading.
 store.set('cipher-school-accessibility', JSON.stringify({ comfortableReading: true, reduceMotion: true, strongContrast: false }));
 store.set('cipher-school-tool-labs', JSON.stringify(['burp-0', 'nmap-2']));
+store.set('cipher-school-notes', JSON.stringify({ '00-1': 'Identity is a claim that still needs evidence.' }));
 
 // A round trip must survive intact.
 const round = buildBackup();
@@ -54,10 +55,12 @@ assert.equal(round.summary.lessons, 2, 'export should see what restore wrote');
 assert.equal(round.summary.cards, 1);
 assert.deepEqual(round.data.accessibility, { comfortableReading: true, reduceMotion: true, strongContrast: false });
 assert.deepEqual(round.data.toolLabs, ['burp-0', 'nmap-2']);
+assert.deepEqual(round.data.notes, { '00-1': 'Identity is a claim that still needs evidence.' });
 store.clear();
 assert.ok(applyBackup(JSON.stringify(round)).ok, 'our own export must be restorable');
 assert.deepEqual(JSON.parse(store.get('cipher-school-accessibility')!), { comfortableReading: true, reduceMotion: true, strongContrast: false });
 assert.deepEqual(JSON.parse(store.get('cipher-school-tool-labs')!), ['burp-0', 'nmap-2']);
+assert.deepEqual(JSON.parse(store.get('cipher-school-notes')!), { '00-1': 'Identity is a claim that still needs evidence.' });
 
 // --- refusing bad input -------------------------------------------------
 

@@ -47,6 +47,15 @@ import { PrintSheet } from './Print';
 import { CapabilityBoundary, FreshnessPanel, MissionsView, ProofView, RouteBuilder, useAcademy } from './AcademyViews';
 import { SettingsView, type AccessibilitySettings } from './Settings';
 import { clearCipherSchoolStorage } from './reset';
+import { downloadText } from './academy';
+import {
+  NOTE_LIMIT,
+  NOTES_STORE,
+  changeNote,
+  notesMarkdown,
+  safeNotes,
+  type LessonNotes,
+} from './notes';
 import { SHORTCUTS, actionFor, isTyping } from './keys';
 import { useFocusTrap } from './a11y';
 import { hashFor, parseHash, sameRoute, type Route, type View } from './routing';
@@ -174,6 +183,7 @@ export default function Home() {
   const [history, setHistory] = useState<History>({});
   const [planSettings, setPlanSettings] = useState<PlanSettings>(DEFAULT_SETTINGS);
   const [accessibility, setAccessibility] = useState<AccessibilitySettings>(DEFAULT_ACCESSIBILITY);
+  const [notes, setNotes] = useState<LessonNotes>({});
   const fileRef = useRef<HTMLInputElement | null>(null);
   const waitingRef = useRef<ServiceWorker | null>(null);
   const speaker = useSpeaker();
@@ -197,6 +207,8 @@ export default function Home() {
       }
       const access = window.localStorage.getItem(ACCESSIBILITY);
       if (access) setAccessibility(safeAccessibility(JSON.parse(access)));
+      const savedNotes = window.localStorage.getItem(NOTES_STORE);
+      if (savedNotes) setNotes(safeNotes(JSON.parse(savedNotes)));
     } catch {
       /* progress starts clean when storage is unavailable */
     }
@@ -452,6 +464,30 @@ export default function Home() {
     tap();
   }, []);
 
+  const updateLessonNote = useCallback((lessonId: string, value: string) => {
+    setNotes((currentNotes) => {
+      const next = changeNote(currentNotes, lessonId, value);
+      try {
+        window.localStorage.setItem(NOTES_STORE, JSON.stringify(next));
+      } catch {
+        /* The editor still works for this session when storage is blocked. */
+      }
+      return next;
+    });
+  }, []);
+
+  const onExportNotes = useCallback(() => {
+    const lessonIndex = allLessons.map(({ stage, lesson }) => ({
+      id: lesson.id,
+      title: lesson.title,
+      stageNumber: stage.number,
+      stageTitle: stage.title,
+    }));
+    const date = new Date().toISOString().slice(0, 10);
+    downloadText(`cipher-school-field-notes-${date}.md`, notesMarkdown(notes, lessonIndex));
+    tap();
+  }, [notes]);
+
   const onImportFile = useCallback(
     async (file: File) => {
       const result = applyBackup(await file.text());
@@ -467,6 +503,7 @@ export default function Home() {
           if (t === 'day' || t === 'night') setTheme(t);
           const access = window.localStorage.getItem(ACCESSIBILITY);
           setAccessibility(access ? safeAccessibility(JSON.parse(access)) : DEFAULT_ACCESSIBILITY);
+          setNotes(safeNotes(JSON.parse(window.localStorage.getItem(NOTES_STORE) ?? '{}')));
         } catch {
           /* the restore already succeeded; a read-back failure is cosmetic */
         }
@@ -918,6 +955,7 @@ export default function Home() {
     setPractised(new Set());
     setHistory({});
     setPlanSettings(DEFAULT_SETTINGS);
+    setNotes({});
     setQuery('');
     setFilter('ALL');
     setOpenStage(0);
@@ -1060,6 +1098,10 @@ export default function Home() {
                   <LessonBody
                     lesson={readerLesson}
                     activeLabel={speaker.speaking ? speaker.chunks[speaker.index]?.label : undefined}
+                  />
+                  <LessonNotebook
+                    note={notes[current.lesson.id] ?? ''}
+                    onChange={(value) => updateLessonNote(current.lesson.id, value)}
                   />
                   <LessonQuiz lessonId={current.lesson.id} onGrade={gradeCard} />
                   {practiceLessons.includes(current.lesson.id) && (
@@ -1614,6 +1656,8 @@ export default function Home() {
             }}
             onInstall={() => setInstallOpen(true)}
             onBackup={onExport}
+            notesCount={Object.keys(notes).length}
+            onExportNotes={onExportNotes}
             onRestore={() => fileRef.current?.click()}
             onShortcuts={() => setHelpOpen(true)}
             onLearn={() => goto('learn')}
@@ -2056,5 +2100,36 @@ function LessonBody({ lesson, activeLabel }: { lesson: FullLesson; activeLabel?:
         <div className="readText">{lesson.check}</div>
       </div>
     </>
+  );
+}
+
+function LessonNotebook({ note, onChange }: { note: string; onChange: (value: string) => void }) {
+  const template = 'Observation:\n\nWhy it matters:\n\nHow I would test or verify it:\n\nQuestion to revisit:';
+
+  return (
+    <section className="lessonNotebook" aria-labelledby="lesson-notebook-title">
+      <div className="lessonNotebookHead">
+        <div>
+          <span className="readLabel">Private field note</span>
+          <h2 id="lesson-notebook-title">Make the lesson yours</h2>
+        </div>
+        <button type="button" onClick={() => onChange(template)} disabled={Boolean(note.trim())}>
+          Use note structure
+        </button>
+      </div>
+      <p>Write the detail you want to remember, the evidence you would check, or the question you still have.</p>
+      <textarea
+        value={note}
+        maxLength={NOTE_LIMIT}
+        rows={8}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={'Observation:\n\nWhy it matters:\n\nHow I would verify it:'}
+        aria-describedby="lesson-note-status"
+      />
+      <div className="lessonNotebookFoot" id="lesson-note-status">
+        <span>{note.trim() ? 'Saved on this device' : 'Nothing saved yet'}</span>
+        <span>{note.length.toLocaleString()} / {NOTE_LIMIT.toLocaleString()}</span>
+      </div>
+    </section>
   );
 }

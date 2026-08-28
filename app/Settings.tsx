@@ -42,6 +42,8 @@ type SettingsProps = {
   };
   onInstall: () => void;
   onBackup: () => void;
+  notesCount: number;
+  onExportNotes: () => void;
   onRestore: () => void;
   onShortcuts: () => void;
   onLearn: () => void;
@@ -90,6 +92,8 @@ export function SettingsView({
   narration,
   onInstall,
   onBackup,
+  notesCount,
+  onExportNotes,
   onRestore,
   onShortcuts,
   onLearn,
@@ -330,11 +334,12 @@ export function SettingsView({
           <div className="privacyStrip">
             <div><span>ACCOUNT</span><b>Not required</b></div>
             <div><span>CLOUD UPLOAD</span><b>None</b></div>
-            <div><span>STORAGE</span><b>This device</b></div>
+            <div><span>FIELD NOTES</span><b>{notesCount} lesson{notesCount === 1 ? '' : 's'}</b></div>
           </div>
           <div className="settingsDataActions">
             <button className="btn primary" type="button" onClick={onBackup}>↓ Download backup</button>
             <button className="btn ghost" type="button" onClick={onRestore}>↑ Restore backup</button>
+            <button className="btn ghost" type="button" onClick={onExportNotes} disabled={notesCount === 0}>↓ Export field notes</button>
           </div>
           {restore && (
             <p className={restore.ok ? 'settingsResult ok' : 'settingsResult bad'} role="status">
@@ -353,7 +358,7 @@ export function SettingsView({
           <div className="resetSummary">
             <div>
               <b>This permanently takes everything back to zero.</b>
-              <p>It removes completed lessons, review history, streaks, exercises, missions, capstones, portfolio evidence, your route and every preference from this device.</p>
+              <p>It removes completed lessons, review history, streaks, exercises, field notes, missions, capstones, portfolio evidence, your route and every preference from this device.</p>
               <button className="resetBackup" type="button" onClick={onBackup}>↓ Download a backup first</button>
             </div>
             {!resetArmed ? (

@@ -9,6 +9,7 @@ export const CIPHER_STORAGE_KEYS = [
   'cipher-school-academy',
   'cipher-school-accessibility',
   'cipher-school-tool-labs',
+  'cipher-school-notes',
 ] as const;
 
 export type RemovableStorage = Pick<Storage, 'removeItem'>;

@@ -10,5 +10,6 @@ assert.ok(removed.includes('cipher-school-progress'), 'lesson progress is includ
 assert.ok(removed.includes('cipher-school-srs'), 'review history is included');
 assert.ok(removed.includes('cipher-school-academy'), 'missions and capstones are included');
 assert.ok(removed.includes('cipher-school-tool-labs'), 'tool lab checklist is included');
+assert.ok(removed.includes('cipher-school-notes'), 'lesson field notes are included');
 
 console.log('reset: all checks passed');
