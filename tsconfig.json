@@ -46,6 +46,7 @@
     "pronounce.test.ts",
     "voice.test.ts",
     "notes.test.ts",
+    "assessment.test.ts",
     "backup.test.ts",
     "plan.test.ts",
     "search.test.ts",

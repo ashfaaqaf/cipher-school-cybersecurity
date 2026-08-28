@@ -10,6 +10,7 @@ import './print.css';
 import './shell.css';
 import './presence.css';
 import './academy.css';
+import './assessment.css';
 import './settings.css';
 import './mobile.css';
 

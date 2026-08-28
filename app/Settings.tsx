@@ -358,7 +358,7 @@ export function SettingsView({
           <div className="resetSummary">
             <div>
               <b>This permanently takes everything back to zero.</b>
-              <p>It removes completed lessons, review history, streaks, exercises, field notes, missions, capstones, portfolio evidence, your route and every preference from this device.</p>
+              <p>It removes completed lessons, review history, streaks, exercises, field notes, the skill assessment, missions, capstones, portfolio evidence, your route and every preference from this device.</p>
               <button className="resetBackup" type="button" onClick={onBackup}>↓ Download a backup first</button>
             </div>
             {!resetArmed ? (

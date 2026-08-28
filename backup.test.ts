@@ -48,6 +48,7 @@ assert.equal(store.get('cipher-school-theme'), 'night');
 store.set('cipher-school-accessibility', JSON.stringify({ comfortableReading: true, reduceMotion: true, strongContrast: false }));
 store.set('cipher-school-tool-labs', JSON.stringify(['burp-0', 'nmap-2']));
 store.set('cipher-school-notes', JSON.stringify({ '00-1': 'Identity is a claim that still needs evidence.' }));
+store.set('cipher-school-skill-check', JSON.stringify({ answers: { scope: 1, cia: 1 }, completedAt: '2026-08-29T00:00:00.000Z', attempts: 1 }));
 
 // A round trip must survive intact.
 const round = buildBackup();
@@ -56,11 +57,13 @@ assert.equal(round.summary.cards, 1);
 assert.deepEqual(round.data.accessibility, { comfortableReading: true, reduceMotion: true, strongContrast: false });
 assert.deepEqual(round.data.toolLabs, ['burp-0', 'nmap-2']);
 assert.deepEqual(round.data.notes, { '00-1': 'Identity is a claim that still needs evidence.' });
+assert.deepEqual(round.data.skillCheck, { answers: { scope: 1, cia: 1 }, completedAt: '2026-08-29T00:00:00.000Z', attempts: 1 });
 store.clear();
 assert.ok(applyBackup(JSON.stringify(round)).ok, 'our own export must be restorable');
 assert.deepEqual(JSON.parse(store.get('cipher-school-accessibility')!), { comfortableReading: true, reduceMotion: true, strongContrast: false });
 assert.deepEqual(JSON.parse(store.get('cipher-school-tool-labs')!), ['burp-0', 'nmap-2']);
 assert.deepEqual(JSON.parse(store.get('cipher-school-notes')!), { '00-1': 'Identity is a claim that still needs evidence.' });
+assert.deepEqual(JSON.parse(store.get('cipher-school-skill-check')!), { answers: { scope: 1, cia: 1 }, completedAt: '2026-08-29T00:00:00.000Z', attempts: 1 });
 
 // --- refusing bad input -------------------------------------------------
 

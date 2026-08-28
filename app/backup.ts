@@ -1,6 +1,7 @@
 'use client';
 
 import { safeNotes } from './notes.ts';
+import { safeSkillCheck } from './assessment.ts';
 
 /**
  * Progress lives in localStorage and nowhere else: no account, no server,
@@ -25,10 +26,11 @@ const KEYS = {
   accessibility: 'cipher-school-accessibility',
   toolLabs: 'cipher-school-tool-labs',
   notes: 'cipher-school-notes',
+  skillCheck: 'cipher-school-skill-check',
 } as const;
 
 const FORMAT = 'cipher-school-backup';
-const VERSION = 6;
+const VERSION = 7;
 
 /** Guards against a hostile or corrupt file eating memory or the UI. */
 const LIMITS = { lessons: 5000, cards: 20000, fileBytes: 2_000_000 };
@@ -54,6 +56,8 @@ export type Backup = {
     toolLabs?: string[];
     /** Added in version 6: private notes written inside lessons. */
     notes?: Record<string, string>;
+    /** Added in version 7: private baseline answers and result history. */
+    skillCheck?: unknown;
   };
 };
 
@@ -92,6 +96,7 @@ export function buildBackup(): Backup {
       accessibility: read(KEYS.accessibility),
       toolLabs: Array.isArray(read(KEYS.toolLabs)) ? (read(KEYS.toolLabs) as string[]) : [],
       notes: safeNotes(read(KEYS.notes)),
+      skillCheck: safeSkillCheck(read(KEYS.skillCheck)),
     },
   };
 }
@@ -209,6 +214,9 @@ export function applyBackup(text: string): RestoreResult {
     }
     if (b.data.notes && typeof b.data.notes === 'object' && !Array.isArray(b.data.notes)) {
       window.localStorage.setItem(KEYS.notes, JSON.stringify(safeNotes(b.data.notes)));
+    }
+    if (b.data.skillCheck && typeof b.data.skillCheck === 'object' && !Array.isArray(b.data.skillCheck)) {
+      window.localStorage.setItem(KEYS.skillCheck, JSON.stringify(safeSkillCheck(b.data.skillCheck)));
     }
   } catch {
     return { ok: false, error: 'This browser would not let the app save the restored data.' };

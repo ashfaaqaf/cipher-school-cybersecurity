@@ -19,6 +19,7 @@ words a beginner can follow, with the jargon decoded as it appears.
 - **414 terms decoded** in a searchable glossary, each explained without more jargon
 - **8 career paths** (SOC, red team, AppSec, cloud, DFIR, GRC, research, fastest-to-hired) with stage order
 - **Personal onboarding** that turns a target role, starting point and weekly time budget into a saved route
+- **A 12-situation cybersecurity baseline assessment** that saves privately and turns missed decisions into an exact lesson plan
 - **Six zero-setup browser missions** using logs, email headers, HTTP traffic, cloud policy, scan output and an incident timeline
 - **Evidence-based mission scoring** across technical decisions and a written analyst report, with method-first coach hints
 - **A four-gate mastery graph** — learned, recalled, applied and proven — instead of one misleading completion number

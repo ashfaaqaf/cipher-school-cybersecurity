@@ -36,6 +36,7 @@ const RolesSection = dynamic(() => import('./Roles').then((m) => m.RolesSection)
 const PracticeBlock = dynamic(() => import('./Practice').then((m) => m.PracticeBlock), { ssr: false });
 const EvidenceSheet = dynamic(() => import('./Evidence').then((m) => m.EvidenceSheet), { ssr: false });
 const CompanionSection = dynamic(() => import('./Roles').then((m) => m.CompanionSection), { ssr: false });
+const SkillCheck = dynamic(() => import('./SkillCheck').then((m) => m.SkillCheck), { ssr: false });
 import { deckStats, schedule, today, type Deck, type Grade } from './srs';
 import { useSpeaker } from './voice';
 import { voiceGenderLabel, voiceQualityLabel } from './voice-profile';
@@ -1568,6 +1569,8 @@ export default function Home() {
         {/* ---------------- paths ---------------- */}
         {!reader && view === 'paths' && (
           <section id="paths" className="band">
+            <SkillCheck completed={completed} onOpen={openById} onMissions={() => goto('missions')} />
+
             <RolesSection completed={completed} onOpen={openById} onMissions={() => goto('missions')} />
 
             <div className="sectionHead reveal" style={{ marginTop: 40 }}>
