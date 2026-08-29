@@ -50,6 +50,21 @@ assert.match(
   /register\('sw\.js', \{ updateViaCache: 'none' \}\)/,
   'service-worker update checks must bypass intermediary HTTP caches',
 );
+assert.match(
+  workerBuilder,
+  /keys\.some\(\(key\) => key\.startsWith\('cipher-school-'\) && key !== CACHE\)/,
+  'a worker must distinguish an upgrade from a first installation',
+);
+assert.match(
+  workerBuilder,
+  /clients\.matchAll\(\{ type: 'window' \}\)[\s\S]*client\.navigate\(client\.url\)/,
+  'an upgraded worker must refresh clients that could have missed the page-side takeover event',
+);
+assert.match(
+  workerBuilder,
+  /hash\.startsWith\('#\/lesson\/'\)/,
+  'an offline update must not interrupt an open lesson',
+);
 assert.match(workerBuilder, /cache\.addAll\(PRECACHE\)/, 'a service worker update must cache one complete build');
 assert.match(workerBuilder, /readFile\(path\.join\(OUT, file\)\)/, 'a release cache key must include built file contents');
 assert.doesNotMatch(

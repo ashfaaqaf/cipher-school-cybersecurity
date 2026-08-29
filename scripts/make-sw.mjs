@@ -77,8 +77,25 @@ self.addEventListener('install', (event) => {
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim()),
+      .then(async (keys) => {
+        const upgrading = keys.some((key) => key.startsWith('cipher-school-') && key !== CACHE);
+        await Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)));
+        await self.clients.claim();
+
+        /* An older page can miss controllerchange because its listener was
+           attached after it requested activation. Once this complete cache is
+           active, refresh safe pages from the worker side so those clients do
+           not remain stranded on old HTML and JavaScript. Leave an open lesson
+           alone; its page code offers the update without interrupting reading. */
+        if (!upgrading) return;
+        const windows = await self.clients.matchAll({ type: 'window' });
+        await Promise.all(
+          windows.map((client) => {
+            if (new URL(client.url).hash.startsWith('#/lesson/')) return undefined;
+            return client.navigate(client.url).catch(() => undefined);
+          }),
+        );
+      }),
   );
 });
 
