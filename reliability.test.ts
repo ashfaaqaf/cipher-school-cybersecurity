@@ -79,8 +79,13 @@ assert.doesNotMatch(
 );
 assert.match(
   workerBuilder,
-  /const ENTRY = [\s\S]*\?release=\$\{version\}/,
-  'a new worker must bypass stale hosting caches when it fetches the release entry page',
+  /const releaseEntry = `releases\/\$\{version\}\.html`[\s\S]*writeFile\(path\.join\(OUT, releaseEntry\)/,
+  'each build must write its entry page to a never-reused release path',
+);
+assert.match(
+  workerBuilder,
+  /const ENTRY = [\s\S]*\$\{BASE\}\/\$\{releaseEntry\}/,
+  'a new worker must fetch its immutable release entry instead of a cache-prone root URL',
 );
 const installBlock = workerBuilder.slice(workerBuilder.indexOf("self.addEventListener('install'"), workerBuilder.indexOf("self.addEventListener('activate'"));
 assert.ok(
