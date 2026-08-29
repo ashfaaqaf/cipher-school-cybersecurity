@@ -5,6 +5,7 @@ const layout = readFileSync('app/layout.tsx', 'utf8');
 const packageJson = readFileSync('package.json', 'utf8');
 const generator = readFileSync('scripts/make-site-files.mjs', 'utf8');
 const infinityFreeWorkflow = readFileSync('.github/workflows/infinityfree.yml', 'utf8');
+const infinityFreeHeaders = readFileSync('public/.htaccess', 'utf8');
 
 assert.match(layout, /process\.env\.SITE_URL/, 'page metadata must support a second public host');
 assert.match(packageJson, /make-site-files\.mjs/, 'production builds must generate host-specific crawler files');
@@ -23,6 +24,8 @@ assert.match(infinityFreeWorkflow, /mirror[^\n]*--exclude-glob sw\.js/, 'the wor
 assert.match(infinityFreeWorkflow, /put -O \. out\/cipher-school-icon-192\.png[\s\S]*cls -1 cipher-school-icon-192\.png/, 'a missing Home Screen icon must be repaired and verified');
 assert.match(infinityFreeWorkflow, /actions\/upload-artifact@v4/, 'InfinityFree deployment must save a rollback build');
 assert.match(infinityFreeWorkflow, /cancel-in-progress: false/, 'InfinityFree deployments must not interrupt an upload halfway through');
+assert.match(infinityFreeHeaders, /index\\\.html\|sw\\\.js/, 'InfinityFree must revalidate both release-control files');
+assert.match(infinityFreeHeaders, /no-cache, no-store, must-revalidate/, 'release-control files must not be retained by the hosting cache');
 
 const mirrorPosition = infinityFreeWorkflow.indexOf('mirror --reverse');
 const entrypointPosition = infinityFreeWorkflow.indexOf('put -O . out/index.html');
