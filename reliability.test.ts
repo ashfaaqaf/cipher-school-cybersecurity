@@ -77,10 +77,15 @@ assert.doesNotMatch(
   /createHash\(['"]sha256['"]\)\.update\(urls\.join/,
   'file names alone are not a safe release fingerprint',
 );
-assert.doesNotMatch(
+assert.match(
   workerBuilder,
-  /c\.put\(START/,
-  'an old service worker must not mix new HTML with old hashed app chunks',
+  /const ENTRY = [\s\S]*\?release=\$\{version\}/,
+  'a new worker must bypass stale hosting caches when it fetches the release entry page',
+);
+const installBlock = workerBuilder.slice(workerBuilder.indexOf("self.addEventListener('install'"), workerBuilder.indexOf("self.addEventListener('activate'"));
+assert.ok(
+  installBlock.indexOf('cache.addAll(PRECACHE)') < installBlock.indexOf('cache.put(START, entry)'),
+  'the release entry page must only be committed after every hashed asset is cached',
 );
 assert.match(mobile, /display-mode:\s*standalone/, 'installed mobile layout needs a standalone mode');
 assert.match(
