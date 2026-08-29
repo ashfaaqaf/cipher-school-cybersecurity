@@ -17,11 +17,15 @@ assert.match(infinityFreeWorkflow, /FTP_SERVER" != "ftpupload\.net"/, 'InfinityF
 assert.match(infinityFreeWorkflow, /FTP_USERNAME" != "\$EXPECTED_FTP_USERNAME"/, 'InfinityFree deployment must reject the wrong hosting account');
 assert.match(infinityFreeWorkflow, /FTP_REMOTE_DIR" != "\/htdocs"/, 'InfinityFree deployment must require the exact remote root');
 assert.doesNotMatch(infinityFreeWorkflow, /mirror[^\n]*--delete/, 'InfinityFree deployment must not delete unknown remote files');
+assert.match(infinityFreeWorkflow, /mirror[^\n]*--ignore-time/, 'unchanged static files must not be reuploaded because only their build timestamp changed');
+assert.match(infinityFreeWorkflow, /mirror[^\n]*--exclude-glob sw\.js/, 'the worker must not be uploaded with ordinary assets');
 assert.match(infinityFreeWorkflow, /actions\/upload-artifact@v4/, 'InfinityFree deployment must save a rollback build');
 assert.match(infinityFreeWorkflow, /cancel-in-progress: false/, 'InfinityFree deployments must not interrupt an upload halfway through');
 
 const mirrorPosition = infinityFreeWorkflow.indexOf('mirror --reverse');
 const entrypointPosition = infinityFreeWorkflow.indexOf('put -O . out/index.html');
+const workerPosition = infinityFreeWorkflow.indexOf('put -O . out/sw.js');
 assert.ok(mirrorPosition >= 0 && entrypointPosition > mirrorPosition, 'the entry page must be uploaded after its assets');
+assert.ok(workerPosition > entrypointPosition, 'the service worker must be uploaded after the current entry page');
 
 console.log('hosting: all checks passed');

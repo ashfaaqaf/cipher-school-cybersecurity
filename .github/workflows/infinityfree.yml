@@ -102,7 +102,13 @@ jobs:
           set net:reconnect-interval-max 10
           open -u "$FTP_USERNAME","$FTP_PASSWORD" "$FTP_SERVER"
           cd "$FTP_REMOTE_DIR"
-          mirror --reverse --no-perms --verbose --parallel=1 --exclude-glob index.html out/ .
+          # Content-hashed assets only need uploading when their name or size
+          # changes. Skipping timestamp-only differences avoids InfinityFree's
+          # intermittent locks on unchanged icons and fonts.
+          mirror --reverse --no-perms --verbose --parallel=1 --ignore-time --exclude-glob index.html --exclude-glob sw.js out/ .
+          # Publish the entry page after its assets, then the worker last. A new
+          # worker must never precache the previous release's index.html.
           put -O . out/index.html
+          put -O . out/sw.js
           bye
           LFTP_COMMANDS
