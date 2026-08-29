@@ -34,6 +34,22 @@ assert.match(
 assert.match(page, /--reveal-delay/, 'simultaneous reveals should receive a controlled stagger');
 assert.match(page, /--reveal-x/, 'reveals should receive subtle directional variation');
 assert.match(shell, /filter:\s*blur\(5px\)/, 'cinematic reveals should include a bounded depth effect');
+assert.match(
+  page,
+  /className=\{`stage glass reveal\$\{revealed \? ' in' : ''\}/,
+  'opening a stage must preserve the visibility class owned by the reveal observer',
+);
+
+const takeover = page.slice(page.indexOf('const takeover ='), page.indexOf('const offer ='));
+assert.ok(
+  takeover.indexOf("addEventListener('controllerchange'") < takeover.indexOf("postMessage('skip-waiting')"),
+  'the page must listen for a worker takeover before requesting it',
+);
+assert.match(
+  page,
+  /register\('sw\.js', \{ updateViaCache: 'none' \}\)/,
+  'service-worker update checks must bypass intermediary HTTP caches',
+);
 assert.match(workerBuilder, /cache\.addAll\(PRECACHE\)/, 'a service worker update must cache one complete build');
 assert.match(workerBuilder, /readFile\(path\.join\(OUT, file\)\)/, 'a release cache key must include built file contents');
 assert.doesNotMatch(

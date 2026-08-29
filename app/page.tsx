@@ -393,8 +393,11 @@ export default function Home() {
     let cleanup = () => {};
 
     const takeover = (worker: ServiceWorker) => {
-      worker.postMessage('skip-waiting');
+      /* Listen before asking the worker to activate. A fast worker can claim
+         this page immediately; subscribing afterwards leaves the old app shell
+         on screen until the next manual reload. */
       navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload(), { once: true });
+      worker.postMessage('skip-waiting');
     };
 
     const offer = (worker: ServiceWorker) => {
@@ -423,7 +426,7 @@ export default function Home() {
     };
 
     navigator.serviceWorker
-      .register('sw.js')
+      .register('sw.js', { updateViaCache: 'none' })
       .then((reg) => {
         if (cancelled) return;
         if (navigator.serviceWorker.controller) setOfflineReady(true);
@@ -462,9 +465,9 @@ export default function Home() {
   }, []);
 
   const applyUpdate = useCallback(() => {
-    waitingRef.current?.postMessage('skip-waiting');
     /* The new worker takes control, then the page reloads onto the new build. */
     navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload(), { once: true });
+    waitingRef.current?.postMessage('skip-waiting');
     setUpdateReady(false);
   }, []);
 
@@ -1542,11 +1545,17 @@ export default function Home() {
                 const done = stageDone(stage);
                 const open = openStage === idx;
                 const complete = done === stage.lessons.length;
+                /* The reveal observer adds `in` directly to the DOM. Opening a
+                   stage changes its React-owned className, so keep that class
+                   in React from the first interaction onwards. Otherwise the
+                   expanded card becomes transparent while retaining its full
+                   height and looks like a missing section. */
+                const revealed = everOpen.has(idx) || complete;
                 return (
                   <article
                     key={stage.number}
                     id={`stage-${stage.number}`}
-                    className={`stage glass reveal${open ? ' open' : ''}${complete ? ' done' : ''}`}
+                    className={`stage glass reveal${revealed ? ' in' : ''}${open ? ' open' : ''}${complete ? ' done' : ''}`}
                     style={{ '--hue': String(stage.hue) } as CSSProperties}
                   >
                     <button
