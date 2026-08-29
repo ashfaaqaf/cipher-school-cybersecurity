@@ -17,6 +17,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'out');
 const BASE = process.env.PAGES_BASE_PATH ? `/${process.env.PAGES_BASE_PATH}` : '';
+/* Bump when the generated worker's cache or activation protocol changes. The
+   app files can be identical while the worker itself needs a fresh cache. */
+const WORKER_SCHEMA = '2';
 
 /** Files worth having before the network is gone. */
 const PRECACHE_EXT = new Set(['.html', '.css', '.js', '.png', '.svg', '.webmanifest', '.woff2']);
@@ -52,6 +55,7 @@ try {
 const files = (await walk(OUT)).sort();
 const urls = [`${BASE}/`, ...files.map((f) => `${BASE}/${f}`)];
 const fingerprint = createHash('sha256');
+fingerprint.update(`worker-schema:${WORKER_SCHEMA}\0`);
 for (const file of files) {
   fingerprint.update(file);
   fingerprint.update('\0');

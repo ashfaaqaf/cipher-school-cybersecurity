@@ -66,6 +66,11 @@ assert.match(
   'an offline update must not interrupt an open lesson',
 );
 assert.match(workerBuilder, /cache\.addAll\(PRECACHE\)/, 'a service worker update must cache one complete build');
+assert.match(
+  workerBuilder,
+  /fingerprint\.update\(`worker-schema:\$\{WORKER_SCHEMA\}\\0`\)/,
+  'a worker protocol change must create a new cache even when app assets are unchanged',
+);
 assert.match(workerBuilder, /readFile\(path\.join\(OUT, file\)\)/, 'a release cache key must include built file contents');
 assert.doesNotMatch(
   workerBuilder,
