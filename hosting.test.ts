@@ -18,7 +18,9 @@ assert.match(infinityFreeWorkflow, /FTP_USERNAME" != "\$EXPECTED_FTP_USERNAME"/,
 assert.match(infinityFreeWorkflow, /FTP_REMOTE_DIR" != "\/htdocs"/, 'InfinityFree deployment must require the exact remote root');
 assert.doesNotMatch(infinityFreeWorkflow, /mirror[^\n]*--delete/, 'InfinityFree deployment must not delete unknown remote files');
 assert.match(infinityFreeWorkflow, /mirror[^\n]*--ignore-time/, 'unchanged static files must not be reuploaded because only their build timestamp changed');
+assert.match(infinityFreeWorkflow, /mirror[^\n]*--exclude-glob '\*\.png'/, 'routine releases must not replace InfinityFree-hosted PNGs that the host can temporarily lock');
 assert.match(infinityFreeWorkflow, /mirror[^\n]*--exclude-glob sw\.js/, 'the worker must not be uploaded with ordinary assets');
+assert.match(infinityFreeWorkflow, /put -O \. out\/cipher-school-icon-192\.png[\s\S]*cls -1 cipher-school-icon-192\.png/, 'a missing Home Screen icon must be repaired and verified');
 assert.match(infinityFreeWorkflow, /actions\/upload-artifact@v4/, 'InfinityFree deployment must save a rollback build');
 assert.match(infinityFreeWorkflow, /cancel-in-progress: false/, 'InfinityFree deployments must not interrupt an upload halfway through');
 

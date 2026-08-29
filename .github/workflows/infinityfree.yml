@@ -105,10 +105,17 @@ jobs:
           # Content-hashed assets only need uploading when their name or size
           # changes. Skipping timestamp-only differences avoids InfinityFree's
           # intermittent locks on unchanged icons and fonts.
-          mirror --reverse --no-perms --verbose --parallel=1 --ignore-time --exclude-glob index.html --exclude-glob sw.js out/ .
+          mirror --reverse --no-perms --verbose --parallel=1 --ignore-time --exclude-glob '*.png' --exclude-glob index.html --exclude-glob sw.js out/ .
+          # InfinityFree intermittently locks existing PNG names after a delete.
+          # Do not replace stable brand art on every release. Repair the 192px
+          # icon if a previous interrupted upload left it missing, then verify it.
+          set cmd:fail-exit no
+          put -O . out/cipher-school-icon-192.png
+          set cmd:fail-exit yes
           # Publish the entry page after its assets, then the worker last. A new
           # worker must never precache the previous release's index.html.
           put -O . out/index.html
           put -O . out/sw.js
+          cls -1 cipher-school-icon-192.png
           bye
           LFTP_COMMANDS
