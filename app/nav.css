@@ -1,7 +1,7 @@
 /* ============================================================
-   Navigation: one top bar, like every site people already know.
-   Wide screens show the sections inline in a pill with a gliding
-   highlight; narrow screens fold them into a menu under the bar.
+   Navigation: a global bar across the top, the way apple.com does
+   it. Wide screens spread the sections across one thin translucent
+   strip; narrow screens fold them into a menu under the bar.
    Imported last, so it has the final word on the header.
    ============================================================ */
 
@@ -31,68 +31,69 @@
 }
 
 @media (min-width: 900px) {
-  .topRow { display: grid; grid-template-columns: 1fr auto 1fr; }
-  .topActions { justify-self: end; }
-  .siteNav { display: block; }
+  .topbar {
+    padding-top: 0;
+    padding-bottom: 0;
+    background: color-mix(in srgb, var(--canvas) 80%, transparent);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+  }
 
-  .siteNav ul {
-    position: relative;
+  /* One row, 44px tall, everything spread edge to edge across 1024px. */
+  .topRow {
     display: flex;
-    gap: 2px;
-    margin: 0;
-    padding: 4px;
-    list-style: none;
-    border: 1px solid var(--rim-bright);
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--surface-raised) 72%, transparent);
-    box-shadow: var(--lift-edge), 0 10px 30px rgb(0 0 0 / 0.14);
-    backdrop-filter: blur(20px) saturate(150%);
-    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    align-items: center;
+    gap: 8px;
+    max-width: 1024px;
+    height: 44px;
+    min-height: 0;
   }
 
-  /* One highlight, positioned from the active link's box, that glides. */
-  .siteNav ul::before {
-    content: '';
-    position: absolute;
-    top: 4px;
-    bottom: 4px;
-    left: 0;
-    width: var(--ind-w, 0);
-    border-radius: 999px;
-    background: var(--action);
-    box-shadow: 0 6px 18px rgb(0 0 0 / 0.22);
-    transform: translateX(var(--ind-x, 0));
-    transition: transform 0.55s var(--apple), width 0.55s var(--apple), opacity 0.25s var(--ease);
+  .brand { flex: none; padding: 0 8px; }
+  .brand .mark { width: 24px; height: 24px; border-radius: 6px; box-shadow: none; }
+  .brandText { display: none; }
+
+  .siteNav { display: block; flex: 1; }
+  .siteNav ul {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
-  .siteNav ul:not([data-indicator='on'])::before { opacity: 0; }
 
   .navLink {
-    position: relative;
-    z-index: 1;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 15px;
-    border-radius: 999px;
-    color: var(--ink-mute);
-    font-size: 14px;
-    font-weight: 500;
+    gap: 5px;
+    height: 44px;
+    padding: 0 8px;
+    color: color-mix(in srgb, var(--ink) 80%, transparent);
+    font-size: 12px;
+    font-weight: 400;
     letter-spacing: -0.01em;
     text-decoration: none;
     white-space: nowrap;
-    transition: color 0.3s var(--ease), background 0.3s var(--ease);
+    transition: color 0.3s var(--apple);
   }
-  .navLink:hover { color: var(--ink); }
-  .navLink:not(.on):hover { background: var(--glass-2); }
-  .navLink.on { color: var(--on-action); }
-  .navLink:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .navLink:hover, .navLink.on { color: var(--ink); }
+  .navLink.on { font-weight: 600; }
+  .navLink:focus-visible { outline: 2px solid var(--focus); outline-offset: -6px; border-radius: 6px; }
+  .navBadge { min-width: 16px; height: 16px; font-size: 9px; line-height: 16px; }
 
-}
+  .topActions { flex: none; }
+  .topActions .iconBtn {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    background: transparent;
+    color: color-mix(in srgb, var(--ink) 80%, transparent);
+  }
+  .topActions .iconBtn svg { width: 16px; height: 16px; }
+  .topActions .iconBtn:hover, .topActions .iconBtn.settingsActive { color: var(--ink); background: transparent; }
 
-/* Between tablet and laptop the brand gives the links its subtitle's room. */
-@media (min-width: 900px) and (max-width: 1100px) {
-  .brandSub { display: none; }
-  .navLink { padding-inline: 12px; }
+  /* The learner's status sits under the bar, like a product's local nav. */
+  .island { max-width: 1024px; margin: 0 auto; padding: 8px 8px; }
 }
 
 /* ---------- menu button (narrow) ---------- */

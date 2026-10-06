@@ -4,7 +4,6 @@ import {
   useCallback,
   useDeferredValue,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -205,7 +204,6 @@ export default function Home() {
   /* The phone menu, and the two pieces of the header it needs to measure. */
   const [menuOpen, setMenuOpen] = useState(false);
   const menuBtnRef = useRef<HTMLButtonElement | null>(null);
-  const navListRef = useRef<HTMLUListElement | null>(null);
   /* The prose, the questions and the definitions. Null only until the idle
      prefetch lands, which is well before anyone has clicked into a lesson. */
   const full = useFull();
@@ -843,30 +841,6 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
-  /*
-   * The highlight behind the current section glides to the next one instead of
-   * blinking from one link to another. It is one element positioned from the
-   * active link's own box, so it follows any label length and any font size.
-   */
-  useLayoutEffect(() => {
-    const list = navListRef.current;
-    if (!list) return;
-    const place = () => {
-      const active = list.querySelector<HTMLElement>('.navLink.on');
-      if (!active) {
-        list.dataset.indicator = 'off';
-        return;
-      }
-      list.style.setProperty('--ind-x', `${active.offsetLeft}px`);
-      list.style.setProperty('--ind-w', `${active.offsetWidth}px`);
-      list.dataset.indicator = 'on';
-    };
-    place();
-    document.fonts?.ready.then(place);
-    window.addEventListener('resize', place);
-    return () => window.removeEventListener('resize', place);
-  }, [view, reader, srs.due]);
-
   /* ---------- derived ---------- */
 
   const doneCount = completed.size;
@@ -1169,7 +1143,7 @@ export default function Home() {
             </a>
 
             <nav className="siteNav" aria-label="Main">
-              <ul ref={navListRef}>
+              <ul>
                 {views.map((v) => {
                   const on = view === v.id;
                   return (
