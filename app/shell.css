@@ -3,7 +3,7 @@
 
    A wide screen is not filled by widening the column — a 2000px line of
    text is unreadable. It is filled by scaling the whole design: type,
-   spacing, rules and the rail grow together, the measure grows more
+   spacing and rules grow together, the measure grows more
    slowly, and the extra room becomes more columns.
 
    What used to be here: full-bleed alternating bands, a four-colour
@@ -54,20 +54,14 @@
   :root { --maxw: 1240px; }
 
   /*
-   * The shell spans the window and only pads for the rail; the measure is set
+   * The shell spans the window and only pads its gutters; the measure is set
    * by the inner sections. Capping the shell itself meant its padding came out
    * of the max-width, so on a 1920 screen the content column was 1144px with
    * 400px of dead black either side — the thing this file exists to fix.
    */
-  .shell { max-width: none; width: 100%; padding: 0 48px 96px calc(var(--rail) + 48px); }
+  .shell { max-width: none; width: 100%; padding: 0 48px 96px 48px; }
 
-  /* The hero fills the first screen rather than being a paragraph at the top. */
-  .hero { padding: 104px 0 80px; }
   h1 { font-size: clamp(52px, 4.8vw, 80px); letter-spacing: -0.042em; }
-  .lede { font-size: clamp(19px, 1.25vw, 22px); }
-
-  .stats { grid-template-columns: repeat(4, 1fr); }
-  .ringWrap { margin-top: 0; }
 
   /* The pointer response is the title taking the stage colour. Nothing moves. */
   .trackTitle, .sourceName, .companionName { transition: color var(--fast) var(--ease); }
@@ -99,26 +93,17 @@
 @media (min-width: 2000px) {
   :root {
     --maxw: 1600px;
-    --rail: 108px;
     --r-md: 12px;
     --r-lg: 16px;
     --r-xl: 22px;
   }
   body { font-size: 18px; }
-  .shell { padding: 0 64px 120px calc(var(--rail) + 64px); }
+  .shell { padding: 0 64px 120px 64px; }
 
   h1 { font-size: clamp(84px, 5vw, 104px); }
   h2 { font-size: clamp(40px, 2.2vw, 52px); }
-  .lede { font-size: clamp(21px, 1.15vw, 24px); }
+
   .sectionNote { font-size: 17.5px; }
-
-  .stat { padding: 20px; }
-  .statNum { font-size: 36px; }
-  .statLabel { font-size: 12px; }
-
-  .dockBtn { min-width: 68px; padding: 12px 10px 10px; }
-  .dockIcon { font-size: 19px; }
-  .dockLabel { font-size: 11px; }
 
   .stageList, .roleGrid, .today, .week, .results { max-width: 1140px; }
   .stageTitle { font-size: 19.5px; }
@@ -129,16 +114,12 @@
 }
 
 @media (min-width: 2560px) {
-  :root { --maxw: 1760px; --rail: 118px; }
+  :root { --maxw: 1760px; }
   body { font-size: 19px; }
-  .shell { padding: 0 80px 128px calc(var(--rail) + 80px); }
+  .shell { padding: 0 80px 128px 80px; }
 
   h1 { font-size: clamp(88px, 3.8vw, 112px); }
   h2 { font-size: clamp(46px, 1.9vw, 56px); }
-  .lede { font-size: 24px; }
-
-  .stats { grid-auto-rows: auto; }
-  .statNum { font-size: 38px; }
 
   .stageList, .roleGrid, .today, .week, .results { max-width: 1320px; }
   .sourceGrid { grid-template-columns: repeat(5, 1fr); }
@@ -149,23 +130,17 @@
 
 /* 4K and beyond. */
 @media (min-width: 3200px) {
-  :root { --maxw: 1920px; --rail: 132px; }
+  :root { --maxw: 1920px; }
   body { font-size: 20px; }
-  .shell { padding: 0 96px 144px calc(var(--rail) + 96px); }
+  .shell { padding: 0 96px 144px 96px; }
 
   h1 { font-size: clamp(104px, 3.2vw, 128px); }
   h2 { font-size: clamp(50px, 1.7vw, 60px); }
-  .lede { font-size: 26px; }
-  .sectionNote { font-size: 19px; }
 
-  .statNum { font-size: 40px; }
-  .statLabel { font-size: 12px; }
+  .sectionNote { font-size: 19px; }
 
   .mark { width: 48px; height: 48px; }
   .brandName { font-size: 20px; }
-  .dockBtn { min-width: 72px; padding: 13px 10px 11px; }
-  .dockIcon { font-size: 20px; }
-  .dockLabel { font-size: 11px; }
 
   .stageList, .roleGrid, .today, .week, .results { max-width: 1440px; }
   .sourceGrid { grid-template-columns: repeat(5, 1fr); }

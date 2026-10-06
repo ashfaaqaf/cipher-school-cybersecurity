@@ -120,7 +120,7 @@
   --space-8: clamp(64px, 10vw, 104px);
 
   --maxw: 780px;
-  --dock-h: calc(62px + env(safe-area-inset-bottom, 0px));
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 
   /* How far a hovered row's wash reaches past the measure, into the gutter.
      Scoped to 0 inside containers that clip, which is the only reason it is
@@ -314,7 +314,7 @@ body.locked { overflow: hidden; }
   z-index: 1;
   max-width: var(--maxw);
   margin: 0 auto;
-  padding: 0 18px calc(var(--dock-h) + 34px);
+  padding: 0 18px calc(var(--safe-bottom) + 34px);
 }
 
 section { scroll-margin-top: 92px; }
@@ -394,21 +394,6 @@ section { scroll-margin-top: 92px; }
 .islandBar { width: 58px; height: 2px; flex: none; background: var(--glass-3); overflow: hidden; }
 .islandBar i { display: block; height: 100%; border-radius: inherit; background: var(--grow); transition: width var(--slow) var(--sheet); }
 
-/* ---------- hero ---------- */
-
-.hero { padding: 64px 0 48px; }
-
-/*
- * The smallest type on the page sits directly above the largest. That jump,
- * and the shared left edge, is the entire hero treatment.
- */
-.eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-family: var(--mono);
-  font-size: 11px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
 /*
  * Light rather than bold at display size. Weight 300 on a 72px line reads as
  * confidence; weight 600 at the same size reads as shouting, and there is
@@ -424,10 +409,6 @@ h1 {
 }
 /* The one spot of colour above the fold. */
 h1 em { font-style: normal; color: var(--accent); }
-
-.lede { margin: 24px 0 0; font-size: 18px; line-height: 1.6; color: var(--ink-mute); max-width: 34em; letter-spacing: -0.011em; }
-
-.heroActions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; }
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -450,34 +431,6 @@ h1 em { font-style: normal; color: var(--accent); }
 
 .btn.ghost { color: var(--ink); background: transparent; border-color: var(--rim); }
 .btn.ghost:hover { border-color: var(--ink); }
-
-/* ---------- stat tiles ---------- */
-
-/*
- * Four numbers divided by rules, like a specification table. The gap between
- * a 32px figure and its 10px monospaced label is doing the work a box used to.
- */
-.stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; margin-top: 44px; border-top: 1px solid var(--rim); }
-@media (min-width: 560px) { .stats { grid-template-columns: repeat(4, 1fr); } }
-
-.stat { padding: 18px 16px 18px 0; border-radius: 0; }
-@media (min-width: 560px) {
-  .stat + .stat { padding-left: 20px; border-left: 1px solid var(--rim-bright); }
-}
-.statNum { font-family: var(--mono); font-size: 32px; font-weight: 500; letter-spacing: -0.04em; line-height: 1; font-variant-numeric: tabular-nums; }
-.statLabel { margin-top: 8px; font-family: var(--mono); font-size: 10px; color: var(--ink-faint); letter-spacing: 0.1em; text-transform: uppercase; }
-
-/* ---------- ring ---------- */
-
-.ringWrap { display: flex; align-items: center; gap: 18px; padding: 20px 0; border-top: 1px solid var(--rim-bright); margin-top: 0; }
-.ring { position: relative; width: 74px; height: 74px; flex: none; }
-.ring svg { transform: rotate(-90deg); display: block; }
-.ring circle { fill: none; stroke-width: 4; stroke-linecap: butt; }
-.ring .ringTrack { stroke: var(--glass-3); }
-.ring .fill { stroke: url(#ringGrad); transition: stroke-dashoffset var(--slow) var(--sheet); }
-.ringPct { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: -0.03em; }
-.ringInfo h2, .ringInfo .ringTitle { margin: 0 0 4px; font-size: 15px; font-weight: 600; letter-spacing: -0.02em; }
-.ringInfo p { margin: 0; font-size: 13px; color: var(--ink-mute); line-height: 1.45; }
 
 /* ---------- section headers ---------- */
 
@@ -887,40 +840,6 @@ h2 {
 .safety { margin-top: 72px; padding: 0 0 0 16px; border-radius: 0; background: transparent; border: 0; border-left: 2px solid var(--attend); }
 .safetyTitle { font-family: var(--mono); font-size: 10px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: var(--attend); }
 .safetyText { margin-top: 10px; font-size: 14.5px; line-height: 1.6; color: var(--ink-mute); }
-
-/* ---------- dock ---------- */
-
-.dock {
-  position: fixed; z-index: 45;
-  left: 50%; transform: translateX(-50%);
-  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  display: flex; gap: 2px; padding: 4px;
-  border-radius: var(--r-xl);
-  background: var(--lift);
-  border: 1px solid var(--rim);
-  box-shadow: var(--lift-edge), var(--shadow-lg);
-  animation: dockIn var(--base) var(--ease);
-  max-width: calc(100vw - 24px);
-  overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  scrollbar-width: none;
-}
-.dock::-webkit-scrollbar { display: none; }
-@keyframes dockIn { from { opacity: 0; } }
-
-.dockBtn {
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  min-width: 62px; min-height: 44px; padding: 8px 10px 7px;
-  border: 0; background: transparent; color: var(--ink-faint);
-  justify-content: center;
-  border-radius: var(--r-sm); cursor: pointer; font-family: inherit;
-  transition: color var(--fast) var(--ease), background var(--fast) var(--ease), transform var(--fast) var(--spring);
-  flex: 0 0 auto;
-}
-.dockBtn:active { transform: scale(0.9); }
-.dockBtn.on { color: var(--canvas); background: var(--ink); }
-.dockIcon { font-size: 15px; line-height: 1; }
-.dockLabel { font-family: var(--mono); font-size: 9px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; }
 
 /* ---------- content visibility ---------- */
 

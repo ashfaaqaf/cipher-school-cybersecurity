@@ -18,12 +18,7 @@
 
 @media print {
   /* Hide the application, show the sheet. */
-  .shell,
-  .dock,
-  .field,
-  .updateBar,
-  .scrim,
-  .sheet {
+  .shell, .field, .updateBar, .scrim, .sheet {
     display: none !important;
   }
 

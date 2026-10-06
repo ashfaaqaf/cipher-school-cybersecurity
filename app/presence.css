@@ -1,276 +1,314 @@
-/* The public face of Cipher School: an operations console, not a course catalogue. */
+/* The public face of Cipher School: a ciphertext field that decrypts under the
+   pointer. Always dark, in either theme: it is a stage, not a surface. */
 
-.hero {
+.cine {
+  --cine-bg: #04070b;
+  --cine-ink: #f4f7fb;
+  --cine-glow: hsl(var(--hue) 92% 72%);
   position: relative;
   isolation: isolate;
-}
-
-.hero::before {
-  content: '';
-  position: absolute;
-  z-index: -2;
-  inset: 10px -18px auto;
-  height: min(760px, 92vh);
-  pointer-events: none;
-  background:
-    linear-gradient(var(--canvas) 0 0) padding-box,
-    radial-gradient(circle at 18% 14%, hsl(var(--hue) 90% 60% / 0.13), transparent 42%),
-    radial-gradient(circle at 88% 34%, hsl(152 68% 55% / 0.08), transparent 34%);
-  opacity: 0.95;
-}
-
-.hero::after {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: 10px -18px auto;
-  height: min(760px, 92vh);
-  pointer-events: none;
-  background-image:
-    linear-gradient(var(--rim-bright) 1px, transparent 1px),
-    linear-gradient(90deg, var(--rim-bright) 1px, transparent 1px);
-  background-size: 42px 42px;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.38), transparent 72%);
-  opacity: 0.28;
-}
-
-.eyebrow i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--grow);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--grow) 14%, transparent);
-}
-
-.hero h1 {
-  max-width: 12.5ch;
-}
-
-.hero h1 em {
-  display: block;
-  background: linear-gradient(110deg, var(--accent), var(--t-cyan) 46%, var(--t-green));
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-.promiseRow {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px 18px;
-  margin-top: 24px;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.promiseRow span::before {
-  content: '✓';
-  margin-right: 7px;
-  color: var(--grow);
-}
-
-.protocol {
-  position: relative;
+  align-items: flex-end;
+  max-width: none;
+  min-height: clamp(560px, calc(100svh - var(--header-h, 120px) - 24px), 920px);
+  margin: 12px 0 0;
   overflow: hidden;
-  border: 1px solid var(--rim);
-  border-radius: var(--r-lg);
-  background: color-mix(in srgb, var(--lift) 92%, transparent);
-  box-shadow: var(--lift-edge), 0 32px 100px rgba(0, 0, 0, 0.25);
+  border-radius: clamp(22px, 3vw, 32px);
+  background:
+    radial-gradient(ellipse 70% 60% at 72% 34%, hsl(var(--hue) 80% 26% / 0.5), transparent 70%),
+    var(--cine-bg);
+  color: var(--cine-ink);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.06) inset, 0 40px 120px rgb(0 0 0 / 0.35);
+  touch-action: pan-y;
 }
 
-.protocol::after {
-  content: '';
+/* ---------- layers ---------- */
+
+.cineGrid {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  background: linear-gradient(120deg, hsl(var(--hue) 80% 64% / 0.08), transparent 38%);
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  color: #64748b;
+  opacity: 0.18;
 }
 
-.protocolTop {
-  position: relative;
+.cineZoom {
+  position: absolute;
+  inset: -24px;
   z-index: 1;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  min-height: 44px;
-  padding: 0 16px;
-  border-bottom: 1px solid var(--rim);
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--ink-faint);
+  animation: cineZoom 2.6s var(--out) both;
 }
 
-.liveTag {
+.cineField { position: absolute; inset: 0; will-change: transform; }
+
+.cineCipher,
+.cinePlain {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  overflow: hidden;
+  font: 500 13px/20px var(--mono);
+  letter-spacing: 0.02em;
+  white-space: pre;
+  user-select: none;
+  pointer-events: none;
+}
+
+.cineCipher { color: hsl(var(--hue) 30% 72% / 0.15); }
+
+.cinePlain {
+  color: var(--cine-glow);
+  text-shadow: 0 0 14px hsl(var(--hue) 92% 60% / 0.6);
+  -webkit-mask-image: radial-gradient(var(--spot, 260px) circle at var(--mx, 72%) var(--my, 38%), #000 0 40%, rgb(0 0 0 / 0.75) 60%, rgb(0 0 0 / 0.4) 75%, rgb(0 0 0 / 0.12) 88%, transparent);
+  mask-image: radial-gradient(var(--spot, 260px) circle at var(--mx, 72%) var(--my, 38%), #000 0 40%, rgb(0 0 0 / 0.75) 60%, rgb(0 0 0 / 0.4) 75%, rgb(0 0 0 / 0.12) 88%, transparent);
+}
+
+/* A slow scan line, the only thing that moves when nothing else does. */
+.cineScan {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 2;
+  height: 32%;
+  background: linear-gradient(transparent, hsl(var(--hue) 92% 70% / 0.06) 70%, hsl(var(--hue) 92% 75% / 0.14) 98%, transparent);
+  animation: cineScan 7s linear 1.2s infinite both;
+  pointer-events: none;
+}
+
+/* Legibility: darken behind the copy, keep the field alive on the right. */
+.cineShade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background:
+    linear-gradient(to top, rgb(4 7 11 / 0.94), rgb(4 7 11 / 0.6) 40%, transparent 72%),
+    linear-gradient(to right, rgb(4 7 11 / 0.78), rgb(4 7 11 / 0.2) 55%, transparent 75%);
+  pointer-events: none;
+}
+
+/* ---------- stat arcs ---------- */
+
+.cineArcs {
+  position: absolute;
+  inset-block: 0;
+  right: 0;
+  z-index: 4;
+  display: none;
+  height: 100%;
+  width: auto;
+  aspect-ratio: 380 / 700;
+  color: #fff;
+  pointer-events: none;
+}
+
+.arcLine {
+  fill: none;
+  stroke-width: 1.1;
+  stroke-dasharray: var(--len);
+  stroke-dashoffset: var(--len);
+  animation: arcDraw 1.6s cubic-bezier(0.65, 0, 0.35, 1) var(--d) both;
+}
+.arcDot {
+  fill: currentColor;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: arcPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d) both;
+}
+.arcRing {
+  fill: none;
+  stroke: var(--cine-glow);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: arcPulse 2.8s ease-in-out var(--d) infinite both;
+}
+.arcNum {
+  fill: currentColor;
+  font: 500 32px var(--mono);
+  letter-spacing: -1px;
+  animation: cineFade 0.7s ease var(--d) both;
+}
+.arcNum tspan { font-size: 19px; }
+.arcLabel {
+  fill: currentColor;
+  fill-opacity: 0.8;
+  font: 600 8.5px var(--mono);
+  letter-spacing: 2px;
+  animation: cineFade 0.7s ease var(--d) both;
+}
+
+/* ---------- copy ---------- */
+
+.cineInner {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  padding: clamp(96px, 14vh, 160px) clamp(20px, 4.5vw, 56px) clamp(24px, 5vw, 56px);
+}
+
+.cineCopy { max-width: 640px; }
+
+.cineEyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  color: var(--grow);
+  gap: 9px;
+  margin: 0;
+  font: 500 11px var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cine-glow);
 }
-
-.liveTag i {
+.cineEyebrow i {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   background: currentColor;
-  box-shadow: 0 0 12px currentColor;
+  box-shadow: 0 0 0 4px hsl(var(--hue) 92% 70% / 0.16), 0 0 14px currentColor;
 }
 
-.protocolSteps {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin: 0;
+.cine h1 {
+  margin: 18px 0 0;
+  max-width: none;
+  font-size: clamp(38px, 6vw, 76px);
+  font-weight: 420;
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  color: #fff;
+  text-wrap: balance;
+}
+/* Monospaced, so the scramble never changes the line's width. */
+.cine h1 em {
+  display: block;
+  margin-top: 0.16em;
+  font: 500 0.56em/1.15 var(--mono);
+  letter-spacing: -0.035em;
+  color: var(--cine-glow);
+  text-shadow: 0 0 24px hsl(var(--hue) 92% 60% / 0.45);
+}
+
+.cineLede {
+  max-width: 34em;
+  margin: 18px 0 0;
+  font-size: clamp(15px, 1.35vw, 18px);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  color: rgb(244 247 251 / 0.76);
+}
+
+.cineStats {
+  display: flex;
+  gap: 24px;
+  margin: 20px 0 0;
   padding: 0;
   list-style: none;
 }
+.cineStats b { display: block; font: 500 24px/1 var(--mono); letter-spacing: -0.04em; color: #fff; }
+.cineStats span { display: block; margin-top: 6px; font: 500 9px var(--mono); letter-spacing: 0.14em; color: rgb(255 255 255 / 0.55); }
 
-.protocolSteps li {
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  gap: 10px;
-  min-height: 94px;
-  padding: 17px 14px;
-  border-bottom: 1px solid var(--rim-bright);
-}
+.cineActions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
 
-.protocolSteps li:nth-child(odd) { border-right: 1px solid var(--rim-bright); }
-
-.protocolNum {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--accent);
-}
-
-.protocolSteps b,
-.protocolSteps small {
-  display: block;
-}
-
-.protocolSteps b {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-}
-
-.protocolSteps small {
-  margin-top: 5px;
-  color: var(--ink-faint);
-  font-size: 11px;
-  line-height: 1.45;
-}
-
-.missionBrief {
+.cineCta,
+.cineGhost {
   position: relative;
-  z-index: 1;
-  padding: 16px;
-  background: color-mix(in srgb, var(--canvas) 58%, transparent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 26px;
+  border-radius: 999px;
+  font: 620 15px/1 var(--sans);
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: transform 0.5s var(--spring), box-shadow 0.5s var(--apple), background 0.3s var(--ease), border-color 0.3s var(--ease);
 }
-
-.missionPrompt {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--ink-mute);
-}
-
-.missionPrompt span {
-  margin-right: 8px;
-  color: var(--t-green);
-}
-
-.missionPrompt::after {
-  content: '';
-  display: inline-block;
-  width: 7px;
-  height: 1em;
-  margin-left: 6px;
-  vertical-align: -2px;
-  background: var(--accent);
-  animation: cursorBlink 1.1s steps(1) infinite;
-}
-
-@keyframes cursorBlink { 50% { opacity: 0; } }
-
-.missionResult {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 4px 12px;
-  margin-top: 13px;
-}
-
-.missionResult span {
-  grid-row: 1 / 3;
-  align-self: start;
-  padding: 5px 7px;
-  border: 1px solid var(--accent-line);
-  border-radius: var(--r-xs);
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--accent);
-}
-
-.missionResult b {
-  min-width: 0;
+.cineCta {
   overflow: hidden;
-  text-overflow: ellipsis;
+  border: 0;
+  background: #fff;
+  color: #05070a;
+  box-shadow: 0 14px 40px rgb(0 0 0 / 0.4), 0 0 0 1px rgb(255 255 255 / 0.12);
+}
+.cineCta > span { position: relative; z-index: 1; transition: transform 0.5s var(--apple); }
+.cineCta:hover { transform: scale(1.04); box-shadow: 0 18px 54px hsl(var(--hue) 92% 50% / 0.38), 0 0 0 1px rgb(255 255 255 / 0.2); }
+.cineCta:hover > span[aria-hidden] { transform: translateX(4px); }
+.cineCta:active, .cineGhost:active { transform: scale(0.96); }
+
+.cineShine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 25%, hsl(var(--hue) 95% 78% / 0.6) 50%, transparent 75%);
+  transform: translateX(-110%);
+  animation: cineShine 1.1s var(--apple) 1.9s both;
+}
+.cineCta:hover .cineShine { animation: none; transform: translateX(110%); transition: transform 0.8s var(--apple); }
+
+.cineGhost {
+  border: 1px solid rgb(255 255 255 / 0.2);
+  background: rgb(255 255 255 / 0.06);
+  color: #fff;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.cineGhost:hover { background: rgb(255 255 255 / 0.12); border-color: rgb(255 255 255 / 0.34); }
+
+.cineNext {
+  max-width: 100%;
+  margin: 18px 0 0;
+  overflow: hidden;
+  font: 500 12px var(--mono);
+  color: rgb(255 255 255 / 0.55);
   white-space: nowrap;
-  font-size: 14px;
-  font-weight: 560;
+  text-overflow: ellipsis;
+}
+.cineNext > span:first-child { color: var(--cine-glow); }
+.cineNext b { font-weight: 500; color: #fff; }
+
+/* The intro: each line rises out of a blur, in reading order. */
+.rise { animation: cineRise 0.95s var(--out) var(--d, 0s) both; }
+
+@keyframes cineRise { from { opacity: 0; transform: translateY(26px); filter: blur(8px); } }
+@keyframes cineZoom { from { transform: scale(1.12); opacity: 0; } }
+@keyframes cineScan { from { transform: translateY(-100%); } to { transform: translateY(420%); } }
+@keyframes cineFade { from { opacity: 0; } }
+@keyframes cineShine { to { transform: translateX(110%); } }
+@keyframes arcDraw { to { stroke-dashoffset: 0; } }
+@keyframes arcPop { 0% { opacity: 0; transform: scale(0.4); } 60% { opacity: 1; transform: scale(1.25); } }
+@keyframes arcPulse { 0% { opacity: 0.4; transform: scale(1); } 100% { opacity: 0; transform: scale(1.5); } }
+
+@media (min-width: 900px) {
+  .cineArcs { display: block; }
+  .cineStats { display: none; }
 }
 
-.missionResult small {
-  color: var(--ink-faint);
-  font-size: 11px;
+@media (max-width: 559px) {
+  .cine { margin-top: 8px; }
+  .cineCipher, .cinePlain { font-size: 11px; line-height: 17px; }
+  .cinePlain { --spot: 190px; }
+  .cineShade {
+    background: linear-gradient(to top, rgb(4 7 11 / 0.96), rgb(4 7 11 / 0.8) 55%, rgb(4 7 11 / 0.3) 85%);
+  }
+  .cineActions { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .cineStats { gap: 18px; }
+  .cineStats b { font-size: 21px; }
 }
 
-.heroSide .stats {
-  width: 100%;
-  min-width: 0;
-  margin-top: 18px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-auto-rows: auto;
-  border-bottom: 1px solid var(--rim);
+@media (prefers-reduced-motion: reduce) {
+  .rise, .cineZoom, .cineScan, .cineShine, .arcLine, .arcDot, .arcRing, .arcNum, .arcLabel { animation: none; }
+  .arcLine { stroke-dashoffset: 0; }
+  .arcRing { opacity: 0.4; }
+  .cineScan { display: none; }
 }
+:root[data-motion='reduce'] .cineScan { display: none; }
+:root[data-motion='reduce'] .arcRing { animation: none; opacity: 0.4; }
 
-.heroSide .stat {
-  min-width: 0;
-  padding: 17px 16px 17px 0;
-  border-left: 0;
-}
-
-.heroSide .stat:nth-child(even) {
-  padding-left: 18px;
-  border-left: 1px solid var(--rim-bright);
-}
-
-.heroSide .stat:nth-child(-n + 2) {
-  border-bottom: 1px solid var(--rim-bright);
-}
-
-.heroSide .statNum,
-.heroSide .stat:nth-child(1) .statNum {
-  font-size: clamp(28px, 1.7vw, 38px);
-}
-
-.heroSide .statLabel {
-  font-size: clamp(10px, 0.5vw, 11px);
-}
-
-.heroSide .ringWrap {
-  margin-top: 0;
-  padding: 18px 0;
-}
+/* ---------- the learning loop, under the hero ---------- */
 
 .differenceRail {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-column: 1 / -1;
-  margin-top: 12px;
+  margin-top: clamp(20px, 3vw, 32px);
   border-top: 1px solid var(--rim);
   border-bottom: 1px solid var(--rim);
 }
@@ -316,45 +354,4 @@
   }
   .differenceRail > div:last-child { border-right: 0; }
   .differenceRail > div:not(:first-child) { padding-left: 16px; }
-}
-
-@media (min-width: 1025px) {
-  .hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(390px, 0.78fr);
-    gap: 42px clamp(52px, 6vw, 92px);
-    align-items: start;
-    padding: 88px 0 58px;
-  }
-
-  .heroCopy { padding-top: 26px; }
-  .heroSide { width: 100%; max-width: 720px; min-width: 0; margin-top: 0; justify-self: end; }
-  .hero h1 { font-size: clamp(58px, 5.1vw, 82px); }
-  .hero .lede { max-width: 31em; }
-  .differenceRail { margin-top: 0; }
-}
-
-@media (min-width: 1500px) {
-  .hero {
-    grid-template-columns: minmax(0, 1.18fr) minmax(460px, 0.82fr);
-    gap: 56px 112px;
-  }
-  .protocolSteps li { min-height: 104px; padding: 20px 18px; }
-  .protocolSteps b { font-size: 15px; }
-  .protocolSteps small { font-size: 12px; }
-}
-
-@media (max-width: 559px) {
-  .hero h1 { font-size: clamp(42px, 12.8vw, 62px); }
-  .promiseRow { flex-direction: column; gap: 7px; }
-  .protocolSteps { grid-template-columns: 1fr; }
-  .protocolSteps li,
-  .protocolSteps li:nth-child(odd) { border-right: 0; }
-  .protocolSteps li { min-height: 78px; grid-template-columns: 26px 1fr; }
-  .missionResult { grid-template-columns: 1fr; }
-  .missionResult span { grid-row: auto; width: max-content; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .missionPrompt::after { animation: none; }
 }

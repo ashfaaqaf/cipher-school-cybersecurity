@@ -14,6 +14,7 @@ import './assessment.css';
 import './settings.css';
 import './mobile.css';
 import './redesign.css';
+import './nav.css';
 
 /*
  * Declared through next/font rather than a hand-written @font-face so the build

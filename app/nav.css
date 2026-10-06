@@ -1,0 +1,202 @@
+/* ============================================================
+   Navigation: one top bar, like every site people already know.
+   Wide screens show the sections inline in a pill with a gliding
+   highlight; narrow screens fold them into a menu under the bar.
+   Imported last, so it has the final word on the header.
+   ============================================================ */
+
+:root {
+  --apple: cubic-bezier(0.28, 0.11, 0.32, 1);
+  --out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.brand { color: inherit; text-decoration: none; }
+.brandText { display: grid; min-width: 0; }
+
+.topbar.menuOpen { background: var(--canvas); backdrop-filter: none; }
+
+/* ---------- inline links (wide) ---------- */
+
+.siteNav { display: none; }
+
+.navBadge {
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--attend);
+  color: #000;
+  font: 600 10px/18px var(--mono);
+  text-align: center;
+}
+
+@media (min-width: 900px) {
+  .topRow { display: grid; grid-template-columns: 1fr auto 1fr; }
+  .topActions { justify-self: end; }
+  .siteNav { display: block; }
+
+  .siteNav ul {
+    position: relative;
+    display: flex;
+    gap: 2px;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    border: 1px solid var(--rim-bright);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface-raised) 72%, transparent);
+    box-shadow: var(--lift-edge), 0 10px 30px rgb(0 0 0 / 0.14);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+  }
+
+  /* One highlight, positioned from the active link's box, that glides. */
+  .siteNav ul::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 0;
+    width: var(--ind-w, 0);
+    border-radius: 999px;
+    background: var(--action);
+    box-shadow: 0 6px 18px rgb(0 0 0 / 0.22);
+    transform: translateX(var(--ind-x, 0));
+    transition: transform 0.55s var(--apple), width 0.55s var(--apple), opacity 0.25s var(--ease);
+  }
+  .siteNav ul:not([data-indicator='on'])::before { opacity: 0; }
+
+  .navLink {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 15px;
+    border-radius: 999px;
+    color: var(--ink-mute);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.3s var(--ease), background 0.3s var(--ease);
+  }
+  .navLink:hover { color: var(--ink); }
+  .navLink:not(.on):hover { background: var(--glass-2); }
+  .navLink.on { color: var(--on-action); }
+  .navLink:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+}
+
+/* Between tablet and laptop the brand gives the links its subtitle's room. */
+@media (min-width: 900px) and (max-width: 1100px) {
+  .brandSub { display: none; }
+  .navLink { padding-inline: 12px; }
+}
+
+/* ---------- menu button (narrow) ---------- */
+
+.menuBtn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--rim-bright);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 74%, transparent);
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform var(--fast) var(--ease), background 0.3s var(--ease);
+}
+.menuBtn:active { transform: scale(0.92); }
+
+/* Two lines that cross into an X. */
+.menuGlyph { position: relative; width: 18px; height: 12px; }
+.menuGlyph i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1.6px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: transform 0.45s var(--apple), top 0.45s var(--apple);
+}
+.menuGlyph i:first-child { top: 2px; }
+.menuGlyph i:last-child { top: 8.4px; }
+.menuBtn.open .menuGlyph i:first-child { top: 5.2px; transform: rotate(45deg); }
+.menuBtn.open .menuGlyph i:last-child { top: 5.2px; transform: rotate(-45deg); }
+
+@media (max-width: 899px) {
+  /* Settings lives in the menu on narrow screens. */
+  .settingsGear { display: none; }
+}
+
+/* ---------- menu panel (narrow) ---------- */
+
+.menuPanel {
+  position: fixed;
+  inset: var(--header-h, 64px) 0 0;
+  z-index: 60;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 6px clamp(16px, 4.5vw, 28px) calc(28px + var(--safe-bottom, 0px));
+  background: var(--canvas);
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+  transition: clip-path 0.5s var(--apple), visibility 0s linear 0.5s;
+}
+.menuPanel.open {
+  clip-path: inset(0 0 0 0);
+  visibility: visible;
+  transition: clip-path 0.6s var(--apple), visibility 0s;
+}
+.menuPanel ul { margin: 0; padding: 0; list-style: none; }
+.menuPanel li {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.25s var(--ease), transform 0.35s var(--apple);
+}
+.menuPanel.open li {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.45s var(--ease), transform 0.6s var(--out);
+  transition-delay: calc(90ms + var(--i) * 40ms);
+}
+
+.menuLink {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 60px;
+  border-bottom: 1px solid var(--rim-bright);
+  color: var(--ink-soft);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  text-decoration: none;
+  transition: color 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+.menuLink.on { color: var(--accent); }
+.menuLink:active { opacity: 0.55; }
+.menuLink .navBadge { font-size: 11px; }
+
+@media (min-width: 900px) {
+  .menuBtn, .menuPanel { display: none; }
+}
+
+/* ---------- page changes ---------- */
+
+/* The header is its own layer, so it holds still while the page beneath
+   crossfades and settles upward. */
+.topbar { view-transition-name: site-header; }
+::view-transition-old(root) { animation: vtOut 0.2s var(--ease) both; }
+::view-transition-new(root) { animation: vtIn 0.5s var(--apple) both; }
+@keyframes vtOut { to { opacity: 0; transform: translateY(-6px); } }
+@keyframes vtIn { from { opacity: 0; transform: translateY(14px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .siteNav ul::before, .menuGlyph i, .menuPanel, .menuPanel li { transition: none !important; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}

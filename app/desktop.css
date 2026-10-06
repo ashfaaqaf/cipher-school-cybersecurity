@@ -6,7 +6,7 @@
    here changes mobile, which is why it lives in its own file: if a rule
    is in here, it cannot affect a phone.
 
-   The shape: a floating vertical nav rail on the left, a centred column
+   The shape: a top navigation bar, a centred column
    that grows to a real desktop width, grids that become multi-column, and
    a lesson reader that stops being a bottom sheet and becomes a proper
    centred dialog.
@@ -15,70 +15,27 @@
 @media (min-width: 1025px) {
   :root {
     --maxw: 1120px;
-    --rail: 96px;
   }
 
   body { font-size: 17px; }
 
   .shell {
-    padding: 0 40px 80px calc(var(--rail) + 40px);
+    padding: 0 40px 80px 40px;
   }
-
-  /* ---------- nav becomes a left rail ---------- */
-
-  .dock {
-    left: 20px;
-    top: 50%;
-    bottom: auto;
-    transform: translateY(-50%);
-    flex-direction: column;
-    gap: 4px;
-    padding: 8px;
-    border-radius: var(--r-lg);
-    max-width: none;
-    animation: railIn var(--slow) var(--spring);
-  }
-  @keyframes railIn {
-    from { opacity: 0; transform: translate(-24px, -50%); }
-  }
-
-  .dockBtn {
-    min-width: 60px;
-    padding: 10px 8px 8px;
-    border-radius: var(--r-md);
-    gap: 4px;
-  }
-  .dockIcon { font-size: 17px; }
-  .dockLabel { font-size: 10px; }
 
   /* ---------- header ---------- */
 
-  .topbar { margin: 0 -48px 0 calc((var(--rail) + 48px) * -1); padding: 14px 48px 12px calc(var(--rail) + 48px); }
+  .topbar { margin: 0 -48px 0 -48px; padding: 14px 48px 12px 48px; }
   .topRow { max-width: var(--maxw); margin: 0 auto; }
   .island { max-width: var(--maxw); margin: 10px auto 0; }
   .brandName { font-size: 16px; }
   .mark { width: 38px; height: 38px; font-size: 14px; }
 
-  .topRow, .island, .hero, section, .foot { max-width: var(--maxw); margin-left: auto; margin-right: auto; }
-
-  /* ---------- hero ---------- */
-
-  /*
-   * One centred column, not a two-column split. A product page opens with the
-   * claim alone in the middle of the screen and puts the numbers underneath —
-   * splitting them side by side makes the headline compete with a stat grid.
-   */
-  .hero { padding: 100px 0 72px; }
-  .heroSide { margin-top: 56px; }
+  .topRow, .island, section, .foot { max-width: var(--maxw); margin-left: auto; margin-right: auto; }
 
   h1 { font-size: clamp(48px, 4.4vw, 68px); }
-  .lede { font-size: 21px; max-width: 34em; }
-  .heroActions { margin-top: 30px; }
-  .btn { min-height: 48px; padding: 0 24px; font-size: 16px; }
 
-  .stat { padding: 22px 20px 22px 0; }
-  .statNum { font-size: 38px; }
-  .ringWrap { margin-top: 14px; padding: 20px; text-align: left; }
+  .btn { min-height: 48px; padding: 0 24px; font-size: 16px; }
 
   /* ---------- sections ---------- */
 

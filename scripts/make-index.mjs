@@ -145,7 +145,10 @@ export const totalQuestions = ${questions.length};
 `;
 
 if (process.argv.includes('--check')) {
-  const current = await readFile(OUT, 'utf8').catch(() => '');
+  /* Compared without line endings: a Windows checkout with core.autocrlf
+     rewrites the committed file to CRLF, and the generator writes LF, so a byte
+     comparison failed on every fresh pull while CI on Linux never saw it. */
+  const current = (await readFile(OUT, 'utf8').catch(() => '')).replace(/\r\n/g, '\n');
   if (current !== body) {
     console.error('light.ts is stale — run `node scripts/make-index.mjs`.');
     process.exit(1);

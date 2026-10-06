@@ -91,17 +91,6 @@
 .quizHead { display: flex; align-items: center; justify-content: space-between; }
 .quizScore { font-size: 13px; font-weight: 700; color: var(--grow); font-variant-numeric: tabular-nums; }
 
-.dockIcon { position: relative; }
-.dockBtn { min-width: 58px; padding: 7px 7px 6px; }
-.dockBadge {
-  position: absolute; top: -5px; right: -10px;
-  min-width: 16px; height: 16px; padding: 0 4px;
-  border-radius: var(--r-full);
-  background: var(--accent); color: var(--on-accent);
-  font-size: 9.5px; font-weight: 700; line-height: 16px;
-  font-variant-numeric: tabular-nums;
-}
-
 /* ---------- narration ---------- */
 
 .player {
@@ -231,9 +220,6 @@
   .lessonNotebook textarea { min-height: 210px; padding: 13px; font-size: 13px; }
 }
 
-/* ---------- backup and offline ---------- */
-
-.dataRow { display: flex; gap: 7px; margin-top: 11px; }
 .dataBtn {
   min-height: 44px; padding: 0 15px; border-radius: var(--r-full);
   background: transparent; border: 1px solid var(--rim); color: var(--ink-mute);
@@ -242,14 +228,10 @@
 }
 .dataBtn:hover { color: var(--ink); border-color: var(--ink); }
 
-.dataNote { margin: 9px 0 0; font-size: 12.5px; line-height: 1.5; }
-.dataNote.ok { color: var(--grow); }
-.dataNote.bad { color: var(--attend); }
-
 .updateBar {
   position: fixed; z-index: 46;
   left: 50%; transform: translateX(-50%);
-  bottom: calc(var(--dock-h) + 18px);
+  bottom: calc(var(--safe-bottom) + 18px);
   display: flex; align-items: center; gap: 12px;
   padding: 10px 12px 10px 16px;
   border-radius: var(--r-full);

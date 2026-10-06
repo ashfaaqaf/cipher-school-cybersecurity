@@ -4,11 +4,16 @@ import {
   useCallback,
   useDeferredValue,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
+  type MouseEvent as ReactMouseEvent,
 } from 'react';
+import { flushSync } from 'react-dom';
+import brandIcon from './brand-icon.png';
+import { Hero } from './Hero';
 import {
   allLessons,
   cardIdsByLesson,
@@ -103,9 +108,36 @@ const views: { id: Exclude<View, 'settings'>; icon: InterfaceIconName; label: st
   { id: 'review', icon: 'review', label: 'Review' },
   { id: 'paths', icon: 'paths', label: 'Paths' },
   { id: 'proof', icon: 'proof', label: 'Proof' },
-  { id: 'words', icon: 'words', label: 'Words' },
+  { id: 'words', icon: 'words', label: 'Glossary' },
   { id: 'sources', icon: 'sources', label: 'Sources' },
 ];
+
+/** Everything the main menu lists: the seven sections, then settings. */
+const MENU: { id: View; label: string }[] = [
+  ...views.map(({ id, label }) => ({ id, label })),
+  { id: 'settings', label: 'Settings' },
+];
+
+/**
+ * A change of page cross-fades through the View Transitions API where the
+ * browser has it, the way a native app moves between screens rather than
+ * swapping one for the other in a single frame. Where the API is missing, or
+ * motion is reduced (by this app's own setting or the system's), the change
+ * is instant. `after` runs once the new page is in the DOM, which is
+ * what a scroll position has to wait for.
+ */
+function withTransition(change: () => void, after?: () => void) {
+  const doc = document as Document & { startViewTransition?: (update: () => void) => unknown };
+  const reduce =
+    document.documentElement.dataset.motion === 'reduce' ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const run = () => {
+    flushSync(change);
+    after?.();
+  };
+  if (doc.startViewTransition && !reduce) doc.startViewTransition(run);
+  else run();
+}
 
 type LessonStep = 'understand' | 'recall' | 'apply' | 'capture';
 
@@ -170,6 +202,10 @@ export default function Home() {
     if (window.matchMedia?.('(prefers-color-scheme: light)').matches) setTheme('day');
   }, []);
   const headerRef = useRef<HTMLElement | null>(null);
+  /* The phone menu, and the two pieces of the header it needs to measure. */
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuBtnRef = useRef<HTMLButtonElement | null>(null);
+  const navListRef = useRef<HTMLUListElement | null>(null);
   /* The prose, the questions and the definitions. Null only until the idle
      prefetch lands, which is well before anyone has clicked into a lesson. */
   const full = useFull();
@@ -769,11 +805,67 @@ export default function Home() {
 
   /* ---------- body lock while a dialog is open ---------- */
 
-  /* The lesson is a page now, not a sheet, so only the remaining dialogs lock. */
+  /* The lesson is a page now, not a sheet, so only the dialogs and the open
+     phone menu lock the page behind them. */
   useEffect(() => {
-    document.body.classList.toggle('locked', installOpen);
+    document.body.classList.toggle('locked', installOpen || menuOpen);
     return () => document.body.classList.remove('locked');
-  }, [installOpen]);
+  }, [installOpen, menuOpen]);
+
+  /* Escape closes the menu and hands focus back to the button that opened it;
+     widening the window past the phone layout closes it too, since the full
+     navigation is then on screen anyway. */
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      setMenuOpen(false);
+      menuBtnRef.current?.focus();
+    };
+    const wide = window.matchMedia('(min-width: 900px)');
+    const onWide = () => wide.matches && setMenuOpen(false);
+    window.addEventListener('keydown', onKey);
+    wide.addEventListener('change', onWide);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      wide.removeEventListener('change', onWide);
+    };
+  }, [menuOpen]);
+
+  /* The phone menu opens beneath the header, whatever height the header is. */
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const measure = () => document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
+    const observer = new ResizeObserver(measure);
+    observer.observe(header);
+    measure();
+    return () => observer.disconnect();
+  }, []);
+
+  /*
+   * The highlight behind the current section glides to the next one instead of
+   * blinking from one link to another. It is one element positioned from the
+   * active link's own box, so it follows any label length and any font size.
+   */
+  useLayoutEffect(() => {
+    const list = navListRef.current;
+    if (!list) return;
+    const place = () => {
+      const active = list.querySelector<HTMLElement>('.navLink.on');
+      if (!active) {
+        list.dataset.indicator = 'off';
+        return;
+      }
+      list.style.setProperty('--ind-x', `${active.offsetLeft}px`);
+      list.style.setProperty('--ind-w', `${active.offsetWidth}px`);
+      list.dataset.indicator = 'on';
+    };
+    place();
+    document.fonts?.ready.then(place);
+    window.addEventListener('resize', place);
+    return () => window.removeEventListener('resize', place);
+  }, [view, reader, srs.due]);
 
   /* ---------- derived ---------- */
 
@@ -835,14 +927,26 @@ export default function Home() {
   const cameFrom = useRef(0);
   const openReader = useCallback((s: number, l: number) => {
     cameFrom.current = window.scrollY;
-    setActiveLessonStep('understand');
-    setReader({ s, l });
-    window.scrollTo({ top: 0 });
+    setMenuOpen(false);
+    withTransition(() => {
+      setActiveLessonStep('understand');
+      setReader({ s, l });
+      window.scrollTo({ top: 0 });
+    });
   }, []);
 
   const closeReader = useCallback(() => {
     speaker.stop();
-    setReader(null);
+    /* Back to the row you left, restored inside the transition so the new page
+       fades in already in place rather than jumping after it arrives. */
+    withTransition(
+      () => setReader(null),
+      () => {
+        if (!cameFrom.current) return;
+        window.scrollTo({ top: cameFrom.current });
+        cameFrom.current = 0;
+      },
+    );
   }, [speaker]);
 
   /*
@@ -991,11 +1095,25 @@ export default function Home() {
   const goto = (id: View) => {
     /* Changing section is not going back: it starts at the top of the new one. */
     cameFrom.current = 0;
-    setReader(null);
-    setView(id);
     tap();
-    /* Instant, not smooth: this is a change of page, not a scroll within one. */
-    window.scrollTo({ top: 0 });
+    withTransition(() => {
+      setMenuOpen(false);
+      setReader(null);
+      setView(id);
+      /* Instant, not smooth: this is a change of page, not a scroll within one. */
+      window.scrollTo({ top: 0 });
+    });
+  };
+
+  /*
+   * Navigation items are real links, so open-in-new-tab, copy-link and
+   * middle-click all behave as they do on any other website. Only a plain
+   * left click is taken over, to animate the change instead of reloading.
+   */
+  const navClick = (event: ReactMouseEvent<HTMLAnchorElement>, id: View) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    goto(id);
   };
 
   const resetPreferences = () => {
@@ -1029,35 +1147,52 @@ export default function Home() {
 
   return (
     <div className={reader ? 'app readingMode' : 'app'} style={rootStyle}>
-
-      <svg width="0" height="0" aria-hidden="true" style={{ position: 'absolute' }}>
-        <defs>
-          <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="var(--accent)" />
-            <stop offset="100%" stopColor="var(--grow)" />
-          </linearGradient>
-        </defs>
-      </svg>
-
       <a className="skip" href="#main">
         Skip to content
       </a>
 
       <div className="shell">
         {/* ---------------- top bar ---------------- */}
-        <header className="topbar" ref={headerRef}>
+        <header className={menuOpen ? 'topbar menuOpen' : 'topbar'} ref={headerRef}>
           <div className="topRow">
-            <div className="brand">
-              <div className="mark" aria-hidden="true">
-                {/* A relative URL keeps the mark working on localhost and under the GitHub Pages base path. */}
+            <a className="brand" href="#/" onClick={(event) => navClick(event, 'learn')} aria-label="Cipher School home">
+              <span className="mark" aria-hidden="true">
+                {/* Imported through the bundler, so it ships as a hashed file under /_next/static
+                    like the fonts; the root-level copy timed out on the InfinityFree host. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="./cipher-school-icon-192.png" width="38" height="38" alt="" />
-              </div>
-              <div>
-                <div className="brandName">Cipher School</div>
-                <div className="brandSub">Beginner → researcher</div>
-              </div>
-            </div>
+                <img src={brandIcon.src} width="38" height="38" alt="" />
+              </span>
+              <span className="brandText">
+                <span className="brandName">Cipher School</span>
+                <span className="brandSub">Beginner → researcher</span>
+              </span>
+            </a>
+
+            <nav className="siteNav" aria-label="Main">
+              <ul ref={navListRef}>
+                {views.map((v) => {
+                  const on = view === v.id;
+                  return (
+                    <li key={v.id}>
+                      <a
+                        href={hashFor({ view: v.id, lessonId: null }) || '#/'}
+                        className={on ? 'navLink on' : 'navLink'}
+                        aria-current={on ? 'page' : undefined}
+                        onClick={(event) => navClick(event, v.id)}
+                      >
+                        {v.label}
+                        {v.id === 'review' && srs.due > 0 && (
+                          <b className="navBadge">
+                            {srs.due > 99 ? '99+' : srs.due}
+                            <span className="sr"> due</span>
+                          </b>
+                        )}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
             <div className="topActions">
               <button
                 className={view === 'settings' ? 'iconBtn settingsGear settingsActive' : 'iconBtn settingsGear'}
@@ -1068,38 +1203,20 @@ export default function Home() {
               >
                 <InterfaceIcon name="settings" />
               </button>
-              <details
-                className={view === 'words' || view === 'sources' || view === 'settings' ? 'mobileUtility utilityActive' : 'mobileUtility'}
-                onBlur={(event) => {
-                  if (!event.currentTarget.contains(event.relatedTarget)) event.currentTarget.removeAttribute('open');
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === 'Escape') event.currentTarget.removeAttribute('open');
-                }}
+              <button
+                ref={menuBtnRef}
+                type="button"
+                className={menuOpen ? 'menuBtn open' : 'menuBtn'}
+                aria-expanded={menuOpen}
+                aria-controls="site-menu"
+                aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+                onClick={() => setMenuOpen((open) => !open)}
               >
-                <summary className="iconBtn" aria-label="Open glossary, sources and settings">
-                  <InterfaceIcon name="more" />
-                </summary>
-                <div className="mobileUtilityMenu">
-                  {([
-                    ['words', 'words', 'Glossary', 'Decode security language'],
-                    ['sources', 'sources', 'Sources', 'Check the primary references'],
-                    ['settings', 'settings', 'Settings', 'Control your learning experience'],
-                  ] as const).map(([destination, icon, label, note]) => (
-                    <button
-                      key={destination}
-                      type="button"
-                      onClick={(event) => {
-                        event.currentTarget.closest('details')?.removeAttribute('open');
-                        goto(destination);
-                      }}
-                    >
-                      <InterfaceIcon name={icon} />
-                      <span><b>{label}</b><small>{note}</small></span>
-                    </button>
-                  ))}
-                </div>
-              </details>
+                <span className="menuGlyph" aria-hidden="true">
+                  <i />
+                  <i />
+                </span>
+              </button>
             </div>
           </div>
 
@@ -1298,25 +1415,18 @@ export default function Home() {
 
         {/* ---------------- hero ---------------- */}
         {!reader && view === 'learn' && (
-        <section className="hero">
-          <div className="heroCopy">
-          <span className="eyebrow"><i aria-hidden="true" /> Evidence-first cyber training</span>
-          <h1>Learn cybersecurity. <em>Build proof you can do the work.</em></h1>
-          <p className="lede">
-            Start at zero, learn each idea in plain language, retrieve it from memory, investigate real artefacts and
-            leave with evidence you can take to an interview.
-          </p>
-
-          <div className="promiseRow" aria-label="Platform promises">
-            <span>No account</span>
-            <span>Works offline</span>
-            <span>Progress stays private</span>
-          </div>
-
-          <div className="heroActions">
-            <button
-              className="btn primary"
-              onClick={() => {
+          <>
+            <Hero
+              started={doneCount > 0}
+              next={{
+                stage: nextUp?.stage.number ?? '00',
+                title: nextUp?.lesson.title ?? 'How computers actually work',
+                mins: nextUp?.lesson.mins ?? 8,
+              }}
+              lessons={totalLessons}
+              terms={glossaryCount}
+              hours={totalHours}
+              onStart={() => {
                 if (nextUp) {
                   const s = stages.findIndex((st) => st.lessons.some((x) => x.id === nextUp.lesson.id));
                   const l = stages[s].lessons.findIndex((x) => x.id === nextUp.lesson.id);
@@ -1325,119 +1435,15 @@ export default function Home() {
                 }
                 tap();
               }}
-            >
-              {doneCount === 0 ? 'Start with stage 00' : 'Continue learning'} <span aria-hidden="true">→</span>
-            </button>
-            <button className="btn ghost" onClick={() => goto('paths')}>
-              Take the skill check
-            </button>
-          </div>
-
-          </div>
-
-          <div className="heroSide">
-          <div className="protocol" aria-label="Cipher School learning loop">
-            <div className="protocolTop">
-              <span>CS://TRAINING_LOOP</span>
-              <span className="liveTag"><i aria-hidden="true" /> LIVE</span>
+              onSkillCheck={() => goto('paths')}
+            />
+            <div className="differenceRail reveal" aria-label="What makes Cipher School different">
+              <div><span>01</span><b>Learn the idea</b><small>Plain language first.</small></div>
+              <div><span>02</span><b>Make the call</b><small>Recall and judgement.</small></div>
+              <div><span>03</span><b>Work the evidence</b><small>Logs, scans and policies.</small></div>
+              <div><span>04</span><b>Show the proof</b><small>Portfolio-ready outcomes.</small></div>
             </div>
-            <ol className="protocolSteps">
-              <li>
-                <span className="protocolNum">01</span>
-                <span><b>Learn</b><small>Plain words, useful mental models.</small></span>
-              </li>
-              <li>
-                <span className="protocolNum">02</span>
-                <span><b>Recall</b><small>Answer before choices appear.</small></span>
-              </li>
-              <li>
-                <span className="protocolNum">03</span>
-                <span><b>Investigate</b><small>Logs, scans, headers, policies.</small></span>
-              </li>
-              <li>
-                <span className="protocolNum">04</span>
-                <span><b>Prove</b><small>Turn progress into career evidence.</small></span>
-              </li>
-            </ol>
-            <div className="missionBrief">
-              <div className="missionPrompt"><span aria-hidden="true">$</span> next_mission</div>
-              <div className="missionResult">
-                <span>STAGE {nextUp?.stage.number ?? '00'}</span>
-                <b>{nextUp?.lesson.title ?? 'How computers actually work'}</b>
-                <small>{nextUp?.lesson.mins ?? 8} min read · recall check · safe action</small>
-              </div>
-            </div>
-          </div>
-
-          <div className="stats">
-            <div className="stat glass">
-              <div className="statNum">{totalLessons}</div>
-              <div className="statLabel">Written lessons</div>
-            </div>
-            <div className="stat glass">
-              <div className="statNum">{glossaryCount}</div>
-              <div className="statLabel">Terms decoded</div>
-            </div>
-            <div className="stat glass">
-              <div className="statNum">{Math.round(totalReadMins / 60)}h</div>
-              <div className="statLabel">Reading time</div>
-            </div>
-            <div className="stat glass">
-              <div className="statNum">{totalHours}</div>
-              <div className="statLabel">Hours with practice</div>
-            </div>
-          </div>
-
-          <div className="ringWrap glass">
-            <div className="ring">
-              <svg width="74" height="74" viewBox="0 0 74 74" aria-hidden="true">
-                <circle className="ringTrack" cx="37" cy="37" r="31" />
-                <circle
-                  className="fill"
-                  cx="37"
-                  cy="37"
-                  r="31"
-                  strokeDasharray={2 * Math.PI * 31}
-                  strokeDashoffset={2 * Math.PI * 31 * (1 - doneCount / totalLessons)}
-                />
-              </svg>
-              <div className="ringPct">{pct}%</div>
-            </div>
-            <div className="ringInfo">
-              <h2 className="ringTitle">Your progress</h2>
-              <p>
-                {doneCount} of {totalLessons} lessons · saved on this device only, nothing is uploaded anywhere.
-              </p>
-              <div className="dataRow">
-                <button className="dataBtn" onClick={onExport}>
-                  ↓ Back up
-                </button>
-                <button className="dataBtn" onClick={() => fileRef.current?.click()}>
-                  ↑ Restore
-                </button>
-              </div>
-              {restore && (
-                <p className={restore.ok ? 'dataNote ok' : 'dataNote bad'}>
-                  {restore.ok
-                    ? `Saved: ${restore.lessons} lesson${restore.lessons === 1 ? '' : 's'}, ${
-                        restore.cards
-                      } review card${restore.cards === 1 ? '' : 's'}.${
-                        restore.skipped.length ? ` Skipped: ${restore.skipped.join('; ')}.` : ''
-                      }`
-                    : restore.error}
-                </p>
-              )}
-            </div>
-          </div>
-          </div>
-
-          <div className="differenceRail" aria-label="What makes Cipher School different">
-            <div><span>01</span><b>Learn the idea</b><small>Plain language first.</small></div>
-            <div><span>02</span><b>Make the call</b><small>Recall and judgement.</small></div>
-            <div><span>03</span><b>Work the evidence</b><small>Logs, scans and policies.</small></div>
-            <div><span>04</span><b>Show the proof</b><small>Portfolio-ready outcomes.</small></div>
-          </div>
-        </section>
+          </>
         )}
 
         {/* ---------------- learn ---------------- */}
@@ -1968,23 +1974,37 @@ export default function Home() {
         </div>
       )}
 
-      {/* ---------------- dock ---------------- */}
-      <nav className="dock" aria-label="Sections">
-        {views.map((v) => (
-          <button
-            key={v.id}
-            className={view === v.id ? 'dockBtn on' : 'dockBtn'}
-            onClick={() => goto(v.id)}
-            aria-current={view === v.id ? 'page' : undefined}
-          >
-            <span className="dockIcon" aria-hidden="true">
-              <InterfaceIcon name={v.icon} />
-              {v.id === 'review' && srs.due > 0 && <b className="dockBadge">{srs.due > 99 ? '99+' : srs.due}</b>}
-            </span>
-            <span className="dockLabel">{v.label}</span>
-          </button>
-        ))}
-      </nav>
+      {/* ---------------- phone menu ---------------- */}
+      {/* The same destinations as the header links, for screens too narrow to
+          show them inline. Inert while closed, so it is neither focusable nor
+          announced until it opens. */}
+      <div id="site-menu" className={menuOpen ? 'menuPanel open' : 'menuPanel'} inert={!menuOpen}>
+        <nav aria-label="Main menu">
+          <ul>
+            {MENU.map((item, i) => {
+              const on = view === item.id;
+              return (
+                <li key={item.id} style={{ '--i': i } as CSSProperties}>
+                  <a
+                    href={hashFor({ view: item.id, lessonId: null }) || '#/'}
+                    className={on ? 'menuLink on' : 'menuLink'}
+                    aria-current={on ? 'page' : undefined}
+                    onClick={(event) => navClick(event, item.id)}
+                  >
+                    {item.label}
+                    {item.id === 'review' && srs.due > 0 && (
+                      <b className="navBadge">
+                        {srs.due > 99 ? '99+' : srs.due}
+                        <span className="sr"> due</span>
+                      </b>
+                    )}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </div>
 
       {/* ---------------- narration settings ---------------- */}
       {voiceOpen && (
