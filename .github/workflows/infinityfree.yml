@@ -106,6 +106,10 @@ jobs:
           # changes. Skipping timestamp-only differences avoids InfinityFree's
           # intermittent locks on unchanged icons and fonts.
           mirror --reverse --no-perms --verbose --parallel=1 --ignore-time --exclude-glob '*.png' --exclude-glob index.html --exclude-glob sw.js out/ .
+          # Bundled images (the header logo) carry a content hash in their name,
+          # so a new version is always a new file and never hits the PNG lock.
+          # The exclusion above would otherwise skip them and break the logo.
+          mirror --reverse --no-perms --verbose --parallel=1 --ignore-time out/_next/static/media/ _next/static/media/
           # InfinityFree intermittently locks existing PNG names after a delete.
           # Do not replace stable brand art on every release. Repair the 192px
           # icon if a previous interrupted upload left it missing, then verify it.

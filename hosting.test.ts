@@ -20,6 +20,7 @@ assert.match(infinityFreeWorkflow, /FTP_REMOTE_DIR" != "\/htdocs"/, 'InfinityFre
 assert.doesNotMatch(infinityFreeWorkflow, /mirror[^\n]*--delete/, 'InfinityFree deployment must not delete unknown remote files');
 assert.match(infinityFreeWorkflow, /mirror[^\n]*--ignore-time/, 'unchanged static files must not be reuploaded because only their build timestamp changed');
 assert.match(infinityFreeWorkflow, /mirror[^\n]*--exclude-glob '\*\.png'/, 'routine releases must not replace InfinityFree-hosted PNGs that the host can temporarily lock');
+assert.match(infinityFreeWorkflow, /mirror[^\n]*out\/_next\/static\/media\//,'bundled images such as the header logo must still be uploaded despite the PNG exclusion');
 assert.match(infinityFreeWorkflow, /mirror[^\n]*--exclude-glob sw\.js/, 'the worker must not be uploaded with ordinary assets');
 assert.match(infinityFreeWorkflow, /put -O \. out\/cipher-school-icon-192\.png[\s\S]*cls -1 cipher-school-icon-192\.png/, 'a missing Home Screen icon must be repaired and verified');
 assert.match(infinityFreeWorkflow, /actions\/upload-artifact@v4/, 'InfinityFree deployment must save a rollback build');
