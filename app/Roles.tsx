@@ -217,7 +217,7 @@ function JobAdSprint({
       <div className="jobSprintHead">
         <div>
           <div className="kicker">From your advert</div>
-          <h3>Internship skill sprint</h3>
+          <h3 id="skill-sprint">Internship skill sprint</h3>
           <p>Four requirements, mapped to lessons you can read, practise and prove inside Cipher School.</p>
         </div>
         <div className="jobSprintScore" aria-label={`${done} of ${lessonIds.length} lessons complete`}>
@@ -311,7 +311,7 @@ function ToolLabChecklist({ onOpen }: { onOpen: (lessonId: string) => void }) {
       <div className="toolLabsHead">
         <div>
           <div className="kicker">Tool practice</div>
-          <h3>Burp, ZAP and Nmap lab checklist</h3>
+          <h3 id="lab-checklist">Burp, ZAP and Nmap lab checklist</h3>
           <p>Use only the named training sites or systems you own. Each checklist ends with evidence you can keep.</p>
         </div>
         <div className="toolLabsScore" aria-label={`${done} of ${total} lab tasks complete`}>
@@ -369,7 +369,7 @@ export function RolesSection({
     <>
       <div className="sectionHead reveal">
         <div className="kicker">Real adverts</div>
-        <h2>Am I ready to apply?</h2>
+        <h2 id="ready-to-apply">Am I ready to apply?</h2>
         <p className="sectionNote">
           Nine real adverts, all but one from Sri Lanka, broken into their individual lines and mapped to the lessons
           that cover each one. A requirements list stops being intimidating once you can read it as a checklist. Tap any

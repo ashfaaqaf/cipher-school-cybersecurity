@@ -306,8 +306,12 @@ function MissionLab({ mission, run, update }: { mission: Mission; run: MissionRu
   );
 }
 
-export function MissionsView({ academy, update }: { academy: AcademyState; update: UpdateAcademy }) {
-  const [activeId, setActiveId] = useState(MISSIONS[0].id);
+export function MissionsView({ academy, update, focus }: { academy: AcademyState; update: UpdateAcademy; focus?: string }) {
+  const [activeId, setActiveId] = useState(focus ?? MISSIONS[0].id);
+  /* The header menu can open a specific case. */
+  useEffect(() => {
+    if (focus) setActiveId(focus);
+  }, [focus]);
   const active = MISSIONS.find((mission) => mission.id === activeId) ?? MISSIONS[0];
   const passed = MISSIONS.filter((mission) => missionRun(academy, mission.id).completedAt).length;
 
@@ -447,7 +451,7 @@ export function ProofView({
         <div><strong>{finishedCapstones}</strong><span>capstones ready</span></div>
       </div>
 
-      <div className="masteryHead"><div><span className="kicker">Skill graph</span><h3>Four gates per stage</h3></div><div className="masteryLegend"><span>L learned</span><span>R recalled</span><span>A applied</span><span>P proven</span></div></div>
+      <div className="masteryHead" id="skill-graph"><div><span className="kicker">Skill graph</span><h3>Four gates per stage</h3></div><div className="masteryLegend"><span>L learned</span><span>R recalled</span><span>A applied</span><span>P proven</span></div></div>
       <div className="masteryGraph">
         {mastery.map(({ stage, learned, recalled, appliedDone, appliedTotal, proven, proveTotal }) => (
           <div className="masteryRow" key={stage.number} style={{ '--hue': String(stage.hue) } as React.CSSProperties}>
@@ -460,7 +464,7 @@ export function ProofView({
         ))}
       </div>
 
-      <div className="sectionHead reveal">
+      <div className="sectionHead reveal" id="capstones">
         <div className="kicker">Career capstones</div>
         <h2>Build work a human can inspect</h2>
         <p className="sectionNote">A badge says you clicked. A capstone shows how you think. Keep sensitive data out, link only legal/redacted artefacts, and use the rubric before marking anything complete.</p>
@@ -490,7 +494,7 @@ export function ProofView({
         <div>{MISSIONS.map((mission) => { const run = academy.missions[mission.id]; return <span key={mission.id}><b>{run?.completedAt ? `${run.score}/100` : 'Not yet'}</b>{mission.title}<small>{run?.completedAt ? 'locally assessed' : 'not passed yet'}</small></span>; })}</div>
       </div>
 
-      <div className="instructorPanel">
+      <div className="instructorPanel" id="classroom">
         <div><span className="kicker">Classroom mode</span><h3>Teach a case in 60 minutes</h3><p>A privacy-safe facilitator plan, report rubric and debrief structure. No learner account or tracking dashboard required.</p></div>
         <button className="btn ghost" onClick={() => downloadText('cipher-school-facilitator-pack.md', instructorPack())}>Download facilitator pack ↓</button>
       </div>

@@ -9,6 +9,7 @@ import {
   useState,
   type CSSProperties,
   type MouseEvent as ReactMouseEvent,
+  type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { flushSync } from 'react-dom';
 import brandIcon from './brand-icon.png';
@@ -52,7 +53,8 @@ import { PrintSheet } from './Print';
 import { CapabilityBoundary, FreshnessPanel, MissionsView, ProofView, RouteBuilder, useAcademy } from './AcademyViews';
 import { SettingsView, type AccessibilitySettings } from './Settings';
 import { clearCipherSchoolStorage } from './reset';
-import { downloadText } from './academy';
+import { CAPSTONES, MISSIONS, downloadText } from './academy';
+import { NavFlyout, type FlyMenu } from './NavFlyout';
 import {
   NOTE_LIMIT,
   NOTES_STORE,
@@ -203,6 +205,12 @@ export default function Home() {
   const headerRef = useRef<HTMLElement | null>(null);
   /* The phone menu, and the two pieces of the header it needs to measure. */
   const [menuOpen, setMenuOpen] = useState(false);
+  /* The header dropdown: which section's panel is open, and the last one, so
+     its content stays put while the panel closes. */
+  const [fly, setFly] = useState<View | null>(null);
+  const lastFly = useRef<View | null>(null);
+  const flyTimer = useRef(0);
+  const [missionFocus, setMissionFocus] = useState<string | undefined>();
   const menuBtnRef = useRef<HTMLButtonElement | null>(null);
   /* The prose, the questions and the definitions. Null only until the idle
      prefetch lands, which is well before anyone has clicked into a lesson. */
@@ -1066,18 +1074,190 @@ export default function Home() {
   const activeHue = current ? current.stage.hue : openStage !== null ? stages[openStage]?.hue : 210;
   const rootStyle = { '--hue': String(activeHue ?? 210) } as CSSProperties;
 
-  const goto = (id: View) => {
+  const goto = (id: View, after?: () => void) => {
     /* Changing section is not going back: it starts at the top of the new one. */
     cameFrom.current = 0;
     tap();
     withTransition(() => {
       setMenuOpen(false);
+      setFly(null);
       setReader(null);
       setView(id);
       /* Instant, not smooth: this is a change of page, not a scroll within one. */
       window.scrollTo({ top: 0 });
-    });
+    }, after);
   };
+
+  /* Go to a section, then to a part of it. Some parts load on demand and push
+     the layout around as they arrive, so the target is held in place until the
+     page settles; any scroll of the reader's own ends that at once. */
+  const jump = (id: View, target: string, then?: (el: HTMLElement) => void) =>
+    goto(id, () => {
+      let frames = 0;
+      let still = 0;
+      let found = false;
+      const stop = () => {
+        frames = Infinity;
+        ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((t) => window.removeEventListener(t, stop));
+      };
+      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((t) => window.addEventListener(t, stop, { passive: true }));
+      const settle = () => {
+        if (frames++ > 150) return stop();
+        const el = document.getElementById(target);
+        if (el) {
+          const want = (headerRef.current?.offsetHeight ?? 64) + 20;
+          const off = el.getBoundingClientRect().top - want;
+          if (Math.abs(off) > 2) {
+            window.scrollBy({ top: off, behavior: 'instant' });
+            still = 0;
+          } else if (++still > 12) return stop();
+          if (!found) {
+            found = true;
+            then?.(el);
+          }
+        }
+        requestAnimationFrame(settle);
+      };
+      requestAnimationFrame(settle);
+    });
+
+  /* ---------- header dropdowns ---------- */
+
+  /* Opening waits a beat so a pointer crossing the bar doesn't flash panels;
+     once one is open, moving along the bar switches instantly, as on apple.com. */
+  const hoverFly = (id: View | null, event: ReactPointerEvent) => {
+    if (event.pointerType !== 'mouse') return;
+    window.clearTimeout(flyTimer.current);
+    if (id === null) flyTimer.current = window.setTimeout(() => setFly(null), 180);
+    else if (fly) setFly(id);
+    else flyTimer.current = window.setTimeout(() => setFly(id), 140);
+  };
+  if (fly) lastFly.current = fly;
+
+  const startLearning = () => {
+    if (nextUp) {
+      const s = stages.findIndex((st) => st.lessons.some((x) => x.id === nextUp.lesson.id));
+      const l = stages[s].lessons.findIndex((x) => x.id === nextUp.lesson.id);
+      setOpenStage(s);
+      openReader(s, l);
+    }
+    tap();
+  };
+
+  const here = (id: View) => hashFor({ view: id, lessonId: null }) || '#/';
+  const stageLinks = (from: number, to: number) =>
+    stages.slice(from, to).map((st) => ({ label: `${st.number}  ${st.title}`, href: '#/', run: () => showStage(st.number) }));
+
+  const flyouts: Partial<Record<View, FlyMenu>> = {
+    learn: {
+      title: 'Explore Learn',
+      primary: [
+        { label: doneCount ? 'Continue learning' : 'Start with stage 00', note: nextUp?.lesson.title, href: '#/', run: startLearning },
+        { label: 'The roadmap', note: `${stages.length} stages, in order`, href: '#/', run: () => jump('learn', 'roadmap') },
+        { label: "Today's plan", href: '#/', run: () => jump('learn', 'today') },
+        { label: 'Build your route', href: '#/', run: () => jump('learn', 'route-title') },
+      ],
+      columns: [
+        { title: 'Foundations', links: stageLinks(0, 7) },
+        { title: 'Specialise', links: stageLinks(7, stages.length) },
+      ],
+    },
+    missions: {
+      title: 'Explore Missions',
+      primary: [
+        { label: 'Mission engine', note: `${MISSIONS.length} safe investigations`, href: here('missions'), run: () => jump('missions', 'missions') },
+        { label: 'Capstones', note: 'Work a human can inspect', href: here('proof'), run: () => jump('proof', 'capstones') },
+      ],
+      columns: [
+        {
+          title: 'Cases',
+          links: MISSIONS.map((m) => ({
+            label: m.title,
+            href: here('missions'),
+            run: () => {
+              setMissionFocus(m.id);
+              jump('missions', 'missions');
+            },
+          })),
+        },
+      ],
+    },
+    review: {
+      title: 'Explore Review',
+      primary: [
+        { label: srs.due ? `Review ${srs.due} due cards` : 'Review cards', href: here('review'), run: () => jump('review', 'review') },
+        { label: 'This week', note: 'What you read and recalled', href: here('review'), run: () => jump('review', 'this-week') },
+      ],
+      columns: [
+        {
+          title: 'Practise',
+          links: [
+            { label: 'Skill check', href: here('paths'), run: () => jump('paths', 'skill-check-title') },
+            { label: 'Mission engine', href: here('missions'), run: () => jump('missions', 'missions') },
+            { label: 'Glossary', href: here('words'), run: () => jump('words', 'words') },
+          ],
+        },
+      ],
+    },
+    paths: {
+      title: 'Explore Paths',
+      primary: [
+        { label: 'Skill check', note: 'Find the gaps first', href: here('paths'), run: () => jump('paths', 'skill-check-title') },
+        { label: 'Am I ready to apply?', href: here('paths'), run: () => jump('paths', 'ready-to-apply') },
+        { label: 'Career paths', href: here('paths'), run: () => jump('paths', 'career-paths') },
+        { label: 'Evidence sheet', href: here('paths'), run: () => jump('paths', 'evidence') },
+      ],
+      columns: [
+        { title: 'Routes', links: tracks.map((t) => ({ label: t.title, href: here('paths'), run: () => jump('paths', 'career-paths') })) },
+        {
+          title: 'Internship prep',
+          links: [
+            { label: 'Skill sprint', href: here('paths'), run: () => jump('paths', 'skill-sprint') },
+            { label: 'Burp, ZAP and Nmap labs', href: here('paths'), run: () => jump('paths', 'lab-checklist') },
+          ],
+        },
+      ],
+    },
+    proof: {
+      title: 'Explore Proof',
+      primary: [
+        { label: 'Evidence room', href: here('proof'), run: () => jump('proof', 'proof') },
+        { label: 'Skill graph', note: 'Four gates per stage', href: here('proof'), run: () => jump('proof', 'skill-graph') },
+        { label: 'Capstones', href: here('proof'), run: () => jump('proof', 'capstones') },
+        { label: 'Classroom mode', href: here('proof'), run: () => jump('proof', 'classroom') },
+      ],
+      columns: [{ title: 'Capstones', links: CAPSTONES.map((c) => ({ label: c.title, href: here('proof'), run: () => jump('proof', 'capstones') })) }],
+    },
+    words: {
+      title: 'Explore Glossary',
+      primary: [
+        { label: `All ${glossaryCount} terms`, href: here('words'), run: () => jump('words', 'words') },
+        { label: 'Look up a word', href: here('words'), run: () => jump('words', 'glossary-search', (el) => el.focus({ preventScroll: true })) },
+      ],
+      columns: [
+        {
+          title: 'Common terms',
+          links: ['Phishing', 'Firewall', 'Encryption', 'Hash', 'Malware', 'Vulnerability'].map((term) => ({
+            label: term,
+            href: here('words'),
+            run: () => {
+              setQuery(term);
+              jump('words', 'glossary-search');
+            },
+          })),
+        },
+      ],
+    },
+    sources: {
+      title: 'Explore Sources',
+      primary: [{ label: 'Primary sources', note: `${sources.length} standards and free labs`, href: here('sources'), run: () => jump('sources', 'sources') }],
+      columns: [
+        { title: 'Standards and labs', links: sources.slice(0, 7).map((x) => ({ label: x.name, href: x.href, external: true })) },
+        { title: 'More', links: sources.slice(7, 14).map((x) => ({ label: x.name, href: x.href, external: true })) },
+      ].filter((col) => col.links.length),
+    },
+  };
+  const flyMenu = flyouts[(fly ?? lastFly.current) as View] ?? null;
 
   /*
    * Navigation items are real links, so open-in-new-tab, copy-link and
@@ -1127,9 +1307,27 @@ export default function Home() {
 
       <div className="shell">
         {/* ---------------- top bar ---------------- */}
-        <header className={menuOpen ? 'topbar menuOpen' : 'topbar'} ref={headerRef}>
+        <header
+          className={`topbar${menuOpen ? ' menuOpen' : ''}${fly ? ' flyOpen' : ''}`}
+          ref={headerRef}
+          onPointerLeave={(event) => hoverFly(null, event)}
+          onBlur={(event) => {
+            if (fly && !event.currentTarget.contains(event.relatedTarget as Node | null)) setFly(null);
+          }}
+          onKeyDown={(event) => {
+            if (event.key !== 'Escape' || !fly) return;
+            headerRef.current?.querySelector<HTMLElement>(`[data-fly="${fly}"]`)?.focus();
+            setFly(null);
+          }}
+        >
           <div className="topRow">
-            <a className="brand" href="#/" onClick={(event) => navClick(event, 'learn')} aria-label="Cipher School home">
+            <a
+              className="brand"
+              href="#/"
+              onClick={(event) => navClick(event, 'learn')}
+              onPointerEnter={(event) => hoverFly(null, event)}
+              aria-label="Cipher School home"
+            >
               <span className="mark" aria-hidden="true">
                 {/* Imported through the bundler, so it ships as a hashed file under /_next/static
                     like the fonts; the root-level copy timed out on the InfinityFree host. */}
@@ -1147,7 +1345,7 @@ export default function Home() {
                 {views.map((v) => {
                   const on = view === v.id;
                   return (
-                    <li key={v.id}>
+                    <li key={v.id} className="navItem" onPointerEnter={(event) => hoverFly(v.id, event)}>
                       <a
                         href={hashFor({ view: v.id, lessonId: null }) || '#/'}
                         className={on ? 'navLink on' : 'navLink'}
@@ -1162,12 +1360,26 @@ export default function Home() {
                           </b>
                         )}
                       </a>
+                      {/* The keyboard way into the dropdown, shown on focus. */}
+                      <button
+                        type="button"
+                        className="flyToggle"
+                        data-fly={v.id}
+                        aria-expanded={fly === v.id}
+                        aria-controls="nav-flyout"
+                        aria-label={`${v.label} menu`}
+                        onClick={() => setFly((open) => (open === v.id ? null : v.id))}
+                      >
+                        <svg viewBox="0 0 10 6" aria-hidden="true">
+                          <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.2" />
+                        </svg>
+                      </button>
                     </li>
                   );
                 })}
               </ul>
             </nav>
-            <div className="topActions">
+            <div className="topActions" onPointerEnter={(event) => hoverFly(null, event)}>
               <button
                 className={view === 'settings' ? 'iconBtn settingsGear settingsActive' : 'iconBtn settingsGear'}
                 onClick={() => goto('settings')}
@@ -1212,7 +1424,9 @@ export default function Home() {
             </div>
           </div>
 
+          <NavFlyout menu={flyMenu} open={!!fly && !!flyouts[fly]} onDone={() => setFly(null)} />
         </header>
+        <div className={fly && flyouts[fly] ? 'flyScrim open' : 'flyScrim'} aria-hidden="true" />
 
         <main id="main">
         {/* ---------------- lesson ---------------- */}
@@ -1434,7 +1648,7 @@ export default function Home() {
               onReview={() => goto('review')}
             />
 
-            <div className="sectionHead reveal">
+            <div className="sectionHead reveal" id="roadmap">
               <div className="kicker">The roadmap</div>
               <h2>{stages.length} stages, in order</h2>
               <p className="sectionNote">
@@ -1680,7 +1894,7 @@ export default function Home() {
 
         {/* ---------------- missions ---------------- */}
         {!reader && view === 'missions' && (
-          <MissionsView academy={academyState} update={updateAcademy} />
+          <MissionsView academy={academyState} update={updateAcademy} focus={missionFocus} />
         )}
 
         {/* ---------------- review ---------------- */}
@@ -1708,7 +1922,7 @@ export default function Home() {
 
             <RolesSection completed={completed} onOpen={openById} onMissions={() => goto('missions')} />
 
-            <div className="sectionHead reveal" style={{ marginTop: 40 }}>
+            <div className="sectionHead reveal" id="career-paths" style={{ marginTop: 40 }}>
               <div className="kicker">Career paths</div>
               <h2>Eight ways through</h2>
               <p className="sectionNote">
@@ -1745,7 +1959,7 @@ export default function Home() {
 
             <CompanionSection />
 
-            <div className="sectionHead reveal" style={{ marginTop: 72 }}>
+            <div className="sectionHead reveal" id="evidence" style={{ marginTop: 72 }}>
               <div className="kicker">Evidence</div>
               <h2>What you can show for it</h2>
               <p className="sectionNote">
@@ -1822,6 +2036,7 @@ export default function Home() {
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  id="glossary-search"
                   placeholder="Look up a word…"
                   aria-label="Search the glossary"
                   type="search"

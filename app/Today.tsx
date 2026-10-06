@@ -67,7 +67,7 @@ export function TodayCard({
   const pct = Math.min(100, Math.round((plan.doneMins / Math.max(1, budgetMins)) * 100));
 
   return (
-    <article className="today glass reveal">
+    <article className="today glass reveal" id="today">
       <div className="todayTop">
         <div>
           <div className="kicker">Today</div>

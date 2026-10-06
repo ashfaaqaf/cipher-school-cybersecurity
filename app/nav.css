@@ -96,6 +96,136 @@
   .island { max-width: 1024px; margin: 0 auto; padding: 8px 8px; }
 }
 
+/* ---------- dropdowns (wide, apple.com style) ---------- */
+
+.flyout, .flyScrim, .flyToggle { display: none; }
+
+@media (min-width: 900px) {
+  html { scroll-padding-top: calc(var(--header-h, 64px) + 20px); }
+
+  .navItem { position: relative; display: flex; align-items: center; }
+
+  /* Hidden until the link is focused, then a small chevron that opens the
+     panel from the keyboard, the same affordance apple.com uses. */
+  .flyToggle {
+    position: absolute;
+    right: -8px;
+    display: grid;
+    place-items: center;
+    width: 14px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .flyToggle svg { width: 8px; height: 6px; transition: transform 0.3s var(--apple); }
+  .flyToggle[aria-expanded='true'] svg { transform: rotate(180deg); }
+  .navItem:focus-within .flyToggle { opacity: 1; pointer-events: auto; }
+  .flyToggle:focus-visible { outline: 2px solid var(--focus); }
+
+  /* While a panel is open the bar turns solid, so bar and panel read as one sheet. */
+  .topbar.flyOpen { background: var(--canvas); }
+
+  .flyout {
+    position: absolute;
+    top: 44px;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    display: block;
+    height: 0;
+    overflow: hidden;
+    background: var(--canvas);
+    transition: height 0.32s var(--apple) 0.06s;
+  }
+  .flyout.open {
+    height: var(--fly-h, 0px);
+    box-shadow: 0 1px 0 var(--rim-bright);
+    transition: height 0.36s var(--apple);
+  }
+
+  .flyInner {
+    display: flex;
+    gap: clamp(44px, 6vw, 88px);
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 38px 8px 76px 40px;
+    transition: opacity 0.18s var(--ease);
+  }
+  .flyout:not(.open) .flyInner { opacity: 0; }
+
+  .flyCol ul { margin: 0; padding: 0; list-style: none; }
+
+  .flyTitle {
+    margin: 0 0 14px;
+    color: var(--ink-faint);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .flyout a {
+    display: block;
+    padding: 5px 0;
+    color: var(--ink-soft);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.2s var(--ease);
+  }
+  .flyPrimary a {
+    padding: 4px 0 6px;
+    color: var(--ink);
+    font-size: 24px;
+    letter-spacing: -0.02em;
+    line-height: 1.17;
+  }
+  .flyout a small {
+    display: block;
+    margin-top: 2px;
+    color: var(--ink-faint);
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .flyout a:hover { color: var(--accent); }
+  .flyout a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+
+  /* Each link drops in a moment after the one before it, down the columns. */
+  .flyout.open li { animation: flyIn 0.42s var(--apple) calc(70ms + var(--i) * 16ms) both; }
+  .flyout.open .flyTitle { animation: flyIn 0.42s var(--apple) 40ms both; }
+  @keyframes flyIn { from { opacity: 0; transform: translateY(-8px); } }
+
+  /* The page behind steps back while a panel is open. */
+  .flyScrim {
+    position: fixed;
+    inset: 0;
+    z-index: 39;
+    display: block;
+    background: rgb(0 0 0 / 0.32);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.32s var(--apple), visibility 0s linear 0.32s;
+  }
+  .flyScrim.open { opacity: 1; visibility: visible; transition: opacity 0.36s var(--apple); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flyout, .flyInner, .flyScrim { transition: none !important; }
+  .flyout.open li, .flyout.open .flyTitle { animation: none; }
+}
+
 /* ---------- menu button (narrow) ---------- */
 
 .menuBtn {

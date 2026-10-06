@@ -29,7 +29,7 @@ export function WeekReview({
   const nothingYet = week.mins === 0 && week.lessons === 0 && week.cards === 0;
 
   return (
-    <article className="week glass reveal">
+    <article className="week glass reveal" id="this-week">
       <div className="weekHead">
         <div>
           <div className="kicker">Last seven days</div>
