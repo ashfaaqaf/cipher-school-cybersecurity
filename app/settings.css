@@ -6,7 +6,7 @@
 .settingsHero h1 { max-width: 780px; margin-top: 12px; font-size: clamp(42px, 8vw, 72px); line-height: .96; letter-spacing: -.065em; }
 .settingsHero p { max-width: 58ch; margin-top: 18px; color: var(--ink-mute); font-size: 17px; line-height: 1.65; }
 .settingsBack { margin-top: 22px; padding: 0 0 5px; border: 0; border-bottom: 1px solid var(--rim); background: transparent; color: var(--ink-mute); font: 10px var(--mono); letter-spacing: .06em; cursor: pointer; }
-.settingsBack:hover { border-color: var(--accent); color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .settingsBack:hover { border-color: var(--accent); color: var(--ink); } }
 
 .settingsConsole { overflow: hidden; border: 1px solid var(--rim); border-radius: var(--r-lg); background: color-mix(in srgb, var(--lift), var(--canvas) 24%); box-shadow: var(--shadow-lg), var(--lift-edge); }
 .settingsConsoleBar, .settingsConsoleFoot { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 11px 14px; font: 8px var(--mono); letter-spacing: .11em; color: var(--ink-faint); }
@@ -83,7 +83,7 @@
 .settingsActions { display: grid; gap: 8px; margin-top: 20px; }
 .settingsActions button { min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 15px; border: 1px solid var(--rim); border-radius: var(--r-md); background: color-mix(in srgb, var(--canvas), var(--lift) 24%); color: var(--ink); cursor: pointer; text-align: left; }
 .settingsActions button:last-child { border-bottom: 0; }
-.settingsActions button:hover { border-color: var(--settings-accent); background: color-mix(in srgb, var(--settings-accent), transparent 94%); }
+@media (hover: hover) and (pointer: fine) { .settingsActions button:hover { border-color: var(--settings-accent); background: color-mix(in srgb, var(--settings-accent), transparent 94%); } }
 .settingsActions span { font-size: 13px; }
 .settingsActions b { color: var(--accent); font: 9px var(--mono); letter-spacing: .08em; }
 
@@ -99,7 +99,7 @@
 .narrationStatus { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: 14px; }
 .narrationStatus .settingMath { margin: 0; }
 .voicePreview { min-height: 42px; flex: none; padding: 0 14px; border: 1px solid var(--settings-accent); border-radius: var(--r-md); background: color-mix(in srgb, var(--settings-accent), transparent 94%); color: var(--ink); font: 10px var(--mono); letter-spacing: .06em; cursor: pointer; }
-.voicePreview:hover { background: color-mix(in srgb, var(--settings-accent), transparent 88%); }
+@media (hover: hover) and (pointer: fine) { .voicePreview:hover { background: color-mix(in srgb, var(--settings-accent), transparent 88%); } }
 
 .resetGroup { --settings-accent: var(--alert); border-color: color-mix(in srgb, var(--alert), transparent 48%); background: linear-gradient(145deg, color-mix(in srgb, var(--alert), transparent 95%), transparent 58%), var(--canvas); }
 .resetGroup .settingsGroupHead > span { color: var(--alert); }
@@ -108,9 +108,9 @@
 .resetSummary b { font-size: 13px; }
 .resetSummary p { margin-top: 5px; color: var(--ink-faint); font-size: 12px; line-height: 1.5; }
 .resetBackup { margin-top: 13px; padding: 0 0 4px; border: 0; border-bottom: 1px solid var(--rim); background: transparent; color: var(--ink-mute); font: 9px var(--mono); letter-spacing: .06em; cursor: pointer; }
-.resetBackup:hover { border-color: var(--grow); color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .resetBackup:hover { border-color: var(--grow); color: var(--ink); } }
 .resetButton { min-height: 42px; flex: none; padding: 0 16px; border: 1px solid color-mix(in srgb, var(--alert), transparent 25%); border-radius: var(--r-sm); background: transparent; color: var(--alert); font: 11px var(--mono); cursor: pointer; }
-.resetButton:hover { background: color-mix(in srgb, var(--alert), transparent 92%); }
+@media (hover: hover) and (pointer: fine) { .resetButton:hover { background: color-mix(in srgb, var(--alert), transparent 92%); } }
 .resetConfirm { width: min(100%, 340px); display: grid; gap: 12px; padding: 14px; border: 1px solid color-mix(in srgb, var(--alert), transparent 35%); border-radius: var(--r-md); background: color-mix(in srgb, var(--alert), transparent 96%); }
 .resetConfirm label { display: grid; gap: 7px; color: var(--ink); font-size: 11px; }
 .resetConfirm label > span { color: var(--ink-mute); }

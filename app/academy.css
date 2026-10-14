@@ -23,7 +23,7 @@
 .routeFacts span, .missionMeta span { padding: 6px 9px; border: 1px solid var(--rim); border-radius: var(--r-full); font-family: var(--mono); font-size: 9px; letter-spacing: .05em; color: var(--ink-mute); }
 .routeStages { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--rim); border: 1px solid var(--rim); }
 .routeStages button { min-height: 94px; display: grid; align-content: center; gap: 4px; padding: 15px; text-align: left; border: 0; background: var(--canvas); color: var(--ink); cursor: pointer; }
-.routeStages button:hover { background: var(--glass-2); }
+@media (hover: hover) and (pointer: fine) { .routeStages button:hover { background: var(--glass-2); } }
 .routeStages button > span { font-family: var(--mono); font-size: 9px; color: hsl(var(--hue) 82% 62%); }
 .routeStages button b { font-size: 13px; }
 .routeStages button small { color: var(--ink-faint); line-height: 1.35; }
@@ -33,7 +33,7 @@
 .missionProgress > i > b { display: block; height: 100%; background: var(--grow); transition: width var(--slow) var(--ease); }
 .missionPicker { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--rim); background: var(--rim); gap: 1px; }
 .missionPicker button { min-height: 110px; display: grid; align-content: center; gap: 6px; padding: 15px; border: 0; text-align: left; color: var(--ink-mute); background: var(--canvas); cursor: pointer; }
-.missionPicker button:hover { background: var(--glass-2); }
+@media (hover: hover) and (pointer: fine) { .missionPicker button:hover { background: var(--glass-2); } }
 .missionPicker button.on { color: var(--canvas); background: var(--ink); }
 .missionPicker button > span { font-family: var(--mono); font-size: 9px; color: var(--accent); }
 .missionPicker button.on > span, .missionPicker button.on small { color: color-mix(in srgb, var(--canvas), transparent 28%); }
@@ -58,7 +58,8 @@
 .decisionCard legend { width: 100%; padding: 0 0 12px; font-weight: 650; line-height: 1.4; }
 .decisionCard legend span { margin-right: 10px; font-family: var(--mono); font-size: 9px; color: var(--accent); }
 .answer { position: relative; display: flex; align-items: flex-start; gap: 10px; padding: 12px; border-top: 1px solid var(--rim); cursor: pointer; color: var(--ink-mute); line-height: 1.4; }
-.answer:hover, .answer.picked { background: var(--glass-2); color: var(--ink); }
+.answer.picked, .answer:active { background: var(--glass-2); color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .answer:hover { background: var(--glass-2); color: var(--ink); } }
 .answer input { margin-top: 3px; accent-color: var(--accent); }
 .answer.correct { color: var(--grow); background: color-mix(in srgb, var(--grow), transparent 92%); }
 .answer.wrong { color: var(--attend); background: color-mix(in srgb, var(--attend), transparent 93%); }
@@ -79,7 +80,7 @@
 .missionSubmit strong.retry { color: var(--attend); }
 .missionSubmit small { color: var(--ink-faint); line-height: 1.4; }
 .missionSource { display: inline-block; margin-top: 16px; color: var(--ink-faint); font-family: var(--mono); font-size: 9px; }
-.missionSource:hover { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) { .missionSource:hover { color: var(--accent); } }
 
 .proofStats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; margin-bottom: 54px; background: var(--rim); border: 1px solid var(--rim); }
 .proofStats > div { display: grid; gap: 4px; padding: 18px; background: var(--canvas); }

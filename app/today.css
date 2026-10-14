@@ -26,7 +26,7 @@
   font-family: inherit; text-align: left; cursor: pointer;
   transition: color var(--fast) var(--ease);
 }
-.todayItem:hover .todayItemTitle { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) { .todayItem:hover .todayItemTitle { color: var(--accent); } }
 
 .todayIcon {
   flex: none; width: 22px; height: 22px; border-radius: 0;
@@ -65,7 +65,7 @@
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; cursor: pointer;
   transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease);
 }
-.tuneBtn:hover { color: var(--ink); border-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .tuneBtn:hover { color: var(--ink); border-color: var(--ink); } }
 
 /* ---------- budget tuning ---------- */
 

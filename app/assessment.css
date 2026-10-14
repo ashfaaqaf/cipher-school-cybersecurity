@@ -23,7 +23,8 @@
 .skillQuestion legend span { display: block; margin-bottom: 7px; color: var(--accent); font: 9px var(--mono); letter-spacing: .1em; text-transform: uppercase; }
 .skillQuestion > div { display: grid; gap: 7px; }
 .skillQuestion label { min-height: 48px; display: flex; align-items: flex-start; gap: 11px; padding: 13px 14px; border: 1px solid var(--rim); border-radius: var(--r-md); color: var(--ink-mute); cursor: pointer; line-height: 1.45; }
-.skillQuestion label:hover { border-color: var(--ink-faint); color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .skillQuestion label:hover { border-color: var(--ink-faint); color: var(--ink); } }
+.skillQuestion label:active { border-color: var(--ink-faint); color: var(--ink); }
 .skillQuestion label.picked { border-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
 .skillQuestion input { margin-top: 3px; accent-color: var(--accent); }
 .skillCheckSubmit { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 22px; border-top: 1px solid var(--rim-bright); }
@@ -54,7 +55,7 @@
 .gapPlan li b { font-size: 15px; }
 .gapPlan li small { max-width: 72ch; color: var(--ink-faint); line-height: 1.45; }
 .gapPlan li button { min-height: 40px; padding: 0; border: 0; border-bottom: 1px solid var(--rim); background: transparent; color: var(--ink-mute); font: 9px var(--mono); cursor: pointer; }
-.gapPlan li button:hover { border-color: var(--accent); color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .gapPlan li button:hover { border-color: var(--accent); color: var(--ink); } }
 .gapProgress { margin-top: 12px; color: var(--ink-faint); font: 9px var(--mono); letter-spacing: .06em; text-transform: uppercase; }
 .gapPlan.clear { display: flex; align-items: end; justify-content: space-between; gap: 20px; padding: 24px 0; border-top: 1px solid var(--rim); border-bottom: 1px solid var(--rim); }
 

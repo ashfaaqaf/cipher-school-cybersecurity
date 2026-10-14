@@ -9,7 +9,7 @@
   font-family: inherit; text-align: left; cursor: pointer;
   transition: color var(--fast) var(--ease);
 }
-.result:hover .resultTitle { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) { .result:hover .resultTitle { color: var(--accent); } }
 
 .resultTop { display: flex; align-items: center; gap: 9px; }
 .resultStage {
@@ -70,7 +70,7 @@
   cursor: pointer; line-height: 1.3;
   transition: border-color var(--fast) var(--ease), color var(--fast) var(--ease);
 }
-.learnedChip:hover { border-bottom-color: var(--grow); color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .learnedChip:hover { border-bottom-color: var(--grow); color: var(--ink); } }
 .learnedStage { font-family: var(--mono); font-size: 11px; color: var(--grow); font-variant-numeric: tabular-nums; }
 
 .weekEmpty { margin: 14px 0 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-mute); }
@@ -129,8 +129,8 @@ button.glossItem {
   transition: transform var(--fast) var(--spring), border-color var(--fast) var(--ease), background var(--fast) var(--ease);
 }
 button.glossItem:active { transform: scale(0.99); }
-button.glossItem:hover { background: var(--glass-2); border-color: var(--accent-line); }
-button.glossItem:hover .glossStage { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) { button.glossItem:hover { background: var(--glass-2); border-color: var(--accent-line); } }
+@media (hover: hover) and (pointer: fine) { button.glossItem:hover .glossStage { color: var(--accent); } }
 
 /* ---------- crash and 404 ---------- */
 

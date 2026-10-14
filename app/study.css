@@ -48,7 +48,8 @@
   cursor: pointer;
   transition: border-color var(--fast) var(--ease), opacity var(--fast) var(--ease);
 }
-.option:not(:disabled):hover { border-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .option:not(:disabled):hover { border-color: var(--ink); } }
+.option:not(:disabled):active { border-color: var(--ink); }
 .option:disabled { cursor: default; }
 .option.right { border-color: var(--grow); }
 .option.wrong { border-color: var(--alert); }
@@ -75,7 +76,7 @@
   font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer;
   transition: border-color var(--fast) var(--ease);
 }
-.grade:hover { border-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .grade:hover { border-color: var(--ink); } }
 .grade em { font-style: normal; font-family: var(--mono); font-size: 10px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 .grade.again { border-color: hsl(8 88% 60% / 0.4); color: var(--alert); }
 .grade.hard { border-color: hsl(38 92% 55% / 0.36); color: var(--attend); }
@@ -127,7 +128,7 @@
 }
 .playMini::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; }
 .playMini:active { transform: scale(0.88); }
-.playMini:hover { color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .playMini:hover { color: var(--ink); } }
 
 /* the section currently being spoken */
 .readCard.reading,
@@ -145,7 +146,7 @@
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; cursor: pointer;
   transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease);
 }
-.ratePill:hover { color: var(--ink); border-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .ratePill:hover { color: var(--ink); border-color: var(--ink); } }
 .ratePill.on { background: transparent; border-color: var(--accent); color: var(--accent); }
 .ratePill:disabled { opacity: .38; cursor: not-allowed; }
 .voiceFilterRow { grid-auto-columns: minmax(0, 1fr); }
@@ -193,7 +194,7 @@
   text-transform: uppercase;
   cursor: pointer;
 }
-.lessonNotebookHead button:hover { border-color: var(--accent); }
+@media (hover: hover) and (pointer: fine) { .lessonNotebookHead button:hover { border-color: var(--accent); } }
 .lessonNotebookHead button:disabled { opacity: .42; cursor: default; }
 .lessonNotebook > p { max-width: 64ch; margin: 11px 0 16px; color: var(--ink-mute); font-size: 13px; line-height: 1.55; }
 .lessonNotebook textarea {
@@ -226,7 +227,7 @@
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; cursor: pointer;
   transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease);
 }
-.dataBtn:hover { color: var(--ink); border-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .dataBtn:hover { color: var(--ink); border-color: var(--ink); } }
 
 .updateBar {
   position: fixed; z-index: 46;
@@ -357,7 +358,7 @@
   color: var(--ink-faint); border-bottom: 1px solid var(--rim);
   transition: color var(--fast) var(--ease), border-color var(--fast) var(--ease);
 }
-.exTool:hover { color: var(--ink); border-bottom-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .exTool:hover { color: var(--ink); border-bottom-color: var(--ink); } }
 
 .exResult { margin-top: 16px; padding-left: 14px; border-left: 2px solid var(--t-green); }
 .exResult.shown { border-left-color: var(--ink-faint); }

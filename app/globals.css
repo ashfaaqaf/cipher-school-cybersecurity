@@ -223,6 +223,10 @@ body {
 
 body.locked { overflow: hidden; }
 
+/* A long-press on a control should not select its label or pop the link
+   callout. Controls only; lesson text stays selectable. */
+button, [role='button'] { user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
+
 /* ---------- surfaces ---------- */
 
 /*
@@ -368,7 +372,7 @@ section { scroll-margin-top: 92px; }
 }
 .iconBtn::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; }
 .iconBtn:active { transform: scale(0.9); }
-.iconBtn:hover { border-color: var(--ink); color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .iconBtn:hover { border-color: var(--ink); color: var(--ink); } }
 
 /* ---------- status capsule (dynamic island) ---------- */
 
@@ -427,10 +431,10 @@ h1 em { font-style: normal; color: var(--accent); }
  * single unit of colour, and it needs no hover glow to say it is a button.
  */
 .btn.primary { color: var(--on-action); background: var(--action); }
-.btn.primary:hover { background: var(--action-hi); }
+@media (hover: hover) and (pointer: fine) { .btn.primary:hover { background: var(--action-hi); } }
 
 .btn.ghost { color: var(--ink); background: transparent; border-color: var(--rim); }
-.btn.ghost:hover { border-color: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .btn.ghost:hover { border-color: var(--ink); } }
 
 /* ---------- section headers ---------- */
 
@@ -621,7 +625,7 @@ h2 {
 /* Invisible 44px hit area, per Apple's minimum touch target: the link itself
    is 34px of underlined text and a thumb is wider than that. */
 .link::after { content: ''; position: absolute; inset: -5px -4px; }
-.link:hover { border-bottom-color: var(--accent); }
+@media (hover: hover) and (pointer: fine) { .link:hover { border-bottom-color: var(--accent); } }
 
 /* ---------- the lesson, as a page ---------- */
 
@@ -642,7 +646,7 @@ h2 {
   color: var(--ink-faint);
   transition: color var(--fast) var(--ease);
 }
-.readerBack:hover { color: var(--accent); }
+@media (hover: hover) and (pointer: fine) { .readerBack:hover { color: var(--accent); } }
 
 .readerHead { padding: 18px 0 22px; border-bottom: 1px solid var(--rim); }
 .readerTitle {
@@ -812,7 +816,7 @@ h2 {
 /* The same invisible 44px target the links and chips use: these are small
    numbers by design and a thumb is not. */
 .trackStage::after { content: ''; position: absolute; inset: -6px -2px; }
-.trackStage:hover { color: var(--accent); border-bottom-color: var(--accent); }
+@media (hover: hover) and (pointer: fine) { .trackStage:hover { color: var(--accent); border-bottom-color: var(--accent); } }
 .trackArrow { color: var(--ink-faint); font-size: 11px; padding: 0 2px; }
 .trackNote { margin-top: 10px; font-size: 14.5px; color: var(--ink-mute); line-height: 1.55; }
 
@@ -865,7 +869,7 @@ h2 {
   border: 1px solid var(--rim-bright); border-radius: 12px; background: var(--glass);
   text-decoration: none; transition: border-color .18s ease, background .18s ease, transform .18s ease;
 }
-.creatorSocial:hover { border-color: color-mix(in srgb, var(--accent) 58%, var(--rim)); background: var(--glass-hi); transform: translateY(-1px); }
+@media (hover: hover) and (pointer: fine) { .creatorSocial:hover { border-color: color-mix(in srgb, var(--accent) 58%, var(--rim)); background: var(--glass-hi); transform: translateY(-1px); } }
 .creatorSocialIcon { width: 22px; height: 22px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .creatorSocialDot { fill: currentColor; stroke: none; }
 .creatorSocialText { display: grid; gap: 1px; line-height: 1.15; }

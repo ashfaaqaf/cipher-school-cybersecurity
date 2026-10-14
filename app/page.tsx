@@ -366,6 +366,10 @@ export default function Home() {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
+    // The status bar matches the chosen theme's --canvas, not the device scheme.
+    document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
+      meta.content = theme === 'day' ? '#f4f6f9' : '#07090d';
+    });
     try {
       window.localStorage.setItem(THEME, theme);
     } catch {
