@@ -262,7 +262,7 @@ export function ReviewView({
             {pos + 1} / {queue.length}
           </span>
           <span className="sessionTrack" aria-hidden="true">
-            <i style={{ width: `${(pos / queue.length) * 100}%` }} />
+            <i style={{ transform: `translateX(${((pos / queue.length) * 100) - 100}%)` }} />
           </span>
           <button className="sessionQuit" onClick={() => setQueue(null)}>
             End

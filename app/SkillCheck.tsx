@@ -99,7 +99,7 @@ export function SkillCheck({
         <div id="skill-check-questions" className="skillCheckQuestions">
           <div className="skillCheckProgress" aria-label={`${answered} of ${SKILL_QUESTIONS.length} questions answered`}>
             <span><b>{answered}</b> of {SKILL_QUESTIONS.length} answered</span>
-            <i aria-hidden="true"><b style={{ width: `${(answered / SKILL_QUESTIONS.length) * 100}%` }} /></i>
+            <i aria-hidden="true"><b style={{ transform: `translateX(${((answered / SKILL_QUESTIONS.length) * 100) - 100}%)` }} /></i>
           </div>
 
           {SKILL_QUESTIONS.map((question, questionIndex) => (

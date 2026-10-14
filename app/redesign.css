@@ -163,7 +163,7 @@ body {
   color: var(--ink-mute);
   text-align: left;
   cursor: pointer;
-  transition: background var(--fast) var(--ease), color var(--fast) var(--ease), transform var(--fast) var(--spring);
+  transition: background var(--fast) var(--ease), color var(--fast) var(--ease), transform var(--fast) var(--ease-out);
 }
 .lessonMap button:active { transform: scale(.98); }
 .lessonMap button.active { background: var(--accent-soft); color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }

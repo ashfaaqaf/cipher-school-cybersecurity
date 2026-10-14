@@ -322,7 +322,7 @@ export function MissionsView({ academy, update, focus }: { academy: AcademyState
         <h2>Investigate, decide, explain</h2>
         <p className="sectionNote">Six safe browser simulations train judgement using logs, headers, policies and timelines. Nothing touches a real target; every case is legal, scored and saved on this device.</p>
       </div>
-      <div className="missionProgress" aria-label={`${passed} of ${MISSIONS.length} missions passed`}><span><b>{passed}</b>/{MISSIONS.length} passed</span><i><b style={{ width: `${(passed / MISSIONS.length) * 100}%` }} /></i></div>
+      <div className="missionProgress" aria-label={`${passed} of ${MISSIONS.length} missions passed`}><span><b>{passed}</b>/{MISSIONS.length} passed</span><i><b style={{ transform: `translateX(${((passed / MISSIONS.length) * 100) - 100}%)` }} /></i></div>
       <div className="missionPicker" role="tablist" aria-label="Mission cases">
         {MISSIONS.map((mission, index) => {
           const run = missionRun(academy, mission.id);

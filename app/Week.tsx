@@ -48,7 +48,7 @@ export function WeekReview({
       </div>
 
       <div className="todayBar" aria-hidden="true">
-        <i style={{ width: `${pct}%` }} />
+        <i style={{ transform: `translateX(${(pct) - 100}%)` }} />
       </div>
       <div className="todayMeta">
         {pct}% of your {settings.weeklyHours}h target

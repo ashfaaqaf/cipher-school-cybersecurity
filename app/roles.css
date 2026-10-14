@@ -15,7 +15,7 @@
 .jobSprintScore strong { font-family: var(--mono); font-size: 30px; font-weight: 450; letter-spacing: -0.05em; }
 .jobSprintScore span { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; }
 .jobSprintBar { height: 2px; margin-top: 24px; background: var(--glass-3); overflow: hidden; }
-.jobSprintBar i { display: block; height: 100%; background: var(--accent); transition: width var(--slow) var(--sheet); }
+.jobSprintBar i { display: block; width: 100%; height: 100%; background: var(--accent); transition: transform var(--slow) var(--sheet); }
 .jobSprintGrid { display: grid; grid-template-columns: 1fr; }
 .jobSkill { padding: 24px 0; border-top: 1px solid var(--rim-bright); }
 .jobSkill:first-child { border-top: 0; }
@@ -52,7 +52,7 @@
 .toolLabsScore strong { font-family: var(--mono); font-size: 28px; font-weight: 450; letter-spacing: -0.05em; }
 .toolLabsScore span { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); letter-spacing: 0.08em; text-transform: uppercase; }
 .toolLabsBar { height: 2px; margin-top: 24px; background: var(--glass-3); overflow: hidden; }
-.toolLabsBar i { display: block; height: 100%; background: var(--grow); transition: width var(--slow) var(--sheet); }
+.toolLabsBar i { display: block; width: 100%; height: 100%; background: var(--grow); transition: transform var(--slow) var(--sheet); }
 .toolLabGrid { display: grid; grid-template-columns: 1fr; }
 .toolLab { padding: 24px 0; border-top: 1px solid var(--rim-bright); }
 .toolLab:first-child { border-top: 0; }
@@ -145,7 +145,7 @@
   background: transparent; border: 0; border-bottom: 1px solid var(--rim); color: var(--ink-mute);
   font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; text-align: left;
   cursor: pointer; line-height: 1.3;
-  transition: transform var(--fast) var(--spring), border-color var(--fast) var(--ease), color var(--fast) var(--ease);
+  transition: transform var(--fast) var(--ease-out), border-color var(--fast) var(--ease), color var(--fast) var(--ease);
 }
 @media (hover: hover) and (pointer: fine) { .reqChip:hover { border-bottom-color: var(--accent); color: var(--accent); } }
 .reqChip.done { color: var(--grow); }

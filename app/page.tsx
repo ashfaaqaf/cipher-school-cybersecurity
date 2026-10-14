@@ -55,6 +55,7 @@ import { SettingsView, type AccessibilitySettings } from './Settings';
 import { clearCipherSchoolStorage } from './reset';
 import { CAPSTONES, MISSIONS, downloadText } from './academy';
 import { NavFlyout, type FlyMenu } from './NavFlyout';
+import { Sheet } from './Sheet';
 import {
   NOTE_LIMIT,
   NOTES_STORE,
@@ -1424,7 +1425,7 @@ export default function Home() {
               )}
             </div>
             <div className="islandBar" aria-hidden="true">
-              <i style={{ width: `${pct}%` }} />
+              <i style={{ transform: `translateX(${(pct) - 100}%)` }} />
             </div>
           </div>
 
@@ -1461,7 +1462,7 @@ export default function Home() {
                     <>
                       <div className="playLabel">{speaker.chunks[speaker.index]?.label ?? 'Reading'}</div>
                       <div className="playTrack" aria-hidden="true">
-                        <i style={{ width: `${((speaker.index + 1) / Math.max(1, speaker.total)) * 100}%` }} />
+                        <i style={{ transform: `translateX(${(((speaker.index + 1) / Math.max(1, speaker.total)) * 100) - 100}%)` }} />
                       </div>
                     </>
                   ) : (
@@ -1785,7 +1786,7 @@ export default function Home() {
                           {done}/{stage.lessons.length}
                         </span>
                         <span className="miniBar" aria-hidden="true">
-                          <i style={{ width: `${(done / stage.lessons.length) * 100}%` }} />
+                          <i style={{ transform: `translateX(${((done / stage.lessons.length) * 100) - 100}%)` }} />
                         </span>
                         <span className="caret" aria-hidden="true">
                           ▾
@@ -2200,221 +2201,197 @@ export default function Home() {
       </div>
 
       {/* ---------------- narration settings ---------------- */}
-      {voiceOpen && (
-        <>
-          <div className="scrim" onClick={() => setVoiceOpen(false)} aria-hidden="true" />
-          <div ref={voiceRef} className="sheet" role="dialog" aria-modal="true" aria-label="Narration settings">
-            <div className="grabber" onPointerDown={() => setVoiceOpen(false)}>
-              <i />
-            </div>
-            <div className="sheetHead">
-              <div className="sheetCrumb">Professional system narration</div>
-              <h3 className="sheetTitle">Narration</h3>
-              <div className="sheetMeta">
-                {speaker.voices.length} professional voice{speaker.voices.length === 1 ? '' : 's'} selected from {speaker.allVoiceCount}
+      <Sheet open={voiceOpen} sheetRef={voiceRef} label="Narration settings" onClose={() => setVoiceOpen(false)}>
+        <div className="sheetHead">
+          <div className="sheetCrumb">Professional system narration</div>
+          <h3 className="sheetTitle">Narration</h3>
+          <div className="sheetMeta">
+            {speaker.voices.length} professional voice{speaker.voices.length === 1 ? '' : 's'} selected from {speaker.allVoiceCount}
+          </div>
+        </div>
+        <div className="sheetBody">
+          {speaker.hasStudio && (
+            <div className="readCard key">
+              <div className="readLabel">Narrator</div>
+              <div className="rateRow" style={{ gridAutoFlow: 'row' }}>
+                <button
+                  className={speaker.preferStudio ? 'ratePill on' : 'ratePill'}
+                  onClick={() => speaker.setPreferStudio(true)}
+                >
+                  Studio voice · {speaker.studioCount} lessons
+                </button>
+                <button
+                  className={!speaker.preferStudio ? 'ratePill on' : 'ratePill'}
+                  onClick={() => speaker.setPreferStudio(false)}
+                >
+                  This device
+                </button>
               </div>
             </div>
-            <div className="sheetBody">
-              {speaker.hasStudio && (
-                <div className="readCard key">
-                  <div className="readLabel">Narrator</div>
-                  <div className="rateRow" style={{ gridAutoFlow: 'row' }}>
-                    <button
-                      className={speaker.preferStudio ? 'ratePill on' : 'ratePill'}
-                      onClick={() => speaker.setPreferStudio(true)}
-                    >
-                      Studio voice · {speaker.studioCount} lessons
-                    </button>
-                    <button
-                      className={!speaker.preferStudio ? 'ratePill on' : 'ratePill'}
-                      onClick={() => speaker.setPreferStudio(false)}
-                    >
-                      This device
-                    </button>
-                  </div>
+          )}
+
+          <div className="readCard key">
+            <div className="readLabel">Delivery</div>
+            <div className="rateRow">
+              {[
+                { label: 'Measured', rate: 0.9 },
+                { label: 'Natural', rate: 1 },
+                { label: 'Brisk', rate: 1.15 },
+              ].map((option) => (
+                <button
+                  key={option.label}
+                  className={Math.abs(speaker.rate - option.rate) < 0.01 ? 'ratePill on' : 'ratePill'}
+                  onClick={() => speaker.setRate(option.rate)}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="readCard">
+            <div className="readLabel">Professional voices{speaker.hasStudio ? ' (used as fallback)' : ''}</div>
+            <div className="rateRow voiceFilterRow" role="group" aria-label="Filter voices">
+              {[
+                { value: 'all' as const, label: 'All', count: speaker.voices.length },
+                { value: 'female' as const, label: 'Female', count: speaker.femaleVoiceCount },
+                { value: 'male' as const, label: 'Male', count: speaker.maleVoiceCount },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  className={speaker.voiceFilter === option.value ? 'ratePill on' : 'ratePill'}
+                  type="button"
+                  disabled={option.value !== 'all' && option.count === 0}
+                  onClick={() => speaker.setVoiceFilter(option.value)}
+                >
+                  {option.label} <small>{option.count}</small>
+                </button>
+              ))}
+            </div>
+            <div className="voiceList">
+              {speaker.filteredVoices.length === 0 && (
+                <div className="cardPrompt">
+                  {speaker.voices.length === 0
+                    ? 'No voices reported yet. On some browsers they appear only after the first playback. Press Listen once and come back.'
+                    : 'This device does not identify any voices in this group. Choose All to see every professional voice.'}
                 </div>
               )}
-
-              <div className="readCard key">
-                <div className="readLabel">Delivery</div>
-                <div className="rateRow">
-                  {[
-                    { label: 'Measured', rate: 0.9 },
-                    { label: 'Natural', rate: 1 },
-                    { label: 'Brisk', rate: 1.15 },
-                  ].map((option) => (
-                    <button
-                      key={option.label}
-                      className={Math.abs(speaker.rate - option.rate) < 0.01 ? 'ratePill on' : 'ratePill'}
-                      onClick={() => speaker.setRate(option.rate)}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="readCard">
-                <div className="readLabel">Professional voices{speaker.hasStudio ? ' (used as fallback)' : ''}</div>
-                <div className="rateRow voiceFilterRow" role="group" aria-label="Filter voices">
-                  {[
-                    { value: 'all' as const, label: 'All', count: speaker.voices.length },
-                    { value: 'female' as const, label: 'Female', count: speaker.femaleVoiceCount },
-                    { value: 'male' as const, label: 'Male', count: speaker.maleVoiceCount },
-                  ].map((option) => (
-                    <button
-                      key={option.value}
-                      className={speaker.voiceFilter === option.value ? 'ratePill on' : 'ratePill'}
-                      type="button"
-                      disabled={option.value !== 'all' && option.count === 0}
-                      onClick={() => speaker.setVoiceFilter(option.value)}
-                    >
-                      {option.label} <small>{option.count}</small>
-                    </button>
-                  ))}
-                </div>
-                <div className="voiceList">
-                  {speaker.filteredVoices.length === 0 && (
-                    <div className="cardPrompt">
-                      {speaker.voices.length === 0
-                        ? 'No voices reported yet. On some browsers they appear only after the first playback. Press Listen once and come back.'
-                        : 'This device does not identify any voices in this group. Choose All to see every professional voice.'}
-                    </div>
-                  )}
-                  {speaker.filteredVoices.map((v) => (
-                    <button
-                      key={v.voiceURI}
-                      className={speaker.voiceURI === v.voiceURI ? 'voiceRow on' : 'voiceRow'}
-                      onClick={() => {
-                        speaker.setVoiceURI(v.voiceURI);
-                        speaker.say('Narration set. Ready when you are.');
-                      }}
-                    >
-                      <span className="voiceIdentity">
-                        <span className="voiceName">{v.name}</span>
-                        <span className="voiceTier">{voiceGenderLabel(v)} · {voiceQualityLabel(v)}</span>
-                      </span>
-                      <span className="voiceLang">{v.lang}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="readCard check">
-                <div className="readLabel">Voice quality</div>
-                <div className="readText">
-                  Cipher School ranks natural, enhanced and common English system voices first. Female and male groups
-                  use the names supplied by your device because browsers do not provide a gender field. Novelty character voices
-                  are removed, and narration uses the voice&apos;s natural pitch. Nothing you listen to is sent to Cipher
-                  School. On iPhone, Settings → Accessibility → Spoken Content → Voices lets you download more voices.
-                  Reopen the app after a download. iOS stops narration when the screen locks.
-                </div>
-              </div>
-            </div>
-            <div className="sheetFoot">
-              <button className="btn primary" onClick={() => setVoiceOpen(false)}>
-                Done
-              </button>
+              {speaker.filteredVoices.map((v) => (
+                <button
+                  key={v.voiceURI}
+                  className={speaker.voiceURI === v.voiceURI ? 'voiceRow on' : 'voiceRow'}
+                  onClick={() => {
+                    speaker.setVoiceURI(v.voiceURI);
+                    speaker.say('Narration set. Ready when you are.');
+                  }}
+                >
+                  <span className="voiceIdentity">
+                    <span className="voiceName">{v.name}</span>
+                    <span className="voiceTier">{voiceGenderLabel(v)} · {voiceQualityLabel(v)}</span>
+                  </span>
+                  <span className="voiceLang">{v.lang}</span>
+                </button>
+              ))}
             </div>
           </div>
-        </>
-      )}
+
+          <div className="readCard check">
+            <div className="readLabel">Voice quality</div>
+            <div className="readText">
+              Cipher School ranks natural, enhanced and common English system voices first. Female and male groups
+              use the names supplied by your device because browsers do not provide a gender field. Novelty character voices
+              are removed, and narration uses the voice&apos;s natural pitch. Nothing you listen to is sent to Cipher
+              School. On iPhone, Settings → Accessibility → Spoken Content → Voices lets you download more voices.
+              Reopen the app after a download. iOS stops narration when the screen locks.
+            </div>
+          </div>
+        </div>
+        <div className="sheetFoot">
+          <button className="btn primary" onClick={() => setVoiceOpen(false)}>
+            Done
+          </button>
+        </div>
+      </Sheet>
 
       {/* ---------------- keyboard help ---------------- */}
-      {helpOpen && (
-        <>
-          <div className="scrim" onClick={() => setHelpOpen(false)} aria-hidden="true" />
-          <div ref={helpRef} className="sheet" role="dialog" aria-modal="true" aria-label="Keyboard shortcuts">
-            <div className="grabber" onPointerDown={() => setHelpOpen(false)}>
-              <i />
-            </div>
-            <div className="sheetHead">
-              <div className="sheetCrumb">Faster on a keyboard</div>
-              <h3 className="sheetTitle">Shortcuts</h3>
-            </div>
-            <div className="sheetBody">
-              <div className="keyList">
-                {SHORTCUTS.map((s, i) => (
-                  <div className="keyRow" key={i}>
-                    <span className="keyCombo">
-                      {s.keys.map((k, n) =>
-                        k === '-' ? (
-                          <span className="keyDash" key={n}>
-                            -
-                          </span>
-                        ) : (
-                          <kbd key={n}>{k}</kbd>
-                        ),
-                      )}
-                    </span>
-                    <span className="keyWhat">
-                      {s.what}
-                      {s.when && <em className="keyWhen"> · while {s.when}</em>}
-                    </span>
-                  </div>
-                ))}
+      <Sheet open={helpOpen} sheetRef={helpRef} label="Keyboard shortcuts" onClose={() => setHelpOpen(false)}>
+        <div className="sheetHead">
+          <div className="sheetCrumb">Faster on a keyboard</div>
+          <h3 className="sheetTitle">Shortcuts</h3>
+        </div>
+        <div className="sheetBody">
+          <div className="keyList">
+            {SHORTCUTS.map((s, i) => (
+              <div className="keyRow" key={i}>
+                <span className="keyCombo">
+                  {s.keys.map((k, n) =>
+                    k === '-' ? (
+                      <span className="keyDash" key={n}>
+                        -
+                      </span>
+                    ) : (
+                      <kbd key={n}>{k}</kbd>
+                    ),
+                  )}
+                </span>
+                <span className="keyWhat">
+                  {s.what}
+                  {s.when && <em className="keyWhen"> · while {s.when}</em>}
+                </span>
               </div>
-            </div>
-            <div className="sheetFoot">
-              <button className="btn primary" onClick={() => setHelpOpen(false)}>
-                Got it
-              </button>
-            </div>
+            ))}
           </div>
-        </>
-      )}
+        </div>
+        <div className="sheetFoot">
+          <button className="btn primary" onClick={() => setHelpOpen(false)}>
+            Got it
+          </button>
+        </div>
+      </Sheet>
 
       {printing && <PrintSheet stage={printing} />}
 
       {/* ---------------- install sheet ---------------- */}
-      {installOpen && (
-        <>
-          <div className="scrim" onClick={() => setInstallOpen(false)} aria-hidden="true" />
-          <div ref={installRef} className="sheet" role="dialog" aria-modal="true" aria-label="Add to iPhone">
-            <div className="grabber" onPointerDown={() => setInstallOpen(false)}>
-              <i />
-            </div>
-            <div className="sheetHead">
-              <div className="sheetCrumb">Works offline once added</div>
-              <h3 className="sheetTitle">Put this on your Home Screen</h3>
-            </div>
-            <div className="sheetBody">
-              <div className="readCard key">
-                <div className="readLabel">iPhone and iPad</div>
-                <div className="readText">
-                  In Safari, tap the Share button, scroll down and choose <b>Add to Home Screen</b>, then tap Add. It
-                  opens full screen with no browser bars, like a normal app.
-                </div>
-              </div>
-              <div className="readCard">
-                <div className="readLabel">Android</div>
-                <div className="readText">In Chrome, open the menu and choose Add to Home screen.</div>
-              </div>
-              <div className={offlineReady ? 'readCard do' : 'readCard'}>
-                <div className="readLabel">Offline</div>
-                <div className="readText">
-                  {offlineReady
-                    ? 'Saved for offline use. Every lesson, question and term works with no signal, including on a bus or plane.'
-                    : 'Caching in the background. Once it finishes, the whole course works with no connection at all.'}
-                </div>
-              </div>
-
-              <div className="readCard">
-                <div className="readLabel">Desktop</div>
-                <div className="readText">
-                  In Chrome or Edge, use the install icon in the address bar. Your progress lives in the browser, so each
-                  device keeps its own.
-                </div>
-              </div>
-            </div>
-            <div className="sheetFoot">
-              <button className="btn primary" onClick={() => setInstallOpen(false)}>
-                Got it
-              </button>
+      <Sheet open={installOpen} sheetRef={installRef} label="Add to iPhone" onClose={() => setInstallOpen(false)}>
+        <div className="sheetHead">
+          <div className="sheetCrumb">Works offline once added</div>
+          <h3 className="sheetTitle">Put this on your Home Screen</h3>
+        </div>
+        <div className="sheetBody">
+          <div className="readCard key">
+            <div className="readLabel">iPhone and iPad</div>
+            <div className="readText">
+              In Safari, tap the Share button, scroll down and choose <b>Add to Home Screen</b>, then tap Add. It
+              opens full screen with no browser bars, like a normal app.
             </div>
           </div>
-        </>
-      )}
+          <div className="readCard">
+            <div className="readLabel">Android</div>
+            <div className="readText">In Chrome, open the menu and choose Add to Home screen.</div>
+          </div>
+          <div className={offlineReady ? 'readCard do' : 'readCard'}>
+            <div className="readLabel">Offline</div>
+            <div className="readText">
+              {offlineReady
+                ? 'Saved for offline use. Every lesson, question and term works with no signal, including on a bus or plane.'
+                : 'Caching in the background. Once it finishes, the whole course works with no connection at all.'}
+            </div>
+          </div>
+
+          <div className="readCard">
+            <div className="readLabel">Desktop</div>
+            <div className="readText">
+              In Chrome or Edge, use the install icon in the address bar. Your progress lives in the browser, so each
+              device keeps its own.
+            </div>
+          </div>
+        </div>
+        <div className="sheetFoot">
+          <button className="btn primary" onClick={() => setInstallOpen(false)}>
+            Got it
+          </button>
+        </div>
+      </Sheet>
     </div>
   );
 }

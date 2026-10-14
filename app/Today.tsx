@@ -86,7 +86,7 @@ export function TodayCard({
       </div>
 
       <div className="todayBar" aria-hidden="true">
-        <i style={{ width: `${pct}%` }} />
+        <i style={{ transform: `translateX(${(pct) - 100}%)` }} />
       </div>
       <div className="todayMeta">
         {humanMins(plan.doneMins)} of {humanMins(budgetMins)} today · {Math.round(weekMins / 6) / 10}h of{' '}

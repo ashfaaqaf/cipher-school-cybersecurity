@@ -226,7 +226,7 @@ function JobAdSprint({
         </div>
       </div>
 
-      <div className="jobSprintBar" aria-hidden="true"><i style={{ width: `${percentage}%` }} /></div>
+      <div className="jobSprintBar" aria-hidden="true"><i style={{ transform: `translateX(${(percentage) - 100}%)` }} /></div>
 
       <div className="jobSprintGrid">
         {skills.map((skill, index) => {
@@ -321,7 +321,7 @@ function ToolLabChecklist({ onOpen }: { onOpen: (lessonId: string) => void }) {
       </div>
 
       <div className="toolLabsBar" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}>
-        <i style={{ width: `${percentage}%` }} />
+        <i style={{ transform: `translateX(${(percentage) - 100}%)` }} />
       </div>
 
       <div className="toolLabGrid">

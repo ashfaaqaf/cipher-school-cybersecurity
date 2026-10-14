@@ -16,7 +16,7 @@
 .streakLabel { margin-top: 6px; font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
 
 .todayBar { margin-top: 18px; height: 2px; border-radius: 0; background: var(--glass-3); overflow: hidden; }
-.todayBar i { display: block; height: 100%; border-radius: inherit; background: var(--grow); transition: width var(--slow) var(--sheet); }
+.todayBar i { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--grow); transition: transform var(--slow) var(--sheet); }
 .todayMeta { margin-top: 10px; font-family: var(--mono); font-size: 11px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
 
 .todayItem {
